@@ -1,0 +1,195 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      6556,        186]
+NotebookOptionsPosition[      5745,        157]
+NotebookOutlinePosition[      6102,        173]
+CellTagsIndexPosition[      6059,        170]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["\<\
+This is an example of how to use the Cosmology.m package. It provides basic \
+functions commonly used in cosmological computations, but no power spectra or \
+anything more advanced. So far it\[CloseCurlyQuote]s LCDM only but it could \
+be easily extended. Feel free to evaluate the entire notebook at once.
+
+First, load the package.\
+\>", "Text",
+ CellChangeTimes->{{3.551072493985879*^9, 3.551072497675692*^9}, {
+  3.551073120051454*^9, 3.5510731799151363`*^9}, {3.551073368483811*^9, 
+  3.551073381994775*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Get", "[", 
+  RowBox[{
+   RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<Cosmology.m\>\""}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.55107232512212*^9, 3.551072325255451*^9}, {
+  3.551072370184869*^9, 3.5510724424076157`*^9}}],
+
+Cell["Show all functions of this package.", "Text",
+ CellChangeTimes->{{3.551072877794281*^9, 3.5510728906887503`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"?", "Cosmology`*"}]], "Input",
+ CellChangeTimes->{{3.551072891895075*^9, 3.551072898024375*^9}, {
+  3.5510729357567663`*^9, 3.5510729580106983`*^9}, {3.551072997773348*^9, 
+  3.551073009636498*^9}, {3.551073068198587*^9, 3.551073071936955*^9}}],
+
+Cell["\<\
+Compute comoving distance at z=1. The Distance function is being memoized in \
+interpolated form, so the first call takes longer then subsequent calls.\
+\>", "Text",
+ CellChangeTimes->{{3.5510725055778303`*^9, 3.551072546603169*^9}, {
+  3.551073198430481*^9, 3.5510731996370583`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"AbsoluteTiming", "[", 
+  RowBox[{"Distance", "[", "1.", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.551072457045388*^9, 3.551072468568119*^9}}],
+
+Cell[BoxData[
+ RowBox[{"AbsoluteTiming", "[", 
+  RowBox[{"Distance", "[", "1.", "]"}], "]"}]], "Input"],
+
+Cell["Change to Luminosity distance.", "Text",
+ CellChangeTimes->{{3.551072555338561*^9, 3.551072561842877*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Distance", "[", 
+  RowBox[{"1.", ",", 
+   RowBox[{"DistanceType", "\[Rule]", "Luminosity"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.5510725632580338`*^9, 3.551072572809147*^9}}],
+
+Cell["Vary a cosmological parameter.", "Text",
+ CellChangeTimes->{{3.551072587811695*^9, 3.5510725930692472`*^9}, {
+  3.551072659485767*^9, 3.5510726596058283`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Plot", "[", 
+  RowBox[{
+   RowBox[{"Evaluate", "@", 
+    RowBox[{"Table", "[", 
+     RowBox[{
+      RowBox[{"Distance", "[", 
+       RowBox[{"z", ",", 
+        RowBox[{"OmegaM", "\[Rule]", "x"}]}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"x", ",", 
+        RowBox[{"{", 
+         RowBox[{".1", ",", ".2", ",", ".25", ",", ".3", ",", ".4"}], "}"}]}],
+        "}"}]}], "]"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"z", ",", "0", ",", "3"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.551072582283237*^9, 3.551072647475864*^9}}],
+
+Cell["Show the fiducial model.", "Text",
+ CellChangeTimes->{{3.55107267572136*^9, 3.551072700675198*^9}}],
+
+Cell[BoxData["Cosmology"], "Input",
+ CellChangeTimes->{{3.55107269189443*^9, 3.5510726935538073`*^9}}],
+
+Cell["\<\
+Copy and paste the previous output to define your own model (LCDM only). In \
+this case, we set h -> .73 instead of .7 and OmegaK->1.1 instead of 1. We \
+also change the dependency, i.e. make OmegaTot depend on OmegaK instead of \
+the other way around.\
+\>", "Text",
+ CellChangeTimes->{{3.551072709667691*^9, 3.551072719213335*^9}, {
+  3.55107275143104*^9, 3.5510728247373238`*^9}, {3.551073273112733*^9, 
+  3.551073295151338*^9}, {3.551073346727908*^9, 3.551073352326179*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Cosmology", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"OmegaM", "\[Rule]", "0.25`"}], ",", 
+     RowBox[{"OmegaB", "\[Rule]", "0.05`"}], ",", 
+     RowBox[{"OmegaC", "\[Rule]", 
+      RowBox[{
+       RowBox[{"-", "OmegaB"}], "+", "OmegaM"}]}], ",", 
+     RowBox[{"OmegaL", "\[Rule]", "0.75`"}], ",", 
+     RowBox[{"OmegaTot", "\[Rule]", 
+      RowBox[{"1", "-", "OmegaK"}]}], ",", 
+     RowBox[{"OmegaK", "\[Rule]", "1.1"}], ",", 
+     RowBox[{"h", "\[Rule]", "0.73`"}], ",", 
+     RowBox[{"H0", "\[Rule]", 
+      RowBox[{"0.0003333333333333333`", " ", "h"}]}], ",", 
+     RowBox[{"omegaM", "\[Rule]", 
+      RowBox[{
+       SuperscriptBox["h", "2"], " ", "OmegaM"}]}], ",", 
+     RowBox[{"omegaL", "\[Rule]", 
+      RowBox[{
+       SuperscriptBox["h", "2"], " ", "OmegaL"}]}], ",", 
+     RowBox[{"omegaB", "\[Rule]", 
+      RowBox[{
+       SuperscriptBox["h", "2"], " ", "OmegaB"}]}], ",", 
+     RowBox[{"omegaC", "\[Rule]", 
+      RowBox[{
+       SuperscriptBox["h", "2"], " ", "OmegaC"}]}], ",", 
+     RowBox[{"omegaK", "\[Rule]", 
+      RowBox[{
+       SuperscriptBox["h", "2"], " ", "OmegaK"}]}], ",", 
+     RowBox[{"w0", "\[Rule]", 
+      RowBox[{"-", "1"}]}], ",", 
+     RowBox[{"w1", "\[Rule]", "0"}], ",", 
+     RowBox[{"gamma", "\[Rule]", "0.545`"}], ",", 
+     RowBox[{"sigma8", "\[Rule]", "0.8`"}], ",", 
+     RowBox[{"ns", "\[Rule]", "0.9`"}]}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.55107272410752*^9, 3.5510727472673264`*^9}, {
+  3.551072834280211*^9, 3.551072856616702*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Distance", "[", "1.", "]"}]], "Input",
+ CellChangeTimes->{{3.5510728675656567`*^9, 3.551072869264835*^9}}]
+},
+WindowSize->{740, 864},
+WindowMargins->{{353, Automatic}, {1, Automatic}},
+ShowSelection->True,
+FrontEndVersion->"8.0 for Linux x86 (64-bit) (October 10, 2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 522, 10, 148, "Text"],
+Cell[1082, 32, 257, 6, 36, "Input"],
+Cell[1342, 40, 119, 1, 35, "Text"],
+Cell[1464, 43, 268, 4, 36, "Input"],
+Cell[1735, 49, 294, 5, 59, "Text"],
+Cell[2032, 56, 169, 3, 36, "Input"],
+Cell[2204, 61, 103, 2, 36, "Input"],
+Cell[2310, 65, 112, 1, 35, "Text"],
+Cell[2425, 68, 203, 4, 36, "Input"],
+Cell[2631, 74, 165, 2, 35, "Text"],
+Cell[2799, 78, 561, 16, 60, "Input"],
+Cell[3363, 96, 105, 1, 35, "Text"],
+Cell[3471, 99, 102, 1, 36, "Input"],
+Cell[3576, 102, 487, 8, 105, "Text"],
+Cell[4066, 112, 1542, 39, 184, "Input"],
+Cell[5611, 153, 130, 2, 36, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
