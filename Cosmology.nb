@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     32756,        849]
-NotebookOptionsPosition[     30684,        780]
-NotebookOutlinePosition[     31146,        798]
-CellTagsIndexPosition[     31103,        795]
+NotebookDataLength[     41656,       1064]
+NotebookOptionsPosition[     39313,        987]
+NotebookOutlinePosition[     39775,       1005]
+CellTagsIndexPosition[     39732,       1002]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -118,6 +118,32 @@ z2 along the line of sight.\>\""}]], "Input",
  CellChangeTimes->{{3.536235099468355*^9, 3.536235216138243*^9}, 
    3.536235595808799*^9}],
 
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"TransferFit", "::", "usage"}], "=", 
+  "\"\<TransferFit[k,path] returns a list of five values using the fitting \
+formulae by Eisenstein&Hu(1999). The values are: The full transfer function, \
+the baryon transfer function, the CDM transfer function, the no-wiggles \
+transfer function, and the no-baryon transfer function. The path to the \
+MathLink executable needs to be passed by path.\>\""}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.555149950572431*^9, 3.555149975999014*^9}, {
+  3.5551506843049393`*^9, 3.5551507004062033`*^9}, {3.5551512766862392`*^9, 
+  3.555151302442206*^9}, {3.5551515933344297`*^9, 3.5551516282482452`*^9}, {
+  3.555154166891384*^9, 3.555154188358317*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"LinearPSFit", "::", "usage"}], "=", 
+  "\"\<LinearPSFit[k,z,path] returns a list of five values using the fitting \
+formulae by Eisenstein&Hu(1999). The values are: The full linear power \
+spectrum, the baryon power spectrum, the CDM power spectrum, the no-wiggles \
+power spectrum, and the no-baryon power spectrum.\>\""}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.5551515726875*^9, 3.5551516009884567`*^9}, {
+  3.55515163544554*^9, 3.55515165904941*^9}, {3.555154136546392*^9, 
+  3.555154163381996*^9}}],
+
 Cell[BoxData[{
  RowBox[{
   RowBox[{"OmegaB", "::", "usage"}], "=", 
@@ -171,6 +197,9 @@ Cell[BoxData[{
   RowBox[{"ns", "::", "usage"}], "=", 
   "\"\<Spectral index\>\""}], "\[IndentingNewLine]", 
  RowBox[{
+  RowBox[{"Tcmb", "::", "usage"}], "=", 
+  "\"\<Temperature of the CMB\>\""}], "\[IndentingNewLine]", 
+ RowBox[{
   RowBox[{"DistanceType", "::", "usage"}], "=", 
   "\"\<Distance type\>\""}], "\[IndentingNewLine]", 
  RowBox[{
@@ -188,7 +217,8 @@ Cell[BoxData[{
  InitializationCell->True,
  CellChangeTimes->{{3.536239776425123*^9, 3.536239802237091*^9}, {
   3.536239846813039*^9, 3.536240039946976*^9}, {3.536240173475071*^9, 
-  3.536240189624159*^9}, {3.550304169726321*^9, 3.5503042343297987`*^9}}],
+  3.536240189624159*^9}, {3.550304169726321*^9, 3.5503042343297987`*^9}, {
+  3.555149936033284*^9, 3.555149942713242*^9}}],
 
 Cell[CellGroupData[{
 
@@ -247,7 +277,8 @@ Cell[BoxData[{
     RowBox[{"(*", 
      RowBox[{"growth", " ", "index"}], "*)"}], "\[IndentingNewLine]", 
     RowBox[{"sigma8", "\[Rule]", ".8"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"ns", "\[Rule]", ".9"}]}], "}"}]}], "\[IndentingNewLine]", 
+    RowBox[{"ns", "\[Rule]", ".9"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"Tcmb", "\[Rule]", "2.728"}]}], "}"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"cosmoopts", ":=", 
    RowBox[{"Cosmology", "~", "Join", "~", 
@@ -273,7 +304,9 @@ Cell[BoxData[{
    3.536230420804467*^9, 3.536230583174095*^9}, {3.536230641314381*^9, 
    3.536230738929402*^9}, {3.536232304054985*^9, 3.536232320488431*^9}, {
    3.536232516721249*^9, 3.536232533072122*^9}, {3.536232741487971*^9, 
-   3.536232775151576*^9}, 3.536238012428693*^9, 3.536240321583727*^9}],
+   3.536232775151576*^9}, 3.536238012428693*^9, 3.536240321583727*^9, {
+   3.5551497956770287`*^9, 3.555149800701795*^9}, {3.55514989822711*^9, 
+   3.555149898612011*^9}}],
 
 Cell[BoxData[{
  RowBox[{
@@ -724,23 +757,30 @@ Cell[BoxData[
        RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
      RowBox[{
       RowBox[{"antideriv3", "[", "opts", "]"}], "=", 
-      RowBox[{"NDSolve", "[", 
-       RowBox[{
-        RowBox[{"{", 
-         RowBox[{
+      RowBox[{
+       RowBox[{"NDSolve", "[", 
+        RowBox[{
+         RowBox[{"{", 
           RowBox[{
            RowBox[{
-            RowBox[{"y", "'"}], "[", "zx", "]"}], "==", 
+            RowBox[{
+             RowBox[{"y", "'"}], "[", "zx", "]"}], "==", 
+            RowBox[{
+             RowBox[{"GrowthFactor", "[", 
+              RowBox[{"zx", ",", "opts"}], "]"}], "/", 
+             RowBox[{"(", 
+              RowBox[{"1", "+", "zx"}], ")"}]}]}], ",", 
            RowBox[{
-            RowBox[{"GrowthFactor", "[", 
-             RowBox[{"zx", ",", "opts"}], "]"}], "/", 
-            RowBox[{"(", 
-             RowBox[{"1", "+", "zx"}], ")"}]}]}], ",", 
-          RowBox[{
-           RowBox[{"y", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", "y",
-         ",", 
-        RowBox[{"{", 
-         RowBox[{"zx", ",", "0", ",", "z"}], "}"}]}], "]"}]}]}], ";"}], 
+            RowBox[{"y", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", 
+         "y", ",", 
+         RowBox[{"{", 
+          RowBox[{"zx", ",", "0", ",", "10"}], "}"}]}], "]"}], "[", 
+       RowBox[{"[", 
+        RowBox[{"1", ",", "1", ",", "2"}], "]"}], "]"}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "antideriv3", "]"}], ":=", "cosmoopts"}], ";"}], 
    "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
@@ -768,7 +808,174 @@ Cell[BoxData[
    3.531207111271228*^9}, 3.531211659345348*^9, {3.535136838968219*^9, 
    3.535136916424915*^9}, 3.536231401938932*^9, {3.536233133975984*^9, 
    3.536233152137924*^9}, {3.536233194005997*^9, 3.536233294324486*^9}, 
-   3.536234106529137*^9}],
+   3.536234106529137*^9, {3.5551496399229918`*^9, 3.55514964346091*^9}, {
+   3.555152042418437*^9, 3.555152044851372*^9}, {3.55515214472304*^9, 
+   3.55515214552746*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Transfer", " ", "function"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Clear", "[", 
+     RowBox[{"Transfer", ",", "transferint"}], "]"}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"transferfitint", "[", 
+      RowBox[{"path_", ",", 
+       RowBox[{"opts", ":", 
+        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", " ", 
+     RowBox[{
+      RowBox[{"transferfitint", "[", 
+       RowBox[{"path", ",", "opts"}], "]"}], "=", 
+      RowBox[{"Module", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"result", ",", "link", ",", "fitonek"}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"link", "=", 
+          RowBox[{"Install", "[", "path", "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"Global`TFSetParameters", "[", 
+          RowBox[{
+           RowBox[{"OV", "[", 
+            RowBox[{"omegaM", ",", "opts"}], "]"}], ",", 
+           RowBox[{
+            RowBox[{"OV", "[", 
+             RowBox[{"OmegaB", ",", "opts"}], "]"}], "/", 
+            RowBox[{"OV", "[", 
+             RowBox[{"OmegaC", ",", "opts"}], "]"}]}], ",", 
+           RowBox[{"OV", "[", 
+            RowBox[{"Tcmb", ",", "opts"}], "]"}]}], "]"}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"fitonek", "[", "k_", "]"}], ":=", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Global`TFFitOneK", "[", "k", "]"}], ",", 
+            RowBox[{"LinkRead", "[", "link", "]"}], ",", 
+            RowBox[{"LinkRead", "[", "link", "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Global`TFNoWiggles", "[", 
+             RowBox[{
+              RowBox[{"OV", "[", 
+               RowBox[{"OmegaC", ",", "opts"}], "]"}], ",", 
+              RowBox[{
+               RowBox[{"OV", "[", 
+                RowBox[{"OmegaB", ",", "opts"}], "]"}], "/", 
+               RowBox[{"OV", "[", 
+                RowBox[{"OmegaC", ",", "opts"}], "]"}]}], ",", 
+              RowBox[{"OV", "[", 
+               RowBox[{"h", ",", "opts"}], "]"}], ",", 
+              RowBox[{"OV", "[", 
+               RowBox[{"Tcmb", ",", "opts"}], "]"}], ",", 
+              RowBox[{"k", "/", 
+               RowBox[{"OV", "[", 
+                RowBox[{"h", ",", "opts"}], "]"}]}]}], "]"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Global`TFZeroBaryon", "[", 
+             RowBox[{
+              RowBox[{"OV", "[", 
+               RowBox[{"OmegaC", ",", "opts"}], "]"}], ",", 
+              RowBox[{"OV", "[", 
+               RowBox[{"h", ",", "opts"}], "]"}], ",", 
+              RowBox[{"OV", "[", 
+               RowBox[{"Tcmb", ",", "opts"}], "]"}], ",", 
+              RowBox[{"k", "/", 
+               RowBox[{"OV", "[", 
+                RowBox[{"h", ",", "opts"}], "]"}]}]}], "]"}]}], "}"}]}], ";", 
+         " ", 
+         RowBox[{"(*", 
+          RowBox[{
+          "TODO", " ", "wtf", " ", "is", " ", "the", " ", "unit", " ", "of", 
+           " ", 
+           RowBox[{
+            RowBox[{"k", "?", " ", "1"}], "/", "Mpc"}], " ", "or", " ", 
+           RowBox[{"h", "/", 
+            RowBox[{"Mpc", "?"}]}]}], "*)"}], "\[IndentingNewLine]", 
+         RowBox[{"result", "=", 
+          RowBox[{"Table", "[", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"10", "^", "lk"}], ",", 
+              RowBox[{"fitonek", "[", 
+               RowBox[{"10", "^", "lk"}], "]"}]}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"lk", ",", 
+              RowBox[{"-", "6"}], ",", "4", ",", ".05"}], "}"}]}], "]"}]}], 
+         ";", "\[IndentingNewLine]", 
+         RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
+         
+         RowBox[{"Interpolation", "[", "result", "]"}]}]}], 
+       "\[IndentingNewLine]", "]"}]}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"TransferFit", "[", 
+      RowBox[{"k_", ",", "path_", ",", 
+       RowBox[{"opts", ":", 
+        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{"transferfitint", "[", 
+       RowBox[{"path", ",", "opts"}], "]"}], "[", "k", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "transferfitint", "]"}], ":=", "cosmoopts"}], 
+    ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "TransferFit", "]"}], ":=", "cosmoopts"}], 
+    ";"}]}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.555147879663821*^9, 3.555147894224782*^9}, {
+   3.555148736644782*^9, 3.5551487449988127`*^9}, {3.5551489343877487`*^9, 
+   3.555148935090983*^9}, {3.555148974523848*^9, 3.555149024153892*^9}, {
+   3.5551490561144533`*^9, 3.5551491118290777`*^9}, {3.555149531902954*^9, 
+   3.555149537045389*^9}, {3.555149595488145*^9, 3.555149626317671*^9}, {
+   3.555149673219554*^9, 3.555149784088876*^9}, {3.555150009463418*^9, 
+   3.5551501083557*^9}, {3.555150158869966*^9, 3.5551503005877457`*^9}, {
+   3.555150664183648*^9, 3.555150676659886*^9}, {3.5551514525824842`*^9, 
+   3.5551514686235228`*^9}, {3.5551534664114723`*^9, 3.555153567415206*^9}, {
+   3.555153655230048*^9, 3.555153657327985*^9}, 3.555153705204108*^9, {
+   3.555153776588608*^9, 3.555153865333705*^9}, {3.55515394724113*^9, 
+   3.555153956329297*^9}, {3.5551540425663652`*^9, 3.555154082881078*^9}, 
+   3.555154229773356*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"linear", " ", "ps"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"LinearPSFit", "[", 
+      RowBox[{"k_", ",", "z_", ",", "path_", ",", 
+       RowBox[{"opts", ":", 
+        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"TransferFit", "[", 
+        RowBox[{"k", ",", "path", ",", "opts"}], "]"}], "^", "2"}], " ", "*", 
+      " ", 
+      RowBox[{"k", "^", 
+       RowBox[{"OV", "[", 
+        RowBox[{"ns", ",", "opts"}], "]"}]}], " ", "*", " ", 
+      RowBox[{
+       RowBox[{"GrowthFunction", "[", 
+        RowBox[{"z", ",", "opts"}], "]"}], "^", "2"}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "LinearPSFit", "]"}], ":=", "cosmoopts"}], 
+    ";"}]}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.555151217002199*^9, 3.55515122122469*^9}, {
+   3.5551513194277887`*^9, 3.555151336571067*^9}, {3.5551514942173986`*^9, 
+   3.555151561795163*^9}, {3.555152230623705*^9, 3.5551522380725517`*^9}, 
+   3.555152627404873*^9}],
 
 Cell[BoxData[{
  RowBox[{"End", "[", " ", "]"}], "\[IndentingNewLine]", 
@@ -819,37 +1026,45 @@ Cell[3446, 100, 271, 7, 49, "Input",
  InitializationCell->True],
 Cell[3720, 109, 463, 9, 96, "Input",
  InitializationCell->True],
-Cell[4186, 120, 2769, 70, 533, "Input",
+Cell[4186, 120, 737, 12, 119, "Input",
+ InitializationCell->True],
+Cell[4926, 134, 558, 10, 96, "Input",
+ InitializationCell->True],
+Cell[5487, 146, 2931, 74, 556, "Input",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[6980, 194, 262, 5, 49, "Input",
+Cell[8443, 224, 262, 5, 49, "Input",
  InitializationCell->True],
-Cell[7245, 201, 162, 3, 49, "Output",
+Cell[8708, 231, 162, 3, 49, "Output",
  InitializationCell->True]
 }, Open  ]],
-Cell[7422, 207, 3567, 68, 487, "Input",
+Cell[8885, 237, 3739, 71, 510, "Input",
  InitializationCell->True],
-Cell[10992, 277, 763, 24, 73, "Input",
+Cell[12627, 310, 763, 24, 73, "Input",
  InitializationCell->True],
-Cell[11758, 303, 1102, 23, 73, "Input",
+Cell[13393, 336, 1102, 23, 73, "Input",
  InitializationCell->True],
-Cell[12863, 328, 365, 11, 49, "Input",
+Cell[14498, 361, 365, 11, 49, "Input",
  InitializationCell->True],
-Cell[13231, 341, 2427, 56, 96, "Input",
+Cell[14866, 374, 2427, 56, 96, "Input",
  InitializationCell->True],
-Cell[15661, 399, 2542, 56, 96, "Input",
+Cell[17296, 432, 2542, 56, 96, "Input",
  InitializationCell->True],
-Cell[18206, 457, 569, 17, 73, "Input",
+Cell[19841, 490, 569, 17, 73, "Input",
  InitializationCell->True],
-Cell[18778, 476, 1341, 34, 73, "Input",
+Cell[20413, 509, 1341, 34, 73, "Input",
  InitializationCell->True],
-Cell[20122, 512, 1871, 38, 49, "Input",
+Cell[21757, 545, 1871, 38, 49, "Input",
  InitializationCell->True],
-Cell[21996, 552, 5333, 140, 418, "Input",
+Cell[23631, 585, 5333, 140, 418, "Input",
  InitializationCell->True],
-Cell[27332, 694, 3032, 76, 165, "Input",
+Cell[28967, 727, 3425, 85, 188, "Input",
  InitializationCell->True],
-Cell[30367, 772, 313, 6, 73, "Input",
+Cell[32395, 814, 5464, 130, 372, "Input",
+ InitializationCell->True],
+Cell[37862, 946, 1131, 31, 96, "Input",
+ InitializationCell->True],
+Cell[38996, 979, 313, 6, 73, "Input",
  InitializationCell->True]
 }
 ]
