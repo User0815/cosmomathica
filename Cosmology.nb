@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     41656,       1064]
-NotebookOptionsPosition[     39313,        987]
-NotebookOutlinePosition[     39775,       1005]
-CellTagsIndexPosition[     39732,       1002]
+NotebookDataLength[     56160,       1407]
+NotebookOptionsPosition[     53475,       1320]
+NotebookOutlinePosition[     53937,       1338]
+CellTagsIndexPosition[     53894,       1335]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -33,6 +33,14 @@ Cell[BoxData[
  CellChangeTimes->{{3.536233899004134*^9, 3.536233935683492*^9}, {
    3.536233991839672*^9, 3.536234003631472*^9}, 3.536235572203676*^9, {
    3.536236795444606*^9, 3.536236796172723*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetCosmology", "::", "usage"}], "=", 
+  "\"\<Modify the fiducial cosmology by passing the new options to this \
+function.\>\""}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.5558284592119217`*^9, 3.555828487653924*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -61,6 +69,13 @@ Cell[BoxData[
  CellChangeTimes->{{3.536234009393193*^9, 3.536234014269308*^9}, {
    3.536234230146321*^9, 3.536234260334134*^9}, 3.53623484977609*^9, 
    3.536235577788491*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"ScaleFactor", "::", "usage"}], "=", 
+  "\"\<ScaleFactor[t] returns a at cosmic time t.\>\""}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.5553933023643703`*^9, 3.555393330182784*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -120,105 +135,141 @@ z2 along the line of sight.\>\""}]], "Input",
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"TransferFit", "::", "usage"}], "=", 
-  "\"\<TransferFit[k,path] returns a list of five values using the fitting \
-formulae by Eisenstein&Hu(1999). The values are: The full transfer function, \
-the baryon transfer function, the CDM transfer function, the no-wiggles \
-transfer function, and the no-baryon transfer function. The path to the \
-MathLink executable needs to be passed by path.\>\""}]], "Input",
+  RowBox[{"TransferFunction", "::", "usage"}], "=", 
+  "\"\<TransferFunction[k,path] returns a list of five values using the \
+fitting formulae by Eisenstein&Hu(1999). The values are: The full transfer \
+function, the baryon transfer function, the CDM transfer function, the \
+no-wiggles transfer function, and the no-baryon transfer function. The path \
+to the MathLink executable needs to be passed by path.\>\""}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.555149950572431*^9, 3.555149975999014*^9}, {
-  3.5551506843049393`*^9, 3.5551507004062033`*^9}, {3.5551512766862392`*^9, 
-  3.555151302442206*^9}, {3.5551515933344297`*^9, 3.5551516282482452`*^9}, {
-  3.555154166891384*^9, 3.555154188358317*^9}}],
+   3.5551506843049393`*^9, 3.5551507004062033`*^9}, {3.5551512766862392`*^9, 
+   3.555151302442206*^9}, {3.5551515933344297`*^9, 3.5551516282482452`*^9}, {
+   3.555154166891384*^9, 3.555154188358317*^9}, 3.555222745935821*^9, {
+   3.555222797417832*^9, 3.5552227997421*^9}}],
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"LinearPSFit", "::", "usage"}], "=", 
-  "\"\<LinearPSFit[k,z,path] returns a list of five values using the fitting \
+  RowBox[{"LinearPS", "::", "usage"}], "=", 
+  "\"\<LinearPS[k,z,path] returns a list of five values using the fitting \
 formulae by Eisenstein&Hu(1999). The values are: The full linear power \
 spectrum, the baryon power spectrum, the CDM power spectrum, the no-wiggles \
 power spectrum, and the no-baryon power spectrum.\>\""}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.5551515726875*^9, 3.5551516009884567`*^9}, {
-  3.55515163544554*^9, 3.55515165904941*^9}, {3.555154136546392*^9, 
-  3.555154163381996*^9}}],
+   3.55515163544554*^9, 3.55515165904941*^9}, {3.555154136546392*^9, 
+   3.555154163381996*^9}, 3.5552227448005857`*^9, 3.5552228024684687`*^9}],
 
-Cell[BoxData[{
+Cell[BoxData[
  RowBox[{
-  RowBox[{"OmegaB", "::", "usage"}], "=", 
-  "\"\<Baryon density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"OmegaC", "::", "usage"}], "=", 
-  "\"\<Cold dark matter density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"OmegaL", "::", "usage"}], "=", 
-  "\"\<Dark energy density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"OmegaTot", "::", "usage"}], "=", 
-  "\"\<Total density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"OmegaK", "::", "usage"}], "=", 
-  "\"\<Curvature 'density'\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"h", "::", "usage"}], "=", 
-  "\"\<Reduced Hubble parameter\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"H0", "::", "usage"}], "=", 
-  "\"\<Hubble parameter\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"omegaM", "::", "usage"}], "=", 
-  "\"\<Reduced matter density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"omegaL", "::", "usage"}], "=", 
-  "\"\<Reduced dark energy density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"omegaB", "::", "usage"}], "=", 
-  "\"\<Reduced baryon density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"omegaC", "::", "usage"}], "=", 
-  "\"\<Reduced cold dark matter density\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"omegaK", "::", "usage"}], "=", 
-  "\"\<Reduced curvature 'density'\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"w0", "::", "usage"}], "=", 
-  "\"\<Equation of state today\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"w1", "::", "usage"}], "=", 
-  "\"\<Equation of state running parameter\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"gamma", "::", "usage"}], "=", 
-  "\"\<Growth index\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"sigma8", "::", "usage"}], "=", 
-  "\"\<Power spectrum amplitude\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"ns", "::", "usage"}], "=", 
-  "\"\<Spectral index\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"Tcmb", "::", "usage"}], "=", 
-  "\"\<Temperature of the CMB\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"DistanceType", "::", "usage"}], "=", 
-  "\"\<Distance type\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"Comoving", "::", "usage"}], "=", 
-  "\"\<Comoving distance\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"TransverseComoving", "::", "usage"}], "=", 
-  "\"\<Transeverse comoving distance\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"AngularDiameter", "::", "usage"}], "=", 
-  "\"\<Angular diameter distance\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"Luminosity", "::", "usage"}], "=", 
-  "\"\<Luminosity distance\>\""}]}], "Input",
+  RowBox[{"(*", "Options", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"OmegaB", "::", "usage"}], "=", "\"\<Baryon density\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"OmegaC", "::", "usage"}], "=", 
+    "\"\<Cold dark matter density\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"OmegaL", "::", "usage"}], "=", "\"\<Dark energy density\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"OmegaTot", "::", "usage"}], "=", "\"\<Total density\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"OmegaK", "::", "usage"}], "=", "\"\<Curvature 'density'\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"h", "::", "usage"}], "=", "\"\<Reduced Hubble parameter\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"H0", "::", "usage"}], "=", "\"\<Hubble parameter\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"omegaM", "::", "usage"}], "=", 
+    "\"\<Reduced matter density\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"omegaL", "::", "usage"}], "=", 
+    "\"\<Reduced dark energy density\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"omegaB", "::", "usage"}], "=", 
+    "\"\<Reduced baryon density\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"omegaC", "::", "usage"}], "=", 
+    "\"\<Reduced cold dark matter density\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"omegaK", "::", "usage"}], "=", 
+    "\"\<Reduced curvature 'density'\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"w0", "::", "usage"}], "=", "\"\<Equation of state today\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"w1", "::", "usage"}], "=", 
+    "\"\<Equation of state running parameter\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"gamma", "::", "usage"}], "=", "\"\<Growth index\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"sigma8", "::", "usage"}], "=", 
+    "\"\<Power spectrum amplitude\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"ns", "::", "usage"}], "=", "\"\<Spectral index\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Tcmb", "::", "usage"}], "=", "\"\<Temperature of the CMB\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"DistanceType", "::", "usage"}], "=", "\"\<Distance type\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Comoving", "::", "usage"}], "=", "\"\<Comoving distance\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"TransverseComoving", "::", "usage"}], "=", 
+    "\"\<Transeverse comoving distance\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"AngularDiameter", "::", "usage"}], "=", 
+    "\"\<Angular diameter distance\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Luminosity", "::", "usage"}], "=", 
+    "\"\<Luminosity distance\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"TfFitPath", "::", "usage"}], "=", 
+    "\"\<Path to the MathLink for the transfer fitting function\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"TransferType", "::", "usage"}], "=", 
+    "\"\<Type of transfer function (FitFull etc)\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"FitFull", "::", "usage"}], "=", 
+    "\"\<Full transfer function from the Eisenstein&Hu1999 fitting function\>\
+\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"FitBaryon", "::", "usage"}], "=", 
+    "\"\<Baryon transfer function from the Eisenstein&Hu1999 fitting function\
+\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"FitCDM", "::", "usage"}], "=", 
+    "\"\<CDM transfer function from the Eisenstein&Hu1999 fitting \
+function\>\""}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"FitNoWiggles", "::", "usage"}], "=", 
+    "\"\<'No wiggle' transfer function (wiggles removed, but baryon \
+suppression still there) from the Eisenstein&Hu1999 fitting function\>\""}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"FitZeroBaryon", "::", "usage"}], "=", 
+    "\"\<Transfer function in Universe with no baryons from the \
+Eisenstein&Hu1999 fitting function\>\""}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.536239776425123*^9, 3.536239802237091*^9}, {
   3.536239846813039*^9, 3.536240039946976*^9}, {3.536240173475071*^9, 
   3.536240189624159*^9}, {3.550304169726321*^9, 3.5503042343297987`*^9}, {
-  3.555149936033284*^9, 3.555149942713242*^9}}],
+  3.555149936033284*^9, 3.555149942713242*^9}, {3.555219029480381*^9, 
+  3.5552190731085663`*^9}, {3.555219914492313*^9, 3.555219976780637*^9}, {
+  3.555220062009549*^9, 3.555220097150422*^9}, {3.555226564413463*^9, 
+  3.5552265689276953`*^9}}],
 
 Cell[CellGroupData[{
 
@@ -235,55 +286,130 @@ Cell[BoxData["\<\"Private`\"\>"], "Output",
    3.536236766835467*^9}]
 }, Open  ]],
 
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"zmax", "=", "100"}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.555221175200651*^9, 3.555221176873995*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"SetCosmology", "[", 
+    RowBox[{"o", ":", 
+     RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "clist", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"clist", "=", 
+       RowBox[{"List", "[", "o", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"DownValues", "[", "#", "]"}], "=", 
+          RowBox[{"{", 
+           RowBox[{"Last", "@", 
+            RowBox[{"DownValues", "[", "#", "]"}]}], "}"}]}], ")"}], "&"}], "/@", 
+       RowBox[{"{", 
+        RowBox[{
+        "odesol", ",", " ", "antideriv1", ",", " ", "antideriv2", ",", 
+         "transferfitint", ",", " ", "normalization"}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Unprotect", "[", "Cosmology", "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Do", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Cosmology", "[", 
+          RowBox[{"[", 
+           RowBox[{"First", "@", 
+            RowBox[{"First", "@", 
+             RowBox[{"Position", "[", 
+              RowBox[{"Cosmology", ",", 
+               RowBox[{"opt", "[", 
+                RowBox[{"[", "1", "]"}], "]"}], ",", 
+               RowBox[{"{", "2", "}"}]}], "]"}]}]}], "]"}], "]"}], "=", 
+         "opt"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"opt", ",", "clist"}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Protect", "[", "Cosmology", "]"}], ";"}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.555758118803341*^9, 3.5557581391719522`*^9}, {
+   3.5558252702848577`*^9, 3.55582537134217*^9}, {3.5558256490865517`*^9, 
+   3.555825650723569*^9}, {3.555826293481288*^9, 3.5558263038313293`*^9}, {
+   3.55582708024781*^9, 3.555827091606477*^9}, {3.5558273929290047`*^9, 
+   3.555827404414213*^9}, {3.5558278429550056`*^9, 3.5558278888285913`*^9}, {
+   3.555829985390334*^9, 3.555830020298992*^9}, {3.555830064287052*^9, 
+   3.555830066014003*^9}, {3.555830109058154*^9, 3.555830126261627*^9}, {
+   3.555830446448277*^9, 3.5558304718535852`*^9}, {3.555830521346319*^9, 
+   3.555830548163145*^9}, 3.555830688823525*^9, {3.555830724118353*^9, 
+   3.555830744114478*^9}, {3.555830833008627*^9, 3.555830839223407*^9}, {
+   3.555830875972705*^9, 3.5558309466676188`*^9}, {3.55583099670716*^9, 
+   3.555831241125372*^9}}],
+
 Cell[BoxData[{
- RowBox[{"Cosmology", "=", 
-  RowBox[{"{", 
-   RowBox[{
-    RowBox[{"OmegaM", "\[Rule]", ".25"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"OmegaB", "\[Rule]", ".05"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"OmegaC", "\[Rule]", 
-     RowBox[{"OmegaM", "-", "OmegaB"}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"OmegaL", "\[Rule]", ".75"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"OmegaTot", "\[Rule]", 
-     RowBox[{"OmegaM", "+", "OmegaL"}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"OmegaK", "\[Rule]", 
-     RowBox[{"1", "-", "OmegaTot"}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"h", "\[Rule]", ".7"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"H0", "\[Rule]", 
-     RowBox[{"h", " ", "*", 
-      RowBox[{"1.", "/", "3000"}]}]}], ",", 
-    RowBox[{"(*", 
-     RowBox[{"Units", ":", " ", 
-      RowBox[{"c", "/", "Mpc"}]}], "*)"}], "\[IndentingNewLine]", 
-    RowBox[{"omegaM", "\[Rule]", 
-     RowBox[{"OmegaM", " ", 
-      RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"omegaL", "\[Rule]", 
-     RowBox[{"OmegaL", " ", 
-      RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"omegaB", "\[Rule]", 
-     RowBox[{"OmegaB", " ", 
-      RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"omegaC", "\[Rule]", 
-     RowBox[{"OmegaC", " ", 
-      RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"omegaK", "\[Rule]", 
-     RowBox[{"OmegaK", " ", 
-      RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"w0", "\[Rule]", 
-     RowBox[{"-", "1"}]}], ",", "\[IndentingNewLine]", 
-    RowBox[{"w1", "\[Rule]", "0"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"gamma", "\[Rule]", ".545"}], ",", 
-    RowBox[{"(*", 
-     RowBox[{"growth", " ", "index"}], "*)"}], "\[IndentingNewLine]", 
-    RowBox[{"sigma8", "\[Rule]", ".8"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"ns", "\[Rule]", ".9"}], ",", "\[IndentingNewLine]", 
-    RowBox[{"Tcmb", "\[Rule]", "2.728"}]}], "}"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Unprotect", "[", "Cosmology", "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Cosmology", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"OmegaM", "\[Rule]", ".25"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"OmegaB", "\[Rule]", ".05"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"OmegaC", "\[Rule]", 
+      RowBox[{"OmegaM", "-", "OmegaB"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"OmegaL", "\[Rule]", ".75"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"OmegaTot", "\[Rule]", 
+      RowBox[{"OmegaM", "+", "OmegaL"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"OmegaK", "\[Rule]", 
+      RowBox[{"1", "-", "OmegaTot"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"h", "\[Rule]", ".7"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"H0", "\[Rule]", 
+      RowBox[{"h", " ", "*", 
+       RowBox[{"1.", "/", "3000"}]}]}], ",", 
+     RowBox[{"(*", 
+      RowBox[{"Units", ":", " ", 
+       RowBox[{"c", "/", "Mpc"}]}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"omegaM", "\[Rule]", 
+      RowBox[{"OmegaM", " ", 
+       RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"omegaL", "\[Rule]", 
+      RowBox[{"OmegaL", " ", 
+       RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"omegaB", "\[Rule]", 
+      RowBox[{"OmegaB", " ", 
+       RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"omegaC", "\[Rule]", 
+      RowBox[{"OmegaC", " ", 
+       RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"omegaK", "\[Rule]", 
+      RowBox[{"OmegaK", " ", 
+       RowBox[{"h", "^", "2"}]}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"w0", "\[Rule]", 
+      RowBox[{"-", "1"}]}], ",", "\[IndentingNewLine]", 
+     RowBox[{"w1", "\[Rule]", "0"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"gamma", "\[Rule]", ".545"}], ",", 
+     RowBox[{"(*", 
+      RowBox[{"growth", " ", "index"}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"sigma8", "\[Rule]", ".8"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"ns", "\[Rule]", ".9"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"Tcmb", "\[Rule]", "2.728"}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Protect", "[", "Cosmology", "]"}], ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"cosmoopts", ":=", 
    RowBox[{"Cosmology", "~", "Join", "~", 
     RowBox[{"{", "\[IndentingNewLine]", 
-     RowBox[{"DistanceType", "\[Rule]", "Comoving"}], "}"}]}]}], 
+     RowBox[{
+      RowBox[{"DistanceType", "\[Rule]", "Comoving"}], ",", 
+      RowBox[{"TransferType", "\[Rule]", "FitFull"}], ",", 
+      RowBox[{"TfFitPath", "\[Rule]", "\"\<tf_fit_link\>\""}]}], "}"}]}]}], 
   ";"}]}], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.5306130328644857`*^9, 3.5306131352410088`*^9}, {
@@ -306,7 +432,10 @@ Cell[BoxData[{
    3.536232516721249*^9, 3.536232533072122*^9}, {3.536232741487971*^9, 
    3.536232775151576*^9}, 3.536238012428693*^9, 3.536240321583727*^9, {
    3.5551497956770287`*^9, 3.555149800701795*^9}, {3.55514989822711*^9, 
-   3.555149898612011*^9}}],
+   3.555149898612011*^9}, {3.555219171117092*^9, 3.555219178717018*^9}, {
+   3.555220101860361*^9, 3.555220112589397*^9}, {3.555220199720709*^9, 
+   3.5552201999777727`*^9}, {3.555827095744022*^9, 3.555827100381341*^9}, {
+   3.555836676251445*^9, 3.555836681090519*^9}}],
 
 Cell[BoxData[{
  RowBox[{
@@ -397,7 +526,7 @@ Cell[BoxData[{
    RowBox[{"fw", "[", 
     RowBox[{"z_", ",", 
      RowBox[{"opts", ":", 
-      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], "=", 
    RowBox[{"Integrate", "[", 
     RowBox[{
      RowBox[{
@@ -428,7 +557,8 @@ Cell[BoxData[{
    3.536221353645018*^9}, 3.536221459834479*^9, {3.53622546194121*^9, 
    3.536225478236822*^9}, {3.53622619153524*^9, 3.536226216135084*^9}, {
    3.536230757062322*^9, 3.536230762553644*^9}, {3.536232785186037*^9, 
-   3.536232876699646*^9}, {3.536233063687329*^9, 3.536233063889862*^9}}],
+   3.536232876699646*^9}, {3.536233063687329*^9, 3.536233063889862*^9}, {
+   3.555309855434536*^9, 3.5553098574877*^9}, 3.555309918540474*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -507,6 +637,79 @@ Cell[BoxData[{
  InitializationCell->True,
  CellChangeTimes->{{3.536232947860058*^9, 3.536233026303678*^9}}],
 
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"TODO", ":", " ", 
+     RowBox[{"Cover", " ", "closed", " ", "Universe"}]}], ";", " ", 
+    RowBox[{
+     RowBox[{"make", " ", "sure", " ", "a"}], "=", 
+     RowBox[{"0", " ", "at", " ", "some", " ", "point"}]}]}], "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"odesol", "[", 
+      RowBox[{"opts", ":", 
+       RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{"odesol", "[", "opts", "]"}], "=", 
+      RowBox[{"Quiet", "@", 
+       RowBox[{
+        RowBox[{"NDSolve", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{"a", "'"}], "[", "t", "]"}], "/", 
+              RowBox[{"a", "[", "t", "]"}]}], "\[Equal]", " ", 
+             RowBox[{"Hubble", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"1", "/", 
+                 RowBox[{"a", "[", "t", "]"}]}], "-", "1"}], ",", "opts"}], 
+              "]"}]}], ",", 
+            RowBox[{
+             RowBox[{"a", "[", "1", "]"}], "\[Equal]", "1"}]}], "}"}], ",", 
+          "a", ",", 
+          RowBox[{"{", 
+           RowBox[{"t", ",", 
+            RowBox[{
+             RowBox[{"-", "2"}], "/", 
+             RowBox[{"Hubble", "[", 
+              RowBox[{"0", ",", "opts"}], "]"}]}], ",", 
+            RowBox[{"1", "/", 
+             RowBox[{"Hubble", "[", 
+              RowBox[{"0", ",", "opts"}], "]"}]}]}], "}"}]}], "]"}], "[", 
+        RowBox[{"[", 
+         RowBox[{"1", ",", "1", ",", "2"}], "]"}], "]"}]}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"ScaleFactor", "[", 
+      RowBox[{"t_", ",", 
+       RowBox[{"opts", ":", 
+        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{"odesol", "[", "opts", "]"}], "[", "t", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "ScaleFactor", "]"}], ":=", "cosmoopts"}], ";"}],
+    "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "odesol", "]"}], ":=", "cosmoopts"}], 
+    ";"}]}]}]], "Input",
+ InitializationCell->True,
+ CellChangeTimes->{{3.555393368260309*^9, 3.555393438529221*^9}, {
+   3.555393472131024*^9, 3.5553936347559643`*^9}, 3.5553940817492*^9, {
+   3.555394281884922*^9, 3.555394311432963*^9}, {3.5553943624018183`*^9, 
+   3.5553943844775887`*^9}, 3.555825295780655*^9}],
+
 Cell[BoxData[{
  RowBox[{
   RowBox[{
@@ -523,15 +726,12 @@ Cell[BoxData[{
        RowBox[{"1", "+", "z"}], ")"}], "^", "3"}], "/", 
      RowBox[{
       RowBox[{"DimensionlessHubble", "[", 
-       RowBox[{"z", ",", "opts"}], "]"}], "^", "2"}]}]}]}], ";", 
-  RowBox[{
-   RowBox[{"Options", "[", "OmegaM", "]"}], ":=", "cosmoopts"}], 
+       RowBox[{"z", ",", "opts"}], "]"}], "^", "2"}]}]}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"(*", 
-   RowBox[{"Note", ":", " ", 
-    RowBox[{"om0", " ", "is", " ", "not", " ", "used", " ", "here"}]}], 
-   "*)"}]}]}], "Input",
+  RowBox[{
+   RowBox[{"Options", "[", "OmegaM", "]"}], ":=", "cosmoopts"}], 
+  ";"}]}], "Input",
  InitializationCell->True,
  CellChangeTimes->{
   3.530611507806348*^9, {3.530613674485734*^9, 3.530613705502389*^9}, {
@@ -541,7 +741,7 @@ Cell[BoxData[{
    3.531132890347536*^9}, {3.535136773621787*^9, 3.535136779931805*^9}, {
    3.535136833602602*^9, 3.535136834240516*^9}, {3.536230817534124*^9, 
    3.53623082960167*^9}, 3.53623138888441*^9, {3.5503016892099524`*^9, 
-   3.5503016909372063`*^9}}],
+   3.5503016909372063`*^9}, {3.555393416469119*^9, 3.555393418402116*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -583,133 +783,134 @@ Cell[BoxData[
    3.531206625985846*^9}, {3.535131455652387*^9, 3.535131460333546*^9}, {
    3.536225590079373*^9, 3.536225620581762*^9}}],
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"Clear", "[", "antideriv", "]"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
   RowBox[{
-   RowBox[{"antideriv1", "[", 
-    RowBox[{"opts", ":", 
-     RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
    RowBox[{
-    RowBox[{"antideriv", "[", "opts", "]"}], "=", 
     RowBox[{
-     RowBox[{"NDSolve", "[", 
+     RowBox[{"antideriv1", "[", 
+      RowBox[{"opts", ":", 
+       RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{"antideriv1", "[", "opts", "]"}], "=", 
       RowBox[{
-       RowBox[{"{", 
+       RowBox[{"NDSolve", "[", 
         RowBox[{
-         RowBox[{
+         RowBox[{"{", 
           RowBox[{
-           RowBox[{"y", "'"}], "[", "zx", "]"}], "==", 
-          RowBox[{"1", "/", 
-           RowBox[{"Hubble", "[", 
-            RowBox[{"zx", ",", "opts"}], "]"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"y", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", "y", 
-       ",", 
-       RowBox[{"{", 
-        RowBox[{"zx", ",", "0", ",", "10"}], "}"}]}], "]"}], "[", 
-     RowBox[{"[", 
-      RowBox[{"1", ",", "1", ",", "2"}], "]"}], "]"}]}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"antideriv2", "[", 
-    RowBox[{"opts", ":", 
-     RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"y", "'"}], "[", "zx", "]"}], "==", 
+            RowBox[{"1", "/", 
+             RowBox[{"Hubble", "[", 
+              RowBox[{"zx", ",", "opts"}], "]"}]}]}], ",", 
+           RowBox[{
+            RowBox[{"y", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", 
+         "y", ",", 
+         RowBox[{"{", 
+          RowBox[{"zx", ",", "0", ",", "zmax"}], "}"}]}], "]"}], "[", 
+       RowBox[{"[", 
+        RowBox[{"1", ",", "1", ",", "2"}], "]"}], "]"}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
    RowBox[{
-    RowBox[{"antideriv", "[", "opts", "]"}], "=", 
     RowBox[{
-     RowBox[{"NDSolve", "[", 
+     RowBox[{"antideriv2", "[", 
+      RowBox[{"opts", ":", 
+       RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{"antideriv2", "[", "opts", "]"}], "=", 
       RowBox[{
-       RowBox[{"{", 
+       RowBox[{"NDSolve", "[", 
         RowBox[{
-         RowBox[{
+         RowBox[{"{", 
           RowBox[{
-           RowBox[{"y", "'"}], "[", "zx", "]"}], "==", 
-          RowBox[{
-           RowBox[{"1", "/", 
-            RowBox[{"Hubble", "[", 
-             RowBox[{"zx", ",", "opts"}], "]"}]}], "/", 
-           RowBox[{"(", 
-            RowBox[{"1", "+", "z"}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"y", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", "y", 
-       ",", 
-       RowBox[{"{", 
-        RowBox[{"zx", ",", "0", ",", "10"}], "}"}]}], "]"}], "[", 
-     RowBox[{"[", 
-      RowBox[{"1", ",", "1", ",", "2"}], "]"}], "]"}]}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"Distance", "[", 
-    RowBox[{"z_", ",", 
-     RowBox[{"opts", ":", 
-      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
-   RowBox[{"Switch", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"y", "'"}], "[", "zx", "]"}], "==", 
+            RowBox[{
+             RowBox[{"1", "/", 
+              RowBox[{"Hubble", "[", 
+               RowBox[{"zx", ",", "opts"}], "]"}]}], "/", 
+             RowBox[{"(", 
+              RowBox[{"1", "+", "z"}], ")"}]}]}], ",", 
+           RowBox[{
+            RowBox[{"y", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", 
+         "y", ",", 
+         RowBox[{"{", 
+          RowBox[{"zx", ",", "0", ",", "zmax"}], "}"}]}], "]"}], "[", 
+       RowBox[{"[", 
+        RowBox[{"1", ",", "1", ",", "2"}], "]"}], "]"}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
     RowBox[{
-     RowBox[{"OptionValue", "@", "DistanceType"}], ",", "\[IndentingNewLine]",
-      "Comoving", ",", 
-     RowBox[{
-      RowBox[{"antideriv1", "[", "opts", "]"}], "[", "z", "]"}], ",", 
-     "\[IndentingNewLine]", "TransverseComoving", ",", 
-     RowBox[{"sinn", "[", 
+     RowBox[{"Distance", "[", 
+      RowBox[{"z_", ",", 
+       RowBox[{"opts", ":", 
+        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+     RowBox[{"Switch", "[", 
       RowBox[{
-       RowBox[{"Distance", "[", 
-        RowBox[{"z", ",", 
-         RowBox[{"DistanceType", "\[Rule]", "Comoving"}], ",", "opts"}], 
-        "]"}], ",", 
-       RowBox[{"OV", "[", 
-        RowBox[{"OmegaK", ",", "opts"}], "]"}]}], "]"}], ",", 
-     "\[IndentingNewLine]", "AngularDiameter", ",", 
-     RowBox[{
-      RowBox[{"Distance", "[", 
-       RowBox[{"z", ",", 
-        RowBox[{"DistanceType", "\[Rule]", "TransverseComoving"}], ",", 
-        "opts"}], "]"}], "/", 
-      RowBox[{"(", 
-       RowBox[{"1", "+", "z"}], ")"}]}], ",", "\[IndentingNewLine]", 
-     "Luminosity", ",", 
-     RowBox[{
-      RowBox[{"Distance", "[", 
-       RowBox[{"z", ",", 
-        RowBox[{"DistanceType", "\[Rule]", "TransverseComoving"}], ",", 
-        "opts"}], "]"}], "*", 
-      RowBox[{"(", 
-       RowBox[{"1", "+", "z"}], ")"}]}], ",", "\[IndentingNewLine]", 
-     "LookBack", ",", 
-     RowBox[{
-      RowBox[{"antideriv2", "[", "opts", "]"}], "[", "z", "]"}]}], 
-    "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"Distance", "[", 
-    RowBox[{"z1_", ",", "z2_", ",", 
-     RowBox[{"opts", ":", 
-      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
-   RowBox[{"Switch", "[", 
+       RowBox[{"OptionValue", "@", "DistanceType"}], ",", 
+       "\[IndentingNewLine]", "Comoving", ",", 
+       RowBox[{
+        RowBox[{"antideriv1", "[", "opts", "]"}], "[", "z", "]"}], ",", 
+       "\[IndentingNewLine]", "TransverseComoving", ",", 
+       RowBox[{"sinn", "[", 
+        RowBox[{
+         RowBox[{"Distance", "[", 
+          RowBox[{"z", ",", 
+           RowBox[{"DistanceType", "\[Rule]", "Comoving"}], ",", "opts"}], 
+          "]"}], ",", 
+         RowBox[{"OV", "[", 
+          RowBox[{"OmegaK", ",", "opts"}], "]"}]}], "]"}], ",", 
+       "\[IndentingNewLine]", "AngularDiameter", ",", 
+       RowBox[{
+        RowBox[{"Distance", "[", 
+         RowBox[{"z", ",", 
+          RowBox[{"DistanceType", "\[Rule]", "TransverseComoving"}], ",", 
+          "opts"}], "]"}], "/", 
+        RowBox[{"(", 
+         RowBox[{"1", "+", "z"}], ")"}]}], ",", "\[IndentingNewLine]", 
+       "Luminosity", ",", 
+       RowBox[{
+        RowBox[{"Distance", "[", 
+         RowBox[{"z", ",", 
+          RowBox[{"DistanceType", "\[Rule]", "TransverseComoving"}], ",", 
+          "opts"}], "]"}], "*", 
+        RowBox[{"(", 
+         RowBox[{"1", "+", "z"}], ")"}]}], ",", "\[IndentingNewLine]", 
+       "LookBack", ",", 
+       RowBox[{
+        RowBox[{"antideriv2", "[", "opts", "]"}], "[", "z", "]"}]}], 
+      "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
     RowBox[{
-     RowBox[{"OptionValue", "@", "DistanceType"}], ",", "\[IndentingNewLine]",
-      "Comoving", ",", 
-     RowBox[{
-      RowBox[{"Distance", "[", 
-       RowBox[{"z2", ",", "opts"}], "]"}], "-", 
-      RowBox[{"Distance", "[", 
-       RowBox[{"z1", ",", "opts"}], "]"}]}], ",", "\[IndentingNewLine]", 
-     "TransverseComoving", ",", "Null", ",", "\[IndentingNewLine]", 
-     "AngularDiameter", ",", "Null", ",", "\[IndentingNewLine]", "Luminosity",
-      ",", "Null", ",", "\[IndentingNewLine]", "LookBack", ",", 
-     RowBox[{
-      RowBox[{"Distance", "[", 
-       RowBox[{"z2", ",", "opts"}], "]"}], "-", 
-      RowBox[{"Distance", "[", 
-       RowBox[{"z1", ",", "opts"}], "]"}]}]}], "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"Options", "[", "Distance", "]"}], ":=", "cosmoopts"}], 
-  ";"}]}], "Input",
+     RowBox[{"Distance", "[", 
+      RowBox[{"z1_", ",", "z2_", ",", 
+       RowBox[{"opts", ":", 
+        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+     RowBox[{"Switch", "[", 
+      RowBox[{
+       RowBox[{"OptionValue", "@", "DistanceType"}], ",", 
+       "\[IndentingNewLine]", "Comoving", ",", 
+       RowBox[{
+        RowBox[{"Distance", "[", 
+         RowBox[{"z2", ",", "opts"}], "]"}], "-", 
+        RowBox[{"Distance", "[", 
+         RowBox[{"z1", ",", "opts"}], "]"}]}], ",", "\[IndentingNewLine]", 
+       "TransverseComoving", ",", "Null", ",", "\[IndentingNewLine]", 
+       "AngularDiameter", ",", "Null", ",", "\[IndentingNewLine]", 
+       "Luminosity", ",", "Null", ",", 
+       RowBox[{"(*", "TODO", "*)"}], "\[IndentingNewLine]", "LookBack", ",", 
+       RowBox[{
+        RowBox[{"Distance", "[", 
+         RowBox[{"z2", ",", "opts"}], "]"}], "-", 
+        RowBox[{"Distance", "[", 
+         RowBox[{"z1", ",", "opts"}], "]"}]}]}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "Distance", "]"}], ":=", "cosmoopts"}], 
+    ";"}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.535129897348506*^9, 3.535130138069021*^9}, {
    3.535130175381719*^9, 3.535130184859015*^9}, {3.535130284504922*^9, 
@@ -723,17 +924,17 @@ Cell[BoxData[{
    3.536229898518673*^9}, {3.536230096721121*^9, 3.536230108619347*^9}, {
    3.536230780195892*^9, 3.536230809515236*^9}, {3.536230928888952*^9, 
    3.536230933324525*^9}, 3.536231397418547*^9, {3.536238332829496*^9, 
-   3.536238335967587*^9}}],
+   3.536238335967587*^9}, {3.555221182803648*^9, 3.555221185237687*^9}, {
+   3.5552358817462463`*^9, 3.555235882450485*^9}, {3.555393622363084*^9, 
+   3.555393624567133*^9}, 3.555825303886839*^9, {3.555829317094297*^9, 
+   3.555829318182152*^9}}],
 
 Cell[BoxData[
  RowBox[{
   RowBox[{"(*", 
    RowBox[{"growth", " ", "factor"}], "*)"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
   RowBox[{
-   RowBox[{
-    RowBox[{"Clear", "[", 
-     RowBox[{"GrowthFactor", ",", "GrowthFunction"}], "]"}], ";"}], 
-   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"GrowthFactor", "[", 
@@ -764,17 +965,18 @@ Cell[BoxData[
           RowBox[{
            RowBox[{
             RowBox[{
-             RowBox[{"y", "'"}], "[", "zx", "]"}], "==", 
+             RowBox[{"y", "'"}], "[", "zx", "]"}], "\[Equal]", 
             RowBox[{
-             RowBox[{"GrowthFactor", "[", 
-              RowBox[{"zx", ",", "opts"}], "]"}], "/", 
+             RowBox[{"-", 
+              RowBox[{"GrowthFactor", "[", 
+               RowBox[{"zx", ",", "opts"}], "]"}]}], "/", 
              RowBox[{"(", 
               RowBox[{"1", "+", "zx"}], ")"}]}]}], ",", 
            RowBox[{
             RowBox[{"y", "[", "0", "]"}], "\[Equal]", "0"}]}], "}"}], ",", 
          "y", ",", 
          RowBox[{"{", 
-          RowBox[{"zx", ",", "0", ",", "10"}], "}"}]}], "]"}], "[", 
+          RowBox[{"zx", ",", "0", ",", "zmax"}], "}"}]}], "]"}], "[", 
        RowBox[{"[", 
         RowBox[{"1", ",", "1", ",", "2"}], "]"}], "]"}]}]}], ";"}], 
    "\[IndentingNewLine]", 
@@ -789,9 +991,8 @@ Cell[BoxData[
        RowBox[{"opts", ":", 
         RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
      RowBox[{"Exp", "[", 
-      RowBox[{"-", 
-       RowBox[{
-        RowBox[{"antideriv3", "[", "opts", "]"}], "[", "z", "]"}]}], "]"}]}], 
+      RowBox[{
+       RowBox[{"antideriv3", "[", "opts", "]"}], "[", "z", "]"}], "]"}]}], 
     ";"}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.530609992719887*^9, 3.5306100077788477`*^9}, {
@@ -810,26 +1011,23 @@ Cell[BoxData[
    3.536233152137924*^9}, {3.536233194005997*^9, 3.536233294324486*^9}, 
    3.536234106529137*^9, {3.5551496399229918`*^9, 3.55514964346091*^9}, {
    3.555152042418437*^9, 3.555152044851372*^9}, {3.55515214472304*^9, 
-   3.55515214552746*^9}}],
+   3.55515214552746*^9}, {3.5552211939410887`*^9, 3.555221194315918*^9}, 
+   3.5552323746157846`*^9, {3.555232689805072*^9, 3.555232692283399*^9}, 
+   3.555319290072953*^9, 3.5558253118688602`*^9}],
 
 Cell[BoxData[
  RowBox[{
   RowBox[{"(*", 
    RowBox[{"Transfer", " ", "function"}], "*)"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
   RowBox[{
-   RowBox[{
-    RowBox[{"Clear", "[", 
-     RowBox[{"Transfer", ",", "transferint"}], "]"}], ";"}], 
-   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"transferfitint", "[", 
-      RowBox[{"path_", ",", 
-       RowBox[{"opts", ":", 
-        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", " ", 
+      RowBox[{"opts", ":", 
+       RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", " ", 
      RowBox[{
-      RowBox[{"transferfitint", "[", 
-       RowBox[{"path", ",", "opts"}], "]"}], "=", 
+      RowBox[{"transferfitint", "[", "opts", "]"}], "=", 
       RowBox[{"Module", "[", 
        RowBox[{
         RowBox[{"{", 
@@ -837,7 +1035,10 @@ Cell[BoxData[
         "\[IndentingNewLine]", 
         RowBox[{
          RowBox[{"link", "=", 
-          RowBox[{"Install", "[", "path", "]"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"Install", "[", 
+           RowBox[{"OV", "[", 
+            RowBox[{"TfFitPath", ",", "opts"}], "]"}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
          RowBox[{"Global`TFSetParameters", "[", 
           RowBox[{
            RowBox[{"OV", "[", 
@@ -886,48 +1087,49 @@ Cell[BoxData[
               RowBox[{"k", "/", 
                RowBox[{"OV", "[", 
                 RowBox[{"h", ",", "opts"}], "]"}]}]}], "]"}]}], "}"}]}], ";", 
-         " ", 
-         RowBox[{"(*", 
-          RowBox[{
-          "TODO", " ", "wtf", " ", "is", " ", "the", " ", "unit", " ", "of", 
-           " ", 
-           RowBox[{
-            RowBox[{"k", "?", " ", "1"}], "/", "Mpc"}], " ", "or", " ", 
-           RowBox[{"h", "/", 
-            RowBox[{"Mpc", "?"}]}]}], "*)"}], "\[IndentingNewLine]", 
+         " ", "\[IndentingNewLine]", 
          RowBox[{"result", "=", 
-          RowBox[{"Table", "[", 
-           RowBox[{
-            RowBox[{"{", 
-             RowBox[{
-              RowBox[{"10", "^", "lk"}], ",", 
-              RowBox[{"fitonek", "[", 
-               RowBox[{"10", "^", "lk"}], "]"}]}], "}"}], ",", 
-            RowBox[{"{", 
-             RowBox[{"lk", ",", 
-              RowBox[{"-", "6"}], ",", "4", ",", ".05"}], "}"}]}], "]"}]}], 
-         ";", "\[IndentingNewLine]", 
+          RowBox[{"Interpolation", "@", 
+           RowBox[{"Table", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"10", "^", "lk"}], ",", 
+               RowBox[{"fitonek", "[", 
+                RowBox[{"10", "^", "lk"}], "]"}]}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"lk", ",", 
+               RowBox[{"-", "6"}], ",", "4", ",", ".01"}], "}"}]}], "]"}]}]}],
+          ";", "\[IndentingNewLine]", 
          RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
-         
-         RowBox[{"Interpolation", "[", "result", "]"}]}]}], 
-       "\[IndentingNewLine]", "]"}]}]}], ";"}], "\[IndentingNewLine]", 
+         "result"}]}], "\[IndentingNewLine]", "]"}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
-     RowBox[{"TransferFit", "[", 
-      RowBox[{"k_", ",", "path_", ",", 
+     RowBox[{"TransferFunction", "[", 
+      RowBox[{
+       RowBox[{"k_", "?", "NumericQ"}], ",", "path_", ",", 
        RowBox[{"opts", ":", 
         RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
      RowBox[{
-      RowBox[{"transferfitint", "[", 
-       RowBox[{"path", ",", "opts"}], "]"}], "[", "k", "]"}]}], ";"}], 
-   "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"transferfitint", "[", 
+        RowBox[{"path", ",", "opts"}], "]"}], "[", "k", "]"}], "[", 
+      RowBox[{"[", 
+       RowBox[{"Switch", "[", 
+        RowBox[{
+         RowBox[{"OV", "[", 
+          RowBox[{"TransferType", ",", "opts"}], "]"}], ",", "FitFull", ",", 
+         "1", ",", "FitBaryon", ",", "2", ",", "FitCDM", ",", "3", ",", 
+         "FitNoWiggles", ",", "4", ",", "FitZeroBaryon", ",", "5"}], "]"}], 
+       "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"Options", "[", "transferfitint", "]"}], ":=", "cosmoopts"}], 
     ";"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
-     RowBox[{"Options", "[", "TransferFit", "]"}], ":=", "cosmoopts"}], 
+     RowBox[{"Options", "[", "TransferFunction", "]"}], ":=", "cosmoopts"}], 
     ";"}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.555147879663821*^9, 3.555147894224782*^9}, {
@@ -942,40 +1144,171 @@ Cell[BoxData[
    3.555153655230048*^9, 3.555153657327985*^9}, 3.555153705204108*^9, {
    3.555153776588608*^9, 3.555153865333705*^9}, {3.55515394724113*^9, 
    3.555153956329297*^9}, {3.5551540425663652`*^9, 3.555154082881078*^9}, 
-   3.555154229773356*^9}],
+   3.555154229773356*^9, {3.555218720982142*^9, 3.555218790274418*^9}, {
+   3.555218821678852*^9, 3.555218849481203*^9}, {3.555218889549622*^9, 
+   3.555218945688233*^9}, {3.5552191559581633`*^9, 3.555219162605247*^9}, {
+   3.5552201423546963`*^9, 3.5552201524744*^9}, {3.555222752373712*^9, 
+   3.555222786639133*^9}, 3.555233391349909*^9, {3.555234757249782*^9, 
+   3.555234761133334*^9}, {3.555234867638899*^9, 3.555234867879015*^9}, {
+   3.555236619285472*^9, 3.555236629142144*^9}, {3.5557374497824163`*^9, 
+   3.555737459928608*^9}, {3.555738335097858*^9, 3.555738338303249*^9}, {
+   3.555739101537229*^9, 3.5557391037392807`*^9}, 3.55582532106707*^9, 
+   3.555840041203693*^9}],
 
 Cell[BoxData[
  RowBox[{
   RowBox[{"(*", 
    RowBox[{"linear", " ", "ps"}], "*)"}], "\[IndentingNewLine]", 
-  RowBox[{
+  RowBox[{"(*", 
    RowBox[{
     RowBox[{
-     RowBox[{"LinearPSFit", "[", 
-      RowBox[{"k_", ",", "z_", ",", "path_", ",", 
+     RowBox[{"See", " ", "Amendola"}], "&"}], "Tsujikawa", " ", "4.212"}], 
+   "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"LinearPS", "[", 
+      RowBox[{"k_", ",", "z_", ",", 
        RowBox[{"opts", ":", 
         RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
      RowBox[{
       RowBox[{
-       RowBox[{"TransferFit", "[", 
-        RowBox[{"k", ",", "path", ",", "opts"}], "]"}], "^", "2"}], " ", "*", 
-      " ", 
-      RowBox[{"k", "^", 
-       RowBox[{"OV", "[", 
-        RowBox[{"ns", ",", "opts"}], "]"}]}], " ", "*", " ", 
+       RowBox[{"TransferFunction", "[", 
+        RowBox[{"k", ",", "opts"}], "]"}], "^", "2"}], " ", "*", " ", 
       RowBox[{
-       RowBox[{"GrowthFunction", "[", 
-        RowBox[{"z", ",", "opts"}], "]"}], "^", "2"}]}]}], ";"}], 
+       RowBox[{"(", 
+        RowBox[{"k", "/", 
+         RowBox[{"OV", "[", 
+          RowBox[{"H0", ",", "opts"}], "]"}]}], ")"}], "^", 
+       RowBox[{"OV", "[", 
+        RowBox[{"ns", ",", "opts"}], "]"}]}], "*", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"GrowthFunction", "[", 
+         RowBox[{"z", ",", "opts"}], "]"}], "^", "2"}], "/", 
+       RowBox[{
+        RowBox[{"OV", "[", 
+         RowBox[{"H0", ",", "opts"}], "]"}], "^", "3"}]}], "*", "2", " ", 
+      RowBox[{"Pi", "^", "2"}], "*", 
+      RowBox[{"(", "3.2*^-10", ")"}]}]}], ";"}], "*)"}], 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"that", " ", "last", " ", "number", " ", 
+        RowBox[{"is", " ", "\\", "delta_H"}]}], " ", "..."}], " ", 
+      "according", " ", "to", " ", "A"}], "&"}], "T"}], "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"tophatFT", "[", "x_", "]"}], ":=", 
+     RowBox[{
+      RowBox[{"3", "/", 
+       RowBox[{"x", "^", "3"}]}], 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"Sin", "[", "x", "]"}], "-", 
+        RowBox[{"x", " ", 
+         RowBox[{"Cos", "[", "x", "]"}]}]}], ")"}]}]}], ";"}], 
    "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
-     RowBox[{"Options", "[", "LinearPSFit", "]"}], ":=", "cosmoopts"}], 
+     RowBox[{"normalization", "[", 
+      RowBox[{"opts", ":", 
+       RowBox[{"OptionsPattern", "[", "]"}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{"normalization", "[", "opts", "]"}], "=", 
+      RowBox[{
+       RowBox[{"OV", "[", 
+        RowBox[{"sigma8", ",", "opts"}], "]"}], "/", 
+       RowBox[{"Sqrt", "@", 
+        RowBox[{"NIntegrate", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"Exp", "[", 
+             RowBox[{"3", " ", "lk"}], "]"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"2", 
+              RowBox[{"Pi", "^", "2"}]}], ")"}]}], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"TransferFunction", "[", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"Exp", "[", "lk", "]"}], "*", 
+                 RowBox[{"OV", "[", 
+                  RowBox[{"h", ",", "opts"}], "]"}]}], ",", "opts"}], "]"}], 
+              "^", "2"}], " ", "*", " ", 
+             RowBox[{"Exp", "[", 
+              RowBox[{"lk", "*", 
+               RowBox[{"OV", "[", 
+                RowBox[{"ns", ",", "opts"}], "]"}]}], "]"}]}], ")"}], 
+           RowBox[{
+            RowBox[{"tophatFT", "[", 
+             RowBox[{"8", 
+              RowBox[{"Exp", "[", "lk", "]"}]}], "]"}], "^", "2"}]}], ",", 
+          RowBox[{"{", 
+           RowBox[{"lk", ",", 
+            RowBox[{"Log", "[", 
+             RowBox[{"10", "^", 
+              RowBox[{"-", "6"}]}], "]"}], ",", 
+            RowBox[{"Log", "[", 
+             RowBox[{"10", "^", "4"}], "]"}]}], "}"}], ",", 
+          RowBox[{"PrecisionGoal", "\[Rule]", "5"}]}], "]"}]}]}]}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"LinearPS", "[", 
+      RowBox[{"k_", ",", "z_", ",", 
+       RowBox[{"opts", ":", 
+        RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"TransferFunction", "[", 
+        RowBox[{
+         RowBox[{"k", "*", 
+          RowBox[{"OV", "[", 
+           RowBox[{"h", ",", "opts"}], "]"}]}], ",", "opts"}], "]"}], "^", 
+       "2"}], " ", "*", " ", 
+      RowBox[{"k", "^", 
+       RowBox[{"OV", "[", 
+        RowBox[{"ns", ",", "opts"}], "]"}]}], "*", " ", 
+      RowBox[{
+       RowBox[{"GrowthFunction", "[", 
+        RowBox[{"z", ",", "opts"}], "]"}], "^", "2"}], "*", 
+      RowBox[{
+       RowBox[{"normalization", "[", "opts", "]"}], "^", "2"}]}]}], ";", 
+    RowBox[{
+     RowBox[{"Options", "[", "LinearPS", "]"}], ":=", "cosmoopts"}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "normalization", "]"}], ":=", "cosmoopts"}], 
     ";"}]}]}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.555151217002199*^9, 3.55515122122469*^9}, {
    3.5551513194277887`*^9, 3.555151336571067*^9}, {3.5551514942173986`*^9, 
    3.555151561795163*^9}, {3.555152230623705*^9, 3.5551522380725517`*^9}, 
-   3.555152627404873*^9}],
+   3.555152627404873*^9, 3.55521879102337*^9, {3.55522013813684*^9, 
+   3.555220139599905*^9}, 3.555220411262555*^9, 3.555222733179741*^9, {
+   3.555222766530266*^9, 3.5552227877866783`*^9}, {3.555233501284321*^9, 
+   3.555233550039926*^9}, {3.5552336803160753`*^9, 3.555233683270043*^9}, {
+   3.5552400500814667`*^9, 3.5552400572830276`*^9}, 3.5553193296446533`*^9, {
+   3.555319860035037*^9, 3.555319937303084*^9}, {3.555320483254998*^9, 
+   3.555320485634103*^9}, 3.5553205253226357`*^9, 3.555321980832925*^9, {
+   3.555324835549293*^9, 3.555324835667225*^9}, {3.555327294185296*^9, 
+   3.55532732296091*^9}, {3.5553945049812937`*^9, 3.5553945075915947`*^9}, {
+   3.5553946290122643`*^9, 3.5553946316909437`*^9}, 3.555671933129588*^9, {
+   3.5557384263925447`*^9, 3.555738611477201*^9}, {3.555738644861454*^9, 
+   3.555738773523287*^9}, {3.555738811263177*^9, 3.5557388166855307`*^9}, 
+   3.5557389349472523`*^9, {3.555739340097102*^9, 3.555739363949169*^9}, 
+   3.555739419565542*^9, {3.555739744693315*^9, 3.5557397552140427`*^9}, 
+   3.55574273186559*^9, 3.555825332156158*^9, {3.5558403387982407`*^9, 
+   3.555840341737035*^9}, 3.5558404226976433`*^9}],
 
 Cell[BoxData[{
  RowBox[{"End", "[", " ", "]"}], "\[IndentingNewLine]", 
@@ -1008,63 +1341,73 @@ Cell[557, 20, 272, 5, 49, "Input",
  InitializationCell->True],
 Cell[832, 27, 362, 7, 49, "Input",
  InitializationCell->True],
-Cell[1197, 36, 269, 7, 49, "Input",
+Cell[1197, 36, 269, 6, 49, "Input",
  InitializationCell->True],
-Cell[1469, 45, 296, 7, 49, "Input",
+Cell[1469, 44, 269, 7, 49, "Input",
  InitializationCell->True],
-Cell[1768, 54, 345, 8, 49, "Input",
+Cell[1741, 53, 296, 7, 49, "Input",
  InitializationCell->True],
-Cell[2116, 64, 358, 7, 49, "Input",
+Cell[2040, 62, 345, 8, 49, "Input",
  InitializationCell->True],
-Cell[2477, 73, 334, 7, 49, "Input",
+Cell[2388, 72, 234, 5, 49, "Input",
  InitializationCell->True],
-Cell[2814, 82, 316, 7, 49, "Input",
+Cell[2625, 79, 358, 7, 49, "Input",
  InitializationCell->True],
-Cell[3133, 91, 310, 7, 49, "Input",
+Cell[2986, 88, 334, 7, 49, "Input",
  InitializationCell->True],
-Cell[3446, 100, 271, 7, 49, "Input",
+Cell[3323, 97, 316, 7, 49, "Input",
  InitializationCell->True],
-Cell[3720, 109, 463, 9, 96, "Input",
+Cell[3642, 106, 310, 7, 49, "Input",
  InitializationCell->True],
-Cell[4186, 120, 737, 12, 119, "Input",
+Cell[3955, 115, 271, 7, 49, "Input",
  InitializationCell->True],
-Cell[4926, 134, 558, 10, 96, "Input",
+Cell[4229, 124, 463, 9, 96, "Input",
  InitializationCell->True],
-Cell[5487, 146, 2931, 74, 556, "Input",
+Cell[4695, 135, 820, 13, 119, "Input",
+ InitializationCell->True],
+Cell[5518, 150, 602, 10, 96, "Input",
+ InitializationCell->True],
+Cell[6123, 162, 4585, 109, 740, "Input",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[8443, 224, 262, 5, 49, "Input",
+Cell[10733, 275, 262, 5, 49, "Input",
  InitializationCell->True],
-Cell[8708, 231, 162, 3, 49, "Output",
+Cell[10998, 282, 162, 3, 49, "Output",
  InitializationCell->True]
 }, Open  ]],
-Cell[8885, 237, 3739, 71, 510, "Input",
+Cell[11175, 288, 165, 4, 49, "Input",
  InitializationCell->True],
-Cell[12627, 310, 763, 24, 73, "Input",
+Cell[11343, 294, 2477, 57, 188, "Input",
  InitializationCell->True],
-Cell[13393, 336, 1102, 23, 73, "Input",
+Cell[13823, 353, 4371, 84, 556, "Input",
  InitializationCell->True],
-Cell[14498, 361, 365, 11, 49, "Input",
+Cell[18197, 439, 763, 24, 73, "Input",
  InitializationCell->True],
-Cell[14866, 374, 2427, 56, 96, "Input",
+Cell[18963, 465, 1102, 23, 73, "Input",
  InitializationCell->True],
-Cell[17296, 432, 2542, 56, 96, "Input",
+Cell[20068, 490, 365, 11, 49, "Input",
  InitializationCell->True],
-Cell[19841, 490, 569, 17, 73, "Input",
+Cell[20436, 503, 2496, 57, 96, "Input",
  InitializationCell->True],
-Cell[20413, 509, 1341, 34, 73, "Input",
+Cell[22935, 562, 2542, 56, 96, "Input",
  InitializationCell->True],
-Cell[21757, 545, 1871, 38, 49, "Input",
+Cell[25480, 620, 569, 17, 73, "Input",
  InitializationCell->True],
-Cell[23631, 585, 5333, 140, 418, "Input",
+Cell[26052, 639, 2530, 71, 188, "Input",
  InitializationCell->True],
-Cell[28967, 727, 3425, 85, 188, "Input",
+Cell[28585, 712, 1258, 31, 73, "Input",
  InitializationCell->True],
-Cell[32395, 814, 5464, 130, 372, "Input",
+Cell[29846, 745, 1871, 38, 49, "Input",
  InitializationCell->True],
-Cell[37862, 946, 1131, 31, 96, "Input",
+Cell[31720, 785, 5803, 144, 418, "Input",
  InitializationCell->True],
-Cell[38996, 979, 313, 6, 73, "Input",
+Cell[37526, 931, 3503, 84, 188, "Input",
+ InitializationCell->True],
+Cell[41032, 1017, 6150, 138, 395, "Input",
+ InitializationCell->True],
+Cell[47185, 1157, 5970, 153, 326, "Input",
+ InitializationCell->True],
+Cell[53158, 1312, 313, 6, 73, "Input",
  InitializationCell->True]
 }
 ]

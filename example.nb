@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[      6556,        186]
+NotebookDataLength[      6557,        186]
 NotebookOptionsPosition[      5745,        157]
-NotebookOutlinePosition[      6102,        173]
-CellTagsIndexPosition[      6059,        170]
+NotebookOutlinePosition[      6103,        173]
+CellTagsIndexPosition[      6060,        170]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -156,7 +156,7 @@ Cell[BoxData[
  CellChangeTimes->{{3.5510728675656567`*^9, 3.551072869264835*^9}}]
 },
 WindowSize->{740, 864},
-WindowMargins->{{353, Automatic}, {1, Automatic}},
+WindowMargins->{{Automatic, 336}, {14, Automatic}},
 ShowSelection->True,
 FrontEndVersion->"8.0 for Linux x86 (64-bit) (October 10, 2011)",
 StyleDefinitions->"Default.nb"
@@ -176,7 +176,7 @@ Cell[557, 20, 522, 10, 148, "Text"],
 Cell[1082, 32, 257, 6, 36, "Input"],
 Cell[1342, 40, 119, 1, 35, "Text"],
 Cell[1464, 43, 268, 4, 36, "Input"],
-Cell[1735, 49, 294, 5, 59, "Text"],
+Cell[1735, 49, 294, 5, 57, "Text"],
 Cell[2032, 56, 169, 3, 36, "Input"],
 Cell[2204, 61, 103, 2, 36, "Input"],
 Cell[2310, 65, 112, 1, 35, "Text"],
@@ -185,7 +185,7 @@ Cell[2631, 74, 165, 2, 35, "Text"],
 Cell[2799, 78, 561, 16, 60, "Input"],
 Cell[3363, 96, 105, 1, 35, "Text"],
 Cell[3471, 99, 102, 1, 36, "Input"],
-Cell[3576, 102, 487, 8, 105, "Text"],
+Cell[3576, 102, 487, 8, 101, "Text"],
 Cell[4066, 112, 1542, 39, 184, "Input"],
 Cell[5611, 153, 130, 2, 36, "Input"]
 }

@@ -25,6 +25,9 @@ BeginPackage["Cosmology`"]
 Cosmology::usage="This list of rules defines the background cosmology."
 
 
+SetCosmology::usage="Modify the fiducial cosmology by passing the new options to this function."
+
+
 Fiducial::usage="Fiducial[X] returns the fiducial value of parameter X."
 
 
@@ -32,6 +35,9 @@ Redshift::usage="Redshift[a] returns the redshift as a function of the scale fac
 
 
 Hubble::usage="Hubble[z] returns the Hubble parameter at a given redshift z."
+
+
+ScaleFactor::usage="ScaleFactor[t] returns a at cosmic time t."
 
 
 DimensionlessHubble::usage="DimensionlessHubble[z] returns the Hubble parameter at a given redshift z divided by the Hubble constant today."
@@ -52,12 +58,13 @@ OmegaM::usage="OmegaM[z] returns the relative matter density at redshift z."
 Distance::usage="Distance[z] accepts the Option DistanceType with the possible values Comoving, TransverseComoving, AngularDiameter, Luminosity or LookBack. Distance[z1, z2] gives the distance between two galaxies at redshifts z1 and z2 along the line of sight."
 
 
-TransferFit::usage="TransferFit[k,path] returns a list of five values using the fitting formulae by Eisenstein&Hu(1999). The values are: The full transfer function, the baryon transfer function, the CDM transfer function, the no-wiggles transfer function, and the no-baryon transfer function. The path to the MathLink executable needs to be passed by path."
+TransferFunction::usage="TransferFunction[k,path] returns a list of five values using the fitting formulae by Eisenstein&Hu(1999). The values are: The full transfer function, the baryon transfer function, the CDM transfer function, the no-wiggles transfer function, and the no-baryon transfer function. The path to the MathLink executable needs to be passed by path."
 
 
-LinearPSFit::usage="LinearPSFit[k,z,path] returns a list of five values using the fitting formulae by Eisenstein&Hu(1999). The values are: The full linear power spectrum, the baryon power spectrum, the CDM power spectrum, the no-wiggles power spectrum, and the no-baryon power spectrum."
+LinearPS::usage="LinearPS[k,z,path] returns a list of five values using the fitting formulae by Eisenstein&Hu(1999). The values are: The full linear power spectrum, the baryon power spectrum, the CDM power spectrum, the no-wiggles power spectrum, and the no-baryon power spectrum."
 
 
+(*Options*)
 OmegaB::usage="Baryon density"
 OmegaC::usage="Cold dark matter density"
 OmegaL::usage="Dark energy density"
@@ -81,11 +88,31 @@ Comoving::usage="Comoving distance"
 TransverseComoving::usage="Transeverse comoving distance"
 AngularDiameter::usage="Angular diameter distance"
 Luminosity::usage="Luminosity distance"
+TfFitPath::usage="Path to the MathLink for the transfer fitting function"
+TransferType::usage="Type of transfer function (FitFull etc)"
+FitFull::usage="Full transfer function from the Eisenstein&Hu1999 fitting function"
+FitBaryon::usage="Baryon transfer function from the Eisenstein&Hu1999 fitting function"
+FitCDM::usage="CDM transfer function from the Eisenstein&Hu1999 fitting function"
+FitNoWiggles::usage="'No wiggle' transfer function (wiggles removed, but baryon suppression still there) from the Eisenstein&Hu1999 fitting function"
+FitZeroBaryon::usage="Transfer function in Universe with no baryons from the Eisenstein&Hu1999 fitting function"
 
 
 Begin["`Private`"]
 
 
+zmax=100;
+
+
+SetCosmology[o:OptionsPattern[]]:=Module[{clist},
+clist=List[o];
+(DownValues[#]={Last@DownValues[#]})&/@{odesol, antideriv1, antideriv2,transferfitint, normalization};
+Unprotect[Cosmology];
+Do[Cosmology[[First@First@Position[Cosmology,opt[[1]],{2}]]]=opt,{opt,clist}];
+Protect[Cosmology];
+];
+
+
+Unprotect[Cosmology];
 Cosmology={OmegaM->.25,
 OmegaB->.05,
 OmegaC->OmegaM-OmegaB,
@@ -104,9 +131,10 @@ w1->0,
 gamma->.545,(*growth index*)
 sigma8->.8,
 ns->.9,
-Tcmb->2.728}
+Tcmb->2.728};
+Protect[Cosmology];
 cosmoopts:=Cosmology~Join~{
-DistanceType->Comoving};
+DistanceType->Comoving,TransferType->FitFull,TfFitPath->"tf_fit_link"};
 
 
 OV[x_,opts:OptionsPattern[]]:=(OptionValue@x/.If[List@opts!={},List@opts,1->1]//.cosmoopts);
@@ -122,7 +150,7 @@ Redshift=Compile[{{a,_Real}},1/a+1];
 
 w[z_,opts:OptionsPattern[]]:=OV[w0,opts]+OV[w1,opts]*z/(1+z);
 Options[w]:=cosmoopts;
-fw[z_,opts:OptionsPattern[]]:=Integrate[(1+w[z,opts])/(1+zx),{zx,0,z},GenerateConditions->False];
+fw[z_,opts:OptionsPattern[]]=Integrate[(1+w[z,opts])/(1+zx),{zx,0,z},GenerateConditions->False];
 
 
 (* H in units of H_ 0 *)
@@ -134,16 +162,24 @@ Hubble[z_,opts:OptionsPattern[]]:=OV[H0,opts]DimensionlessHubble[z,opts];
 Options[Hubble]:=cosmoopts;
 
 
-OmegaM[z_,opts:OptionsPattern[]]:=OV[OmegaM,opts]*(1+z)^3/DimensionlessHubble[z,opts]^2;Options[OmegaM]:=cosmoopts;
-(*Note: om0 is not used here*)
+
+(*TODO: Cover closed Universe; make sure a=0 at some point*)
+odesol[opts:OptionsPattern[]]:=odesol[opts]=Quiet@NDSolve[{a'[t]/a[t]== Hubble[1/a[t]-1,opts],a[1]==1},a,{t,-2/Hubble[0,opts],1/Hubble[0,opts]}][[1,1,2]];
+ScaleFactor[t_,opts:OptionsPattern[]]:=odesol[opts][t];
+Options[ScaleFactor]:=cosmoopts;
+Options[odesol]:=cosmoopts;
+
+
+OmegaM[z_,opts:OptionsPattern[]]:=OV[OmegaM,opts]*(1+z)^3/DimensionlessHubble[z,opts]^2;
+Options[OmegaM]:=cosmoopts;
 
 
 sinn=Compile[{{x,_Real},{ok,_Real}},Evaluate@If[ok==0,x,Sinh[Sqrt[ok]x]/Sqrt[ok]]];
 
 
-Clear[antideriv];
-antideriv1[opts:OptionsPattern[]]:=antideriv[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts],y[0]==0},y,{zx,0,10}][[1,1,2]];
-antideriv2[opts:OptionsPattern[]]:=antideriv[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts]/(1+z),y[0]==0},y,{zx,0,10}][[1,1,2]];
+
+antideriv1[opts:OptionsPattern[]]:=antideriv1[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts],y[0]==0},y,{zx,0,zmax}][[1,1,2]];
+antideriv2[opts:OptionsPattern[]]:=antideriv2[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts]/(1+z),y[0]==0},y,{zx,0,zmax}][[1,1,2]];
 Distance[z_,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
 Comoving,antideriv1[opts][z],
 TransverseComoving,sinn[Distance[z,DistanceType->Comoving,opts],OV[OmegaK,opts]],
@@ -155,40 +191,45 @@ Distance[z1_,z2_,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
 Comoving,Distance[z2,opts]-Distance[z1,opts],
 TransverseComoving,Null,
 AngularDiameter,Null,
-Luminosity,Null,
+Luminosity,Null,(*TODO*)
 LookBack,Distance[z2,opts]-Distance[z1,opts]];
 Options[Distance]:=cosmoopts;
 
 
 (*growth factor*)
-Clear[GrowthFactor,GrowthFunction];
+
 GrowthFactor[z_,opts:OptionsPattern[]]:=OmegaM[z,opts]^OV[gamma,opts];
 Options[GrowthFactor]:=cosmoopts;
-antideriv3[opts:OptionsPattern[]]:=antideriv3[opts]=NDSolve[{y'[zx]==GrowthFactor[zx,opts]/(1+zx),y[0]==0},y,{zx,0,10}][[1,1,2]];
+antideriv3[opts:OptionsPattern[]]:=antideriv3[opts]=NDSolve[{y'[zx]==-GrowthFactor[zx,opts]/(1+zx),y[0]==0},y,{zx,0,zmax}][[1,1,2]];
 Options[antideriv3]:=cosmoopts;
-GrowthFunction[z_,opts:OptionsPattern[]]:=Exp[-antideriv3[opts][z]];
+GrowthFunction[z_,opts:OptionsPattern[]]:=Exp[antideriv3[opts][z]];
 
 
 (*Transfer function*)
-Clear[Transfer,transferint];
-transferfitint[path_,opts:OptionsPattern[]]:= transferfitint[path,opts]=Module[{result,link,fitonek},
-link=Install[path];
+
+transferfitint[opts:OptionsPattern[]]:= transferfitint[opts]=Module[{result,link,fitonek},
+link=Install[OV[TfFitPath,opts]];
 Global`TFSetParameters[OV[omegaM,opts],OV[OmegaB,opts]/OV[OmegaC,opts],OV[Tcmb,opts]];
 fitonek[k_]:={Global`TFFitOneK[k],LinkRead[link],LinkRead[link],
 Global`TFNoWiggles[OV[OmegaC,opts],OV[OmegaB,opts]/OV[OmegaC,opts],OV[h,opts],OV[Tcmb,opts],k/OV[h,opts]],
-Global`TFZeroBaryon[OV[OmegaC,opts],OV[h,opts],OV[Tcmb,opts],k/OV[h,opts]]}; (*TODO wtf is the unit of k? 1/Mpc or h/Mpc?*)
-result=Table[{10^lk,fitonek[10^lk]},{lk,-6,4,.05}];
+Global`TFZeroBaryon[OV[OmegaC,opts],OV[h,opts],OV[Tcmb,opts],k/OV[h,opts]]}; 
+result=Interpolation@Table[{10^lk,fitonek[10^lk]},{lk,-6,4,.01}];
 Uninstall[link];
-Interpolation[result]
+result
 ];
-TransferFit[k_,path_,opts:OptionsPattern[]]:=transferfitint[path,opts][k];
+TransferFunction[k_?NumericQ,path_,opts:OptionsPattern[]]:=transferfitint[path,opts][k][[Switch[OV[TransferType,opts],FitFull,1,FitBaryon,2,FitCDM,3,FitNoWiggles,4,FitZeroBaryon,5]]];
 Options[transferfitint]:=cosmoopts;
-Options[TransferFit]:=cosmoopts;
+Options[TransferFunction]:=cosmoopts;
 
 
 (*linear ps*)
-LinearPSFit[k_,z_,path_,opts:OptionsPattern[]]:=TransferFit[k,path,opts]^2 * k^OV[ns,opts] * GrowthFunction[z,opts]^2;
-Options[LinearPSFit]:=cosmoopts;
+(*See Amendola&Tsujikawa 4.212*)
+(*LinearPS[k_,z_,opts:OptionsPattern[]]:=TransferFunction[k,opts]^2 * (k/OV[H0,opts])^OV[ns,opts]* GrowthFunction[z,opts]^2/OV[H0,opts]^3*2 Pi^2*(3.2*^-10);*)(*that last number is \delta_H ... according to A&T*)
+
+tophatFT[x_]:=3/x^3(Sin[x]-x Cos[x]);
+normalization[opts:OptionsPattern[]]:=normalization[opts]=OV[sigma8,opts]/Sqrt@NIntegrate[Exp[3 lk]/(2Pi^2) (TransferFunction[Exp[lk]*OV[h,opts],opts]^2 * Exp[lk*OV[ns,opts]])tophatFT[8Exp[lk]]^2,{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
+LinearPS[k_,z_,opts:OptionsPattern[]]:=TransferFunction[k*OV[h,opts],opts]^2 * k^OV[ns,opts]* GrowthFunction[z,opts]^2*normalization[opts]^2;Options[LinearPS]:=cosmoopts;
+Options[normalization]:=cosmoopts;
 
 
 End[ ]

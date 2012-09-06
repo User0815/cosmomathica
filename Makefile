@@ -1,5 +1,5 @@
 
-CC = gcc -Wall
+CC = gcc -Wall -O4
 
 MLINKDIR = /opt/Wolfram/Mathematica/8.0.1/SystemFiles/Links/MathLink/DeveloperKit
 SYS = Linux-x86-64# Set this value with the result of evaluating $SystemID
