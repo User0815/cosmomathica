@@ -154,23 +154,23 @@ fw[z_,opts:OptionsPattern[]]=Integrate[(1+w[z,opts])/(1+zx),{zx,0,z},GenerateCon
 
 
 (* H in units of H_ 0 *)
-DimensionlessHubble[z_,opts:OptionsPattern[]]:=Sqrt[OV[OmegaM,opts]*(1+z)^3+OV[OmegaK,opts]*(1+z)^2+OV[OmegaL,opts]*Exp[3*fw[z,opts]]];
+DimensionlessHubble[z_?NumericQ,opts:OptionsPattern[]]:=Sqrt[OV[OmegaM,opts]*(1+z)^3+OV[OmegaK,opts]*(1+z)^2+OV[OmegaL,opts]*Exp[3*fw[z,opts]]];
 Options[DimensionlessHubble]:=cosmoopts;
 
 
-Hubble[z_,opts:OptionsPattern[]]:=OV[H0,opts]DimensionlessHubble[z,opts];
+Hubble[z_?NumericQ,opts:OptionsPattern[]]:=OV[H0,opts]DimensionlessHubble[z,opts];
 Options[Hubble]:=cosmoopts;
 
 
 
 (*TODO: Cover closed Universe; make sure a=0 at some point*)
 odesol[opts:OptionsPattern[]]:=odesol[opts]=Quiet@NDSolve[{a'[t]/a[t]== Hubble[1/a[t]-1,opts],a[1]==1},a,{t,-2/Hubble[0,opts],1/Hubble[0,opts]}][[1,1,2]];
-ScaleFactor[t_,opts:OptionsPattern[]]:=odesol[opts][t];
+ScaleFactor[t_?NumericQ,opts:OptionsPattern[]]:=odesol[opts][t];
 Options[ScaleFactor]:=cosmoopts;
 Options[odesol]:=cosmoopts;
 
 
-OmegaM[z_,opts:OptionsPattern[]]:=OV[OmegaM,opts]*(1+z)^3/DimensionlessHubble[z,opts]^2;
+OmegaM[z_?NumericQ,opts:OptionsPattern[]]:=OV[OmegaM,opts]*(1+z)^3/DimensionlessHubble[z,opts]^2;
 Options[OmegaM]:=cosmoopts;
 
 
@@ -180,14 +180,14 @@ sinn=Compile[{{x,_Real},{ok,_Real}},Evaluate@If[ok==0,x,Sinh[Sqrt[ok]x]/Sqrt[ok]
 
 antideriv1[opts:OptionsPattern[]]:=antideriv1[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts],y[0]==0},y,{zx,0,zmax}][[1,1,2]];
 antideriv2[opts:OptionsPattern[]]:=antideriv2[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts]/(1+z),y[0]==0},y,{zx,0,zmax}][[1,1,2]];
-Distance[z_,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
+Distance[z_?NumericQ,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
 Comoving,antideriv1[opts][z],
 TransverseComoving,sinn[Distance[z,DistanceType->Comoving,opts],OV[OmegaK,opts]],
 AngularDiameter,Distance[z,DistanceType->TransverseComoving,opts]/(1+z),
 Luminosity,Distance[z,DistanceType->TransverseComoving,opts]*(1+z),
 LookBack,antideriv2[opts][z]
 ];
-Distance[z1_,z2_,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
+Distance[z1_?NumericQ,z2_?NumericQ,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
 Comoving,Distance[z2,opts]-Distance[z1,opts],
 TransverseComoving,Null,
 AngularDiameter,Null,
@@ -198,11 +198,11 @@ Options[Distance]:=cosmoopts;
 
 (*growth factor*)
 
-GrowthFactor[z_,opts:OptionsPattern[]]:=OmegaM[z,opts]^OV[gamma,opts];
+GrowthFactor[z_?NumericQ,opts:OptionsPattern[]]:=OmegaM[z,opts]^OV[gamma,opts];
 Options[GrowthFactor]:=cosmoopts;
 antideriv3[opts:OptionsPattern[]]:=antideriv3[opts]=NDSolve[{y'[zx]==-GrowthFactor[zx,opts]/(1+zx),y[0]==0},y,{zx,0,zmax}][[1,1,2]];
 Options[antideriv3]:=cosmoopts;
-GrowthFunction[z_,opts:OptionsPattern[]]:=Exp[antideriv3[opts][z]];
+GrowthFunction[z_?NumericQ,opts:OptionsPattern[]]:=Exp[antideriv3[opts][z]];
 
 
 (*Transfer function*)
@@ -224,7 +224,7 @@ Options[TransferFunction]:=cosmoopts;
 
 (*linear ps*)
 (*See Amendola&Tsujikawa 4.212*)
-(*LinearPS[k_,z_,opts:OptionsPattern[]]:=TransferFunction[k,opts]^2 * (k/OV[H0,opts])^OV[ns,opts]* GrowthFunction[z,opts]^2/OV[H0,opts]^3*2 Pi^2*(3.2*^-10);*)(*that last number is \delta_H ... according to A&T*)
+(*LinearPS[k_,z_,opts:OptionsPattern[]]:=TransferFunction[k,opts]^2 * (k/OV[H0,opts])^OV[ns,opts]* GrowthFunction[z,opts]^2/OV[H0,opts]^3*2 Pi^2*(3.2*^-10);*)
 
 tophatFT[x_]:=3/x^3(Sin[x]-x Cos[x]);
 normalization[opts:OptionsPattern[]]:=normalization[opts]=OV[sigma8,opts]/Sqrt@NIntegrate[Exp[3 lk]/(2Pi^2) (TransferFunction[Exp[lk]*OV[h,opts],opts]^2 * Exp[lk*OV[ns,opts]])tophatFT[8Exp[lk]]^2,{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
