@@ -14,7 +14,7 @@ int main()
 
    printf("# k[Mpc/h] Delta_NL(a=0.5,k)\n");
    for (k=1.0e2; k<=1.0e7; k*=1.5) {
-      printf("%e %e\n", k/2998.0, k*k*k/2/pi/pi*P_NL(0.5, k));
+      printf("%e %e\n", k/2998.0, k*k*k/2/pi/pi*P_NL(.5, k));
    }
 
 

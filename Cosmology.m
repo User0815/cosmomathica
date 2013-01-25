@@ -22,6 +22,9 @@
 BeginPackage["Cosmology`"]
 
 
+$location=DirectoryName[$InputFileName];
+
+
 Cosmology::usage="This list of rules defines the background cosmology."
 
 
@@ -64,6 +67,9 @@ TransferFunction::usage="TransferFunction[k,path] returns a list of five values 
 LinearPS::usage="LinearPS[k,z,path] returns a list of five values using the fitting formulae by Eisenstein&Hu(1999). The values are: The full linear power spectrum, the baryon power spectrum, the CDM power spectrum, the no-wiggles power spectrum, and the no-baryon power spectrum."
 
 
+PowerSpectrum::usage="PowerSpectrum[k,z] returns the power spectrum at wavenumber k and redshift z. The algorithm can be specified with PSType."
+
+
 (*Options*)
 OmegaB::usage="Baryon density"
 OmegaC::usage="Cold dark matter density"
@@ -88,13 +94,14 @@ Comoving::usage="Comoving distance"
 TransverseComoving::usage="Transeverse comoving distance"
 AngularDiameter::usage="Angular diameter distance"
 Luminosity::usage="Luminosity distance"
-TfFitPath::usage="Path to the MathLink for the transfer fitting function"
 TransferType::usage="Type of transfer function (FitFull etc)"
+PackagePath::usage="Path to the directory where the package is located"
 FitFull::usage="Full transfer function from the Eisenstein&Hu1999 fitting function"
 FitBaryon::usage="Baryon transfer function from the Eisenstein&Hu1999 fitting function"
 FitCDM::usage="CDM transfer function from the Eisenstein&Hu1999 fitting function"
 FitNoWiggles::usage="'No wiggle' transfer function (wiggles removed, but baryon suppression still there) from the Eisenstein&Hu1999 fitting function"
 FitZeroBaryon::usage="Transfer function in Universe with no baryons from the Eisenstein&Hu1999 fitting function"
+PSType::usage="Specifies the algorithm used to compute the power spectrum"
 
 
 Begin["`Private`"]
@@ -105,7 +112,7 @@ zmax=100;
 
 SetCosmology[o:OptionsPattern[]]:=Module[{clist},
 clist=List[o];
-(DownValues[#]={Last@DownValues[#]})&/@{odesol, antideriv1, antideriv2,transferfitint, normalization};
+(DownValues[#]={Last@DownValues[#]})&/@{odesol, antideriv1, antideriv2,transferfitint,smithPSint, normalization};
 Unprotect[Cosmology];
 Do[Cosmology[[First@First@Position[Cosmology,opt[[1]],{2}]]]=opt,{opt,clist}];
 Protect[Cosmology];
@@ -134,7 +141,7 @@ ns->.9,
 Tcmb->2.728};
 Protect[Cosmology];
 cosmoopts:=Cosmology~Join~{
-DistanceType->Comoving,TransferType->FitFull,TfFitPath->"tf_fit_link"};
+DistanceType->"Comoving",PSType->"HaloFit2",TransferType->FitFull,PackagePath->"."};
 
 
 OV[x_,opts:OptionsPattern[]]:=(OptionValue@x/.If[List@opts!={},List@opts,1->1]//.cosmoopts);
@@ -181,18 +188,18 @@ sinn=Compile[{{x,_Real},{ok,_Real}},Evaluate@If[ok==0,x,Sinh[Sqrt[ok]x]/Sqrt[ok]
 antideriv1[opts:OptionsPattern[]]:=antideriv1[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts],y[0]==0},y,{zx,0,zmax}][[1,1,2]];
 antideriv2[opts:OptionsPattern[]]:=antideriv2[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts]/(1+z),y[0]==0},y,{zx,0,zmax}][[1,1,2]];
 Distance[z_?NumericQ,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
-Comoving,antideriv1[opts][z],
-TransverseComoving,sinn[Distance[z,DistanceType->Comoving,opts],OV[OmegaK,opts]],
-AngularDiameter,Distance[z,DistanceType->TransverseComoving,opts]/(1+z),
-Luminosity,Distance[z,DistanceType->TransverseComoving,opts]*(1+z),
-LookBack,antideriv2[opts][z]
+"Comoving",antideriv1[opts][z],
+"TransverseComoving",sinn[Distance[z,DistanceType->Comoving,opts],OV[OmegaK,opts]],
+"AngularDiameter",Distance[z,DistanceType->TransverseComoving,opts]/(1+z),
+"Luminosity",Distance[z,DistanceType->TransverseComoving,opts]*(1+z),
+"LookBack",antideriv2[opts][z]
 ];
 Distance[z1_?NumericQ,z2_?NumericQ,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
-Comoving,Distance[z2,opts]-Distance[z1,opts],
-TransverseComoving,Null,
-AngularDiameter,Null,
-Luminosity,Null,(*TODO*)
-LookBack,Distance[z2,opts]-Distance[z1,opts]];
+"Comoving",Distance[z2,opts]-Distance[z1,opts],
+"TransverseComoving",Null,
+"AngularDiameter",Null,
+"Luminosity",Null,(*TODO*)
+"LookBack",Distance[z2,opts]-Distance[z1,opts]];
 Options[Distance]:=cosmoopts;
 
 
@@ -208,7 +215,7 @@ GrowthFunction[z_?NumericQ,opts:OptionsPattern[]]:=Exp[antideriv3[opts][z]];
 (*Transfer function*)
 
 transferfitint[opts:OptionsPattern[]]:= transferfitint[opts]=Module[{result,link,fitonek},
-link=Install[OV[TfFitPath,opts]];
+link=Install[$location<>"/tf_fit_link"];
 Global`TFSetParameters[OV[omegaM,opts],OV[OmegaB,opts]/OV[OmegaC,opts],OV[Tcmb,opts]];
 fitonek[k_]:={Global`TFFitOneK[k],LinkRead[link],LinkRead[link],
 Global`TFNoWiggles[OV[OmegaC,opts],OV[OmegaB,opts]/OV[OmegaC,opts],OV[h,opts],OV[Tcmb,opts],k/OV[h,opts]],
@@ -230,6 +237,28 @@ tophatFT[x_]:=3/x^3(Sin[x]-x Cos[x]);
 normalization[opts:OptionsPattern[]]:=normalization[opts]=OV[sigma8,opts]/Sqrt@NIntegrate[Exp[3 lk]/(2Pi^2) (TransferFunction[Exp[lk]*OV[h,opts],opts]^2 * Exp[lk*OV[ns,opts]])tophatFT[8Exp[lk]]^2,{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
 LinearPS[k_,z_,opts:OptionsPattern[]]:=TransferFunction[k*OV[h,opts],opts]^2 * k^OV[ns,opts]* GrowthFunction[z,opts]^2*normalization[opts]^2;Options[LinearPS]:=cosmoopts;
 Options[normalization]:=cosmoopts;
+
+
+(*Smith halofit*)
+smithPSint[a_?NumericQ,nlmode_?IntegerQ,opts:OptionsPattern[]]:=smithPSint[a,nlmode,opts]=Module[{link,result,aa},
+link=Install[$location<>"/smith_link"];
+(*TODO make sure it doesn't crash*)
+If[Abs[a-1]<10^-6||a>1,aa=.9999,aa=a];
+Global`SmithSetParameters[OV[OmegaM],OV[OmegaL],.2,OV[sigma8],OV[ns],1.5(*betap*),1.0(*z0*),nlmode(*non linear mode*)];
+result=Interpolation@Table[{10^lk,Global`SmithPNL[aa,10^lk*2998.(*account for c=1*)]},{lk,-6,4,.01}];
+Uninstall[link];
+result
+];
+SmithPS[k_?NumericQ,z_?NumericQ,nlmode_?IntegerQ,opts:OptionsPattern[]]:=smithPSint[1/(1+z),nlmode,opts][k];
+Options[smithPSint]:=cosmoopts;
+Options[SmithPS]:=cosmoopts;
+
+
+(*Umberella function for the power spectrum*)
+PowerSpectrum[k_,z_,opts:OptionsPattern[]]:=Module[{},
+Switch[OV[PSType,opts],"HaloFit0",SmithPS[k,z,0,opts],"HaloFit1",SmithPS[k,z,1,opts],"HaloFit2",SmithPS[k,z,2,opts],"EH",LinearPS[k,z,opts]]
+];
+Options[PowerSpectrum]:=cosmoopts;
 
 
 End[ ]
