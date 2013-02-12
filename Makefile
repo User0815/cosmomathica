@@ -13,8 +13,8 @@ MLLIB = ML64i3 # Set this to ML64i3 if using a 64-bit system
 
 MPREP = ${CADDSDIR}/mprep
 
-TFOFILES = tf/tf_fit_tm.o tf/tf_fit_link.o tf/tf_fit.o 
-SMITHOFILES = halofit/smith_link.o halofit/smith_tm.o halofit/smith2.o
+TFOFILES = tf_fit_tm.o tf_fit_link.o tf_fit.o 
+SMITHOFILES = smith_link.o smith_tm.o smith2.o
 
 all: smith_link tf_fit_link
 
@@ -24,16 +24,22 @@ tf_fit_link:  $(TFOFILES)
 smith_link: $(SMITHOFILES)
 	${CC} -I${INCDIR} $(SMITHOFILES)  -L${LIBDIR} -l${MLLIB} ${EXTRALIBS} -o $@
 	
+smith2.o: halofit/smith2.c
+	$(CC)  -c -I$(INCDIR) $< -o $@
+
+tf_fit.o: tf/tf_fit.c
+	$(CC)  -c -I$(INCDIR) $< -o $@
+
 %.o: %.c
 	$(CC)  -c -I$(INCDIR) $< -o $@
 
-tf/tf_fit_tm.c: tf/tf_fit.tm
+tf_fit_tm.c: tf_fit.tm
 	${MPREP} $? -o $@
 
-halofit/smith_tm.c: halofit/smith.tm
+smith_tm.c: smith.tm
 	${MPREP} $? -o $@
 
 .PHONY: clean
 clean:
-	rm -f tf/*o tf/*tm.c tf_fit_link halofit/*o halofit/*tm.c smith_link
+	rm -f *o *tm.c tf_fit_link *o *tm.c smith_link
 

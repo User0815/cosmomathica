@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     65853,       1658]
-NotebookOptionsPosition[     62383,       1543]
-NotebookOutlinePosition[     62845,       1561]
-CellTagsIndexPosition[     62802,       1558]
+NotebookDataLength[     67216,       1708]
+NotebookOptionsPosition[     63344,       1579]
+NotebookOutlinePosition[     63806,       1597]
+CellTagsIndexPosition[     63763,       1594]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1088,6 +1088,11 @@ Cell["Power Spectrum", "Subsection",
  InitializationCell->True,
  CellChangeTimes->{{3.568030077897833*^9, 3.5680300814889393`*^9}}],
 
+Cell[CellGroupData[{
+
+Cell["Eisenstein&Hu", "Subsubsection",
+ CellChangeTimes->{{3.569655708043653*^9, 3.5696557120830793`*^9}}],
+
 Cell[BoxData[
  RowBox[{
   RowBox[{"(*", 
@@ -1374,7 +1379,13 @@ Cell[BoxData[
    3.5557389349472523`*^9, {3.555739340097102*^9, 3.555739363949169*^9}, 
    3.555739419565542*^9, {3.555739744693315*^9, 3.5557397552140427`*^9}, 
    3.55574273186559*^9, 3.555825332156158*^9, {3.5558403387982407`*^9, 
-   3.555840341737035*^9}, 3.5558404226976433`*^9, 3.557745242568014*^9}],
+   3.555840341737035*^9}, 3.5558404226976433`*^9, 3.557745242568014*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Smith Halofit", "Subsubsection",
+ CellChangeTimes->{{3.569655721135118*^9, 3.569655724682918*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1484,7 +1495,23 @@ Cell[BoxData[
   3.568099411440621*^9}, {3.568099617131225*^9, 3.568099617238761*^9}, {
   3.568108086346835*^9, 3.5681080865770683`*^9}, {3.568108450731979*^9, 
   3.568108455993935*^9}, {3.568108884477313*^9, 3.568108890268255*^9}, {
-  3.5681096604695673`*^9, 3.568109661597192*^9}}],
+  3.5681096604695673`*^9, 3.568109661597192*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["TRG", "Subsubsection",
+ CellChangeTimes->{{3.56965573100708*^9, 3.5696557313350058`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Get", "[", "\"\<psnonlinear.m\>\"", "]"}], ";"}]], "Input"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Unification of the above", "Subsubsection",
+ CellChangeTimes->{{3.569655739975047*^9, 3.5696557485669117`*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -1517,6 +1544,9 @@ Cell[BoxData[
           RowBox[{"k", ",", "z", ",", "2", ",", "opts"}], "]"}], ",", 
          "\"\<EH\>\"", ",", 
          RowBox[{"LinearPS", "[", 
+          RowBox[{"k", ",", "z", ",", "opts"}], "]"}], ",", "\"\<TRG\>\"", 
+         ",", 
+         RowBox[{"TRGPS", "[", 
           RowBox[{"k", ",", "z", ",", "opts"}], "]"}]}], "]"}]}], 
       "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", 
    RowBox[{
@@ -1529,7 +1559,12 @@ Cell[BoxData[
   3.56809627121343*^9}, {3.568096683212821*^9, 3.568096703661015*^9}, {
   3.5680971410333147`*^9, 3.568097149223648*^9}, {3.568097195700774*^9, 
   3.568097223383381*^9}, {3.568097600770227*^9, 3.5680976197700787`*^9}, {
-  3.568099224133854*^9, 3.568099224626792*^9}}],
+  3.568099224133854*^9, 3.568099224626792*^9}, {3.5696556828632603`*^9, 
+  3.569655694258316*^9}}],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.56965404896026*^9, 3.569654055483759*^9}, 
+   3.569655672487184*^9}],
 
 Cell[BoxData[{
  RowBox[{"End", "[", " ", "]"}], "\[IndentingNewLine]", 
@@ -1538,6 +1573,7 @@ Cell[BoxData[{
  CellChangeTimes->{{3.536234041422625*^9, 3.536234050194671*^9}, {
   3.536235605195163*^9, 3.536235605993851*^9}, {3.536236869079903*^9, 
   3.536236870382352*^9}}]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
@@ -1648,16 +1684,30 @@ Cell[39926, 994, 3625, 87, 188, "Input",
 Cell[CellGroupData[{
 Cell[43588, 1086, 131, 2, 42, "Subsection",
  InitializationCell->True],
-Cell[43722, 1090, 6302, 139, 395, "Input",
+Cell[CellGroupData[{
+Cell[43744, 1092, 106, 1, 35, "Subsubsection"],
+Cell[43853, 1095, 6302, 139, 395, "Input",
  InitializationCell->True],
-Cell[50027, 1231, 5731, 145, 326, "Input",
- InitializationCell->True],
-Cell[55761, 1378, 4479, 108, 326, "Input",
- InitializationCell->True],
-Cell[60243, 1488, 1796, 43, 165, "Input",
- InitializationCell->True],
-Cell[62042, 1533, 313, 6, 73, "Input",
+Cell[50158, 1236, 5731, 145, 326, "Input",
  InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[55926, 1386, 104, 1, 35, "Subsubsection"],
+Cell[56033, 1389, 4479, 108, 326, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[60549, 1502, 95, 1, 35, "Subsubsection"],
+Cell[60647, 1505, 94, 2, 49, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[60778, 1512, 117, 1, 35, "Subsubsection"],
+Cell[60898, 1515, 1970, 47, 165, "Input",
+ InitializationCell->True],
+Cell[62871, 1564, 117, 2, 49, "Input"],
+Cell[62991, 1568, 313, 6, 73, "Input",
+ InitializationCell->True]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]]
 }

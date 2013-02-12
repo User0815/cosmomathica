@@ -256,7 +256,7 @@ Options[SmithPS]:=cosmoopts;
 
 (*Umberella function for the power spectrum*)
 PowerSpectrum[k_,z_,opts:OptionsPattern[]]:=Module[{},
-Switch[OV[PSType,opts],"HaloFit0",SmithPS[k,z,0,opts],"HaloFit1",SmithPS[k,z,1,opts],"HaloFit2",SmithPS[k,z,2,opts],"EH",LinearPS[k,z,opts]]
+Switch[OV[PSType,opts],"HaloFit0",SmithPS[k,z,0,opts],"HaloFit1",SmithPS[k,z,1,opts],"HaloFit2",SmithPS[k,z,2,opts],"EH",LinearPS[k,z,opts],"TRG",TRGPS[k,z,opts]]
 ];
 Options[PowerSpectrum]:=cosmoopts;
 
