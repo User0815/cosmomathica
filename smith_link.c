@@ -15,9 +15,7 @@ void smith_set_parameters_wrap(double OMEGAM, double OMEGAV, double GAMMA, doubl
 
 void smith_P_NL_wrap(double a, double k){
   double pnl;
-  printf("herp\n");
   pnl = P_NL(a, k);
-  printf("derp\n");
   MLPutReal64(stdlink, pnl);
 }
 
