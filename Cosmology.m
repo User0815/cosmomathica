@@ -241,29 +241,6 @@ LinearPS[k_,z_,opts:OptionsPattern[]]:=TransferFunction[k*OV[h,opts],opts]^2 * k
 Options[normalization]:=cosmoopts;
 
 
-(*Smith halofit*)
-smithPSint[a_?NumericQ,nlmode_?IntegerQ,opts:OptionsPattern[]]:=smithPSint[a,nlmode,opts]=Module[{link,result,aa},
-link=Install[$location<>"/smith_link"];
-(*TODO make sure it doesn't crash*)
-If[Abs[a-1]<10^-6||a>1,aa=.9999,aa=a];
-Global`SmithSetParameters[
-OV[OmegaM,opts],
-OV[OmegaL,opts],
-.2(*gamma: shape factor(?)*),
-OV[sigma8,opts],
-OV[ns,opts],
-1.5(*betap*),
-1.0(*z0*),
-nlmode(*non linear mode*)];
-result=Interpolation@Table[{10^lk,Global`SmithPNL[aa,10^lk*2998./OV[h,opts](*account for c=1 and units h/Mpc*)]},{lk,-6,4,.01}];
-Uninstall[link];
-result
-];
-SmithPS[k_?NumericQ,z_?NumericQ,nlmode_?IntegerQ,opts:OptionsPattern[]]:=smithPSint[1/(1+z),nlmode,opts][k ];
-Options[smithPSint]:=cosmoopts;
-Options[SmithPS]:=cosmoopts;
-
-
 (*Umberella function for the power spectrum*)
 PowerSpectrum[k_,z_,opts:OptionsPattern[]]:=Module[{},
 Switch[OV[PSType,opts],"HaloFit0",SmithPS[k,z,0,opts],"HaloFit1",SmithPS[k,z,1,opts],"HaloFit2",SmithPS[k,z,2,opts],"EH",LinearPS[k,z,opts]]
