@@ -70,7 +70,10 @@ LinearPS::usage="LinearPS[k,z,path] returns a list of five values using the fitt
 PowerSpectrum::usage="PowerSpectrum[k,z] returns the power spectrum at wavenumber k and redshift z. The algorithm can be specified with PSType."
 
 
-NonlinearPowerSpectrum::usage="NonlinearPowerSpectrum[k,z,Omega21,Omega22] returns the power spectrum at wavenumber k and redshift z using the background functions Omega21 and Omega22 as specified by the TRG package."
+NonlinearPowerSpectrumTRG::usage="NonlinearPowerSpectrumTRG[k,LinearPS,Omega21,Omega22] returns the power spectrum at wavenumber k and redshift z using the background functions Omega21 and Omega22 as specified by the TRG package. LinearPS[k] is a one-parameter function representing the linear power spectrum."
+
+
+NonlinearPowerSpectrumHalofit::usage="NonlinearPowerSpectrumHalofit[k,LinearPS] returns the power spectrum at wavenumber k and redshift z using the Halofit algorithm. LinearPS[k] is a one-parameter function representing the linear power spectrum."
 
 
 (*Options*)
@@ -114,7 +117,7 @@ zmax=100;
 
 SetCosmology[o:OptionsPattern[]]:=Module[{clist},
 clist=List[o];
-(DownValues[#]={Last@DownValues[#]})&/@{odesol, antideriv1, antideriv2,transferfitint,smithPSint, normalization,nonlinearint};
+(DownValues[#]={Last@DownValues[#]})&/@{odesol, antideriv1, antideriv2,transferfitint,smithPSint, normalization,nonlineartrgint,nonlinearhaloint};
 Unprotect[Cosmology];
 Do[Cosmology[[First@First@Position[Cosmology,opt[[1]],{2}]]]=opt,{opt,clist}];
 Protect[Cosmology];
@@ -248,16 +251,26 @@ Switch[OV[PSType,opts],"HaloFit0",SmithPS[k,z,0,opts],"HaloFit1",SmithPS[k,z,1,o
 Options[PowerSpectrum]:=cosmoopts;
 
 
+Get[$location<>"halofit.m"];
+nonlinearhaloint[LinearPS_,oM_,oL_]:=nonlinearhaloint[LinearPS,oM,oL]=Module[{result},
+HaloFitClear[];
+result=Table[{k,HaloFitPS[k,oM,oL,LinearPS]},{k,10^Range[-4,3,.01]}];
+Interpolation@result
+];
+NonlinearPowerSpectrumHalofit[k_,LinearPS_,opts:OptionsPattern[]]:=nonlinearhaloint[LinearPS,OV[OmegaM,opts],OV[OmegaL,opts]][k];
+Options[NonlinearPowerSpectrumHalofit]:=cosmoopts;
+
+
 Get[$location<>"psnonlinear.m"];
 Needs["NumericalCalculus`"];
-nonlinearint[Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlinearint[Omega21,Omega22,opts]=Module[{pstable,klist,result,zz},
-pstable=Transpose@Table[{k,PowerSpectrum[k,0,opts]},{k,10^Range[-4,3,.01]}];
+nonlineartrgint[LinearPS_,Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlineartrgint[LinearPS,Omega21,Omega22,opts]=Module[{pstable,klist,result,zz},
+pstable=Transpose@Table[{k,LinearPS[k]},{k,10^Range[-4,3,.01]}];
 result=Transpose@TRGPowerSpectrum[pstable,35,0,Abs@ND[Log[GrowthFunction[zz,opts]],zz,35],OV[H0,opts],OV[ns,opts],Omega21,Omega22];
 Interpolation[result[[All,{1,2}]]]
 ];
-NonlinearPowerSpectrum[k_,Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlinearint[Omega21,Omega22,opts][k];
-Options[nonlinearint]:=cosmoopts;
-Options[NonlinearPowerSpectrum]:=cosmoopts;
+NonlinearPowerSpectrumTRG[k_,LinearPS_,Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlineartrgint[LinearPS,Omega21,Omega22,opts][k];
+Options[nonlineartrgint]:=cosmoopts;
+Options[NonlinearPowerSpectrumTRG]:=cosmoopts;
 
 
 End[ ]

@@ -23,6 +23,7 @@ BeginPackage["Halofit`"]
 
 
 HaloFitPS::usage="Applies nonlinear corrections using the Halofit algorithm (Smith et al 2003)"
+HaloFitClear::usage="Clear memoized functions in order to apply corrections to a new linear power spectrum"
 
 
 Begin["`Private`"]
@@ -34,13 +35,13 @@ deltaLsq[k_?NumericQ]:=linearPS[k]k^3/(2 Pi^2);
 sigmaSq[R_?NumericQ] :=NIntegrate[deltaLsq[Exp@lk]Exp[-Exp[2lk] R^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5]
 
 
-ksig:=ksig=x/.FindRoot[sigmaSq[1/x]==1,{x,1}];
+ksig[]:=ksig[]=x/.FindRoot[sigmaSq[1/x]==1,{x,1}];
 
 
-neff:=neff=-3+NIntegrate[deltaLsq[Exp@lk]2Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
+neff[]:=neff[]=-3+NIntegrate[deltaLsq[Exp@lk]2Exp[2lk]/ksig[]^2Exp[-Exp[2lk]/ksig[]^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
 
 
-curve:=curve=NIntegrate[deltaLsq[Exp@lk]4Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2]-deltaLsq[Exp@lk]4Exp[4lk]/ksig^4Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
+curve[]:=curve[]=NIntegrate[deltaLsq[Exp@lk]4Exp[2lk]/ksig[]^2Exp[-Exp[2lk]/ksig[]^2]-deltaLsq[Exp@lk]4Exp[4lk]/ksig[]^4Exp[-Exp[2lk]/ksig[]^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
 
 
 (*if omega_m < 1 and lambda = 0*)
@@ -61,26 +62,26 @@ f2=(1-omegaM-omegaL)/(1-omegaM)f2a+omegaL/(1-omegaM)f2b;
 f3=(1-omegaM-omegaL)/(1-omegaM)f3a+omegaL/(1-omegaM)f3b;
 
 
-an:=10^(1.4861+1.8369 neff+1.6762 neff^2 +0.794neff^3+0.167neff^4-0.6206curve);
-bn:=10^(.9463+.9466neff+.3084neff^2-.94curve);
-cn:=10^(-.2807+.6669neff+.3214neff^2-.0793curve);
-mun:=10^(-3.5442+.1908neff);
-nun:=10^(.9589+1.2857neff);
-gamman:=.8649+.2989neff+.1631curve;
-alphan:=1.3884+.34neff-.1452neff^2;
-betan:=.8291+.9854neff+.3401neff^2;
+an:=10^(1.4861+1.8369 neff[]+1.6762 neff[]^2 +0.794neff[]^3+0.167neff[]^4-0.6206curve[]);
+bn:=10^(.9463+.9466neff[]+.3084neff[]^2-.94curve[]);
+cn:=10^(-.2807+.6669neff[]+.3214neff[]^2-.0793curve[]);
+mun:=10^(-3.5442+.1908neff[]);
+nun:=10^(.9589+1.2857neff[]);
+gamman:=.8649+.2989neff[]+.1631curve[];
+alphan:=1.3884+.34neff[]-.1452neff[]^2;
+betan:=.8291+.9854neff[]+.3401neff[]^2;
 
 
-deltaHsqPrime[k_]:=an (k/ksig)^(3f1)/(1+bn (k/ksig)^f2+(cn f3 k/ksig)^(3-gamman))
+deltaHsqPrime[k_]:=an (k/ksig[])^(3f1)/(1+bn (k/ksig[])^f2+(cn f3 k/ksig[])^(3-gamman))
 
 
-deltaHsq[k_]:=deltaHsqPrime[k]/(1+ ksig/k (mun+ nun ksig/k))
+deltaHsq[k_]:=deltaHsqPrime[k]/(1+ ksig[]/k (mun+ nun ksig[]/k))
 
 
 f[y_]:=y/4+y^2/8;
 
 
-deltaQsq[k_]:=deltaLsq[k]*(1+deltaLsq[k])^betan/(1+alphan deltaLsq[k])Exp[-f[k/ksig]];
+deltaQsq[k_]:=deltaLsq[k]*(1+deltaLsq[k])^betan/(1+alphan deltaLsq[k])Exp[-f[k/ksig[]]];
 
 
 deltaNLsq[k_]:=deltaQsq[k]+deltaHsq[k];
@@ -89,7 +90,11 @@ deltaNLsq[k_]:=deltaQsq[k]+deltaHsq[k];
 nonlinearPS[k_]:=deltaNLsq[k]*2Pi^2/k^3;
 
 
-HaloFitPS[k_?NumericQ,OmegaM_,OmegaL_,lin_]:=Block[{linearPS=lin,omegaM=OmegaM,omegaL=OmegaL},nonlinearPS[k]];
+HaloFitPS[k_?NumericQ,OmegaM_,OmegaL_,LinearPS_]:=Block[{linearPS=LinearPS,omegaM=OmegaM,omegaL=OmegaL},nonlinearPS[k]];
+
+
+(*clear memoized variables*)
+HaloFitClear[]:=(DownValues[#]={Last@DownValues[#]};)&/@{curve,neff,ksig};
 
 
 End[ ]
