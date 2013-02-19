@@ -246,14 +246,14 @@ Options[normalization]:=cosmoopts;
 
 (*Umberella function for the power spectrum*)
 PowerSpectrum[k_,z_,opts:OptionsPattern[]]:=Module[{},
-Switch[OV[PSType,opts],"HaloFit0",SmithPS[k,z,0,opts],"HaloFit1",SmithPS[k,z,1,opts],"HaloFit2",SmithPS[k,z,2,opts],"EH",LinearPS[k,z,opts]]
+LinearPS[k,z,opts]
 ];
 Options[PowerSpectrum]:=cosmoopts;
 
 
 Get[$location<>"halofit.m"];
 nonlinearhaloint[LinearPS_,oM_,oL_]:=nonlinearhaloint[LinearPS,oM,oL]=Module[{result},
-HaloFitClear[];
+HaloFitInit[LinearPS];
 result=Table[{k,HaloFitPS[k,oM,oL,LinearPS]},{k,10^Range[-4,3,.01]}];
 Interpolation@result
 ];
@@ -263,13 +263,12 @@ Options[NonlinearPowerSpectrumHalofit]:=cosmoopts;
 
 Get[$location<>"psnonlinear.m"];
 Needs["NumericalCalculus`"];
-nonlineartrgint[LinearPS_,Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlineartrgint[LinearPS,Omega21,Omega22,opts]=Module[{pstable,klist,result,zz},
+nonlineartrgint[LinearPS_,Omega21_,Omega22_,dlogGdz_,locH0_,locns_]:=nonlineartrgint[LinearPS,Omega21,Omega22,dlogGdz,locH0,locns]=Module[{pstable,klist,result,zz},
 pstable=Transpose@Table[{k,LinearPS[k]},{k,10^Range[-4,3,.01]}];
-result=Transpose@TRGPowerSpectrum[pstable,35,0,Abs@ND[Log[GrowthFunction[zz,opts]],zz,35],OV[H0,opts],OV[ns,opts],Omega21,Omega22];
+result=Transpose@TRGPowerSpectrum[pstable,35,0,dlogGdz,locH0,locns,Omega21,Omega22];
 Interpolation[result[[All,{1,2}]]]
 ];
-NonlinearPowerSpectrumTRG[k_,LinearPS_,Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlineartrgint[LinearPS,Omega21,Omega22,opts][k];
-Options[nonlineartrgint]:=cosmoopts;
+NonlinearPowerSpectrumTRG[k_,LinearPS_,Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlineartrgint[LinearPS,Omega21,Omega22,Abs@ND[Log[GrowthFunction[zz,opts]],zz,35],OV[H0,opts],OV[ns,opts]][k];
 Options[NonlinearPowerSpectrumTRG]:=cosmoopts;
 
 
