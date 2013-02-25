@@ -164,7 +164,7 @@ Options[w]:=cosmoopts;
 fw[z_,opts:OptionsPattern[]]=Integrate[(1+w[z,opts])/(1+zx),{zx,0,z},GenerateConditions->False];
 
 
-(* H in units of H_ 0 *)
+(* H in units of H_0 *)
 DimensionlessHubble[z_?NumericQ,opts:OptionsPattern[]]:=Sqrt[OV[OmegaM,opts]*(1+z)^3+OV[OmegaK,opts]*(1+z)^2+OV[OmegaL,opts]*Exp[3*fw[z,opts]]];
 Options[DimensionlessHubble]:=cosmoopts;
 
@@ -189,8 +189,8 @@ sinn=Compile[{{x,_Real},{ok,_Real}},Evaluate@If[ok==0,x,Sinh[Sqrt[ok]x]/Sqrt[ok]
 
 
 
-antideriv1[opts:OptionsPattern[]]:=antideriv1[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts],y[0]==0},y,{zx,0,zmax}][[1,1,2]];
-antideriv2[opts:OptionsPattern[]]:=antideriv2[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts]/(1+z),y[0]==0},y,{zx,0,zmax}][[1,1,2]];
+antideriv1[opts:OptionsPattern[]]:=antideriv1[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts],y[0]==0},y,{zx,0,zmax},MaxStepSize->.02][[1,1,2]];
+antideriv2[opts:OptionsPattern[]]:=antideriv2[opts]=NDSolve[{y'[zx]==1/Hubble[zx,opts]/(1+z),y[0]==0},y,{zx,0,zmax},MaxStepSize->.02][[1,1,2]];
 Distance[z_?NumericQ,opts:OptionsPattern[]]:=Switch[OptionValue@DistanceType,
 "Comoving",antideriv1[opts][z],
 "TransverseComoving",sinn[Distance[z,DistanceType->Comoving,opts],OV[OmegaK,opts]],
@@ -245,7 +245,7 @@ Options[normalization]:=cosmoopts;
 
 
 (*Umberella function for the power spectrum*)
-PowerSpectrum[k_,z_,opts:OptionsPattern[]]:=Module[{},
+PowerSpectrum[k_?NumericQ,z_?NumericQ,opts:OptionsPattern[]]:=Module[{},
 LinearPS[k,z,opts]
 ];
 Options[PowerSpectrum]:=cosmoopts;

@@ -32,7 +32,7 @@ Begin["`Private`"]
 deltaLsq[k_?NumericQ]:=linearPS[k]k^3/(2 Pi^2);
 
 
-sigmaSq[R_?NumericQ] :=NIntegrate[deltaLsq[Exp@lk]Exp[-Exp[2lk] R^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5]
+sigmaSq[R_?NumericQ] :=NIntegrate[deltaLsq[Exp@lk]Exp[-Exp[2lk] R^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5,MaxRecursion->12]
 
 
 (*if omega_m < 1 and lambda = 0*)
@@ -88,8 +88,8 @@ nonlinearPS[k]];
 (*clear memoized variables*)
 HaloFitInit[LinearPS_]:=Block[{linearPS=LinearPS},
 ksig=x/.FindRoot[sigmaSq[1/x]==1,{x,1}];
-neff=-3+NIntegrate[deltaLsq[Exp@lk]2Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
-curve=NIntegrate[deltaLsq[Exp@lk]4Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2]-deltaLsq[Exp@lk]4Exp[4lk]/ksig^4Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
+neff=-3+NIntegrate[deltaLsq[Exp@lk]2Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5,MaxRecursion->12];
+curve=NIntegrate[deltaLsq[Exp@lk]4Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2]-deltaLsq[Exp@lk]4Exp[4lk]/ksig^4Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5,MaxRecursion->12];
 ];
 
 
