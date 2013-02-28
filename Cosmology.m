@@ -117,7 +117,7 @@ zmax=100;
 
 SetCosmology[o:OptionsPattern[]]:=Module[{clist},
 clist=List[o];
-(DownValues[#]={Last@DownValues[#]})&/@{odesol, antideriv1, antideriv2,transferfitint,smithPSint, normalization,nonlineartrgint,nonlinearhaloint};
+(DownValues[#]={Last@DownValues[#]})&/@{odesol, antideriv1, antideriv2,transferfitint, normalization,nonlineartrgint,nonlinearhaloint};
 Unprotect[Cosmology];
 Do[Cosmology[[First@First@Position[Cosmology,opt[[1]],{2}]]]=opt,{opt,clist}];
 Protect[Cosmology];

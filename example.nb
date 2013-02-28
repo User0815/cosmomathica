@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    102170,       2005]
-NotebookOptionsPosition[    101003,       1965]
-NotebookOutlinePosition[    101360,       1981]
-CellTagsIndexPosition[    101317,       1978]
+NotebookDataLength[    102330,       2006]
+NotebookOptionsPosition[    101086,       1965]
+NotebookOutlinePosition[    101521,       1982]
+CellTagsIndexPosition[    101478,       1979]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -112,44 +112,45 @@ the other way around.\
 
 Cell[BoxData[
  RowBox[{
-  RowBox[{"Cosmology", "=", 
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"OmegaM", "\[Rule]", "0.25`"}], ",", 
-     RowBox[{"OmegaB", "\[Rule]", "0.05`"}], ",", 
-     RowBox[{"OmegaC", "\[Rule]", 
-      RowBox[{
-       RowBox[{"-", "OmegaB"}], "+", "OmegaM"}]}], ",", 
-     RowBox[{"OmegaL", "\[Rule]", "0.75`"}], ",", 
-     RowBox[{"OmegaTot", "\[Rule]", 
-      RowBox[{"1", "-", "OmegaK"}]}], ",", 
-     RowBox[{"OmegaK", "\[Rule]", "1.1"}], ",", 
-     RowBox[{"h", "\[Rule]", "0.73`"}], ",", 
-     RowBox[{"H0", "\[Rule]", 
-      RowBox[{"0.0003333333333333333`", " ", "h"}]}], ",", 
-     RowBox[{"omegaM", "\[Rule]", 
-      RowBox[{
-       SuperscriptBox["h", "2"], " ", "OmegaM"}]}], ",", 
-     RowBox[{"omegaL", "\[Rule]", 
-      RowBox[{
-       SuperscriptBox["h", "2"], " ", "OmegaL"}]}], ",", 
-     RowBox[{"omegaB", "\[Rule]", 
-      RowBox[{
-       SuperscriptBox["h", "2"], " ", "OmegaB"}]}], ",", 
-     RowBox[{"omegaC", "\[Rule]", 
-      RowBox[{
-       SuperscriptBox["h", "2"], " ", "OmegaC"}]}], ",", 
-     RowBox[{"omegaK", "\[Rule]", 
-      RowBox[{
-       SuperscriptBox["h", "2"], " ", "OmegaK"}]}], ",", 
-     RowBox[{"w0", "\[Rule]", 
-      RowBox[{"-", "1"}]}], ",", 
-     RowBox[{"w1", "\[Rule]", "0"}], ",", 
-     RowBox[{"gamma", "\[Rule]", "0.545`"}], ",", 
-     RowBox[{"sigma8", "\[Rule]", "0.8`"}], ",", 
-     RowBox[{"ns", "\[Rule]", "0.9`"}]}], "}"}]}], ";"}]], "Input",
+  RowBox[{"SetCosmology", "[", 
+   RowBox[{
+    RowBox[{"OmegaM", "\[Rule]", "0.25`"}], ",", 
+    RowBox[{"OmegaB", "\[Rule]", "0.05`"}], ",", 
+    RowBox[{"OmegaC", "\[Rule]", 
+     RowBox[{
+      RowBox[{"-", "OmegaB"}], "+", "OmegaM"}]}], ",", 
+    RowBox[{"OmegaL", "\[Rule]", "0.75`"}], ",", 
+    RowBox[{"OmegaTot", "\[Rule]", 
+     RowBox[{"1", "-", "OmegaK"}]}], ",", 
+    RowBox[{"OmegaK", "\[Rule]", "1.1"}], ",", 
+    RowBox[{"h", "\[Rule]", "0.73`"}], ",", 
+    RowBox[{"H0", "\[Rule]", 
+     RowBox[{"0.0003333333333333333`", " ", "h"}]}], ",", 
+    RowBox[{"omegaM", "\[Rule]", 
+     RowBox[{
+      SuperscriptBox["h", "2"], " ", "OmegaM"}]}], ",", 
+    RowBox[{"omegaL", "\[Rule]", 
+     RowBox[{
+      SuperscriptBox["h", "2"], " ", "OmegaL"}]}], ",", 
+    RowBox[{"omegaB", "\[Rule]", 
+     RowBox[{
+      SuperscriptBox["h", "2"], " ", "OmegaB"}]}], ",", 
+    RowBox[{"omegaC", "\[Rule]", 
+     RowBox[{
+      SuperscriptBox["h", "2"], " ", "OmegaC"}]}], ",", 
+    RowBox[{"omegaK", "\[Rule]", 
+     RowBox[{
+      SuperscriptBox["h", "2"], " ", "OmegaK"}]}], ",", 
+    RowBox[{"w0", "\[Rule]", 
+     RowBox[{"-", "1"}]}], ",", 
+    RowBox[{"w1", "\[Rule]", "0"}], ",", 
+    RowBox[{"gamma", "\[Rule]", "0.545`"}], ",", 
+    RowBox[{"sigma8", "\[Rule]", "0.8`"}], ",", 
+    RowBox[{"ns", "\[Rule]", "0.9`"}], ",", 
+    RowBox[{"Tcmb", "\[Rule]", "2.728"}]}], "]"}], ";"}]], "Input",
  CellChangeTimes->{{3.55107272410752*^9, 3.5510727472673264`*^9}, {
-  3.551072834280211*^9, 3.551072856616702*^9}}],
+  3.551072834280211*^9, 3.551072856616702*^9}, {3.5710336580376577`*^9, 
+  3.5710336605878468`*^9}, {3.571034027228788*^9, 3.57103403236574*^9}}],
 
 Cell[BoxData[
  RowBox[{"Distance", "[", "1.", "]"}]], "Input",
@@ -226,9 +227,8 @@ Cell[BoxData[
 Cell[BoxData[
  RowBox[{
   StyleBox[
-   RowBox[{"InterpolatingFunction", "::", "dmval"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Input value \[NoBreak]\\!\\({\\(-4.605076108940006`\\)}\\)\
+   RowBox[{"InterpolatingFunction", "::", "dmval"}], "MessageName"], ":", 
+  " ", "\<\"Input value \[NoBreak]\\!\\({\\(-4.605076108940006`\\)}\\)\
 \[NoBreak] lies outside the range of data in the interpolating function. \
 Extrapolation will be used. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
 ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
@@ -1964,9 +1964,10 @@ BQ==
 }, Open  ]]
 },
 WindowSize->{740, 864},
-WindowMargins->{{Automatic, 450}, {Automatic, 7}},
+WindowMargins->{{Automatic, 446}, {Automatic, 0}},
+PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
 ShowSelection->True,
-FrontEndVersion->"8.0 for Linux x86 (64-bit) (October 10, 2011)",
+FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -1980,32 +1981,32 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[557, 20, 522, 10, 148, "Text"],
-Cell[1082, 32, 257, 6, 36, "Input"],
-Cell[1342, 40, 119, 1, 35, "Text"],
-Cell[1464, 43, 268, 4, 36, "Input"],
-Cell[1735, 49, 294, 5, 57, "Text"],
-Cell[2032, 56, 169, 3, 36, "Input"],
-Cell[2204, 61, 103, 2, 36, "Input"],
-Cell[2310, 65, 112, 1, 35, "Text"],
-Cell[2425, 68, 203, 4, 36, "Input"],
-Cell[2631, 74, 165, 2, 35, "Text"],
-Cell[2799, 78, 561, 16, 60, "Input"],
-Cell[3363, 96, 105, 1, 35, "Text"],
-Cell[3471, 99, 102, 1, 36, "Input"],
-Cell[3576, 102, 487, 8, 101, "Text"],
-Cell[4066, 112, 1542, 39, 184, "Input"],
-Cell[5611, 153, 130, 2, 36, "Input"],
-Cell[5744, 157, 203, 4, 35, "Text"],
-Cell[5950, 163, 1250, 39, 152, "Input"],
+Cell[557, 20, 522, 10, 131, "Text"],
+Cell[1082, 32, 257, 6, 32, "Input"],
+Cell[1342, 40, 119, 1, 31, "Text"],
+Cell[1464, 43, 268, 4, 32, "Input"],
+Cell[1735, 49, 294, 5, 51, "Text"],
+Cell[2032, 56, 169, 3, 32, "Input"],
+Cell[2204, 61, 103, 2, 32, "Input"],
+Cell[2310, 65, 112, 1, 31, "Text"],
+Cell[2425, 68, 203, 4, 32, "Input"],
+Cell[2631, 74, 165, 2, 31, "Text"],
+Cell[2799, 78, 561, 16, 55, "Input"],
+Cell[3363, 96, 105, 1, 31, "Text"],
+Cell[3471, 99, 102, 1, 32, "Input"],
+Cell[3576, 102, 487, 8, 71, "Text"],
+Cell[4066, 112, 1638, 40, 125, "Input"],
+Cell[5707, 154, 130, 2, 32, "Input"],
+Cell[5840, 158, 203, 4, 31, "Text"],
+Cell[6046, 164, 1250, 39, 121, "Input"],
 Cell[CellGroupData[{
-Cell[7225, 206, 875, 17, 60, "Input"],
-Cell[8103, 225, 711, 14, 67, "Message"],
-Cell[8817, 241, 33801, 652, 288, "Output"]
+Cell[7321, 207, 875, 17, 55, "Input"],
+Cell[8199, 226, 698, 13, 62, "Message"],
+Cell[8900, 241, 33801, 652, 230, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[42655, 898, 1758, 34, 152, "Input"],
-Cell[44416, 934, 56571, 1028, 292, "Output"]
+Cell[42738, 898, 1758, 34, 121, "Input"],
+Cell[44499, 934, 56571, 1028, 233, "Output"]
 }, Open  ]]
 }
 ]
