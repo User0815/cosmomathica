@@ -1,0 +1,20 @@
+P = emu.o hubble.o
+F = mainF.o
+FC = gfortran
+FFLAGS1 = -c -u -O -x f77-cpp-input -fsecond-underscore
+FFLAGS = -c -O 
+CC = gcc
+LD = gfortran
+CFLAGS = -c -O -Dgcc
+LDFLAGS = -O
+
+.c.o :
+	$(CC) $(CFLAGS) $<
+
+.f.o :
+	$(FC) $(FFLAGS) $<
+
+testF.exe: $(P) $(CSTUFF) $(F)
+	$(LD) -o testF.exe $(F) $(CSTUFF) $(P) $(LDFLAGS) -lgsl -lgslcblas -lm 
+
+          
