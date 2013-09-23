@@ -1,0 +1,173 @@
+============================================================================
+Martin Kilbinger 2/2006
+smith2.c
+============================================================================
+
+The program smith2.c is based on Rob Smiths' halofit.f (see Smith,
+Peacock et al. 2003). The code for determining the non-linear power
+spectrum has been improved and is now much more efficient. The main
+changes are listed at the end of this readme.  The code also includes
+the non-linear fitting formulae of Peacock & Dodds (1996).
+
+
+============================================================================
+1. Compilation:
+============================================================================
+
+For the C demo program (smith2demo):
+
+   gcc smith2demo.c smith2.c -o smith2demo -lm
+
+For the Fortran demo program (fsmith2):
+
+   gcc smith2.c -c -o smith2.o
+   f77 fsmith2.f -o fsmith2 smith2.o -lm
+
+Alternatively, use the Makefile:
+
+   make smith2demo
+   make fsmith2
+
+
+============================================================================
+2. Main functions
+============================================================================
+
+From any fortran program, the following functions from smith2.c are
+available (see fsmith.f as a demo program):
+
+pl(a, k, res)         linear density power spectrum (BBKS transfer function)
+pnl(a, k, res)	      nonlinear density power spectrum
+pkappa(ell, res)      convergence power spectrum
+
+From a C program, the alternative calls are:
+
+res = P_L(a, k);
+res = P_NL(a, k);
+res = Pkappa(ell)
+
+The arguments are double precision variables (real*8):
+
+a	scale factor, 0.01<=a<1.0
+k	3d Fourier wavemode in units of c/H_0=2998 Mpc/h
+ell	2d Fourier wavemode, 1e-2<=ell<=1e6
+res	contains the result after the function call
+
+The range for k is unlimited. For k<1e-2 and k>1e6, the power spectrum
+is extrapolated (see below). The limits can be changed in smith2.h.
+
+
+============================================================================
+3. Parameters
+============================================================================
+
+The cosmological parameters are set by calling the following function:
+
+setparameters(Omega_m, Omega_v, Gamma, sigma_8, n_spec, beta_p, z0,
+	nonlinear)
+
+The first 7 arguments are real*8 (double), the last one is an integer:
+
+cosmological parameters:
+
+Omega_m		matter density
+Omega_v		cosmological constant/vacuum energy density
+Gamma		shape parameter
+sigma_8		power spectrum normalisation
+n_spec		primordial spectral index
+
+redshift parameters:
+
+beta_p, z0	For beta_p greater zero, the redshift distribution is
+		prob(z) = beta_p/(z0*Gamma(3/beta_p))*(z/z0)^2
+			  *exp(-(z/z0)^(-beta_p)).
+		If beta_p is set to 0, all galaxies are at the fixed
+		redshift z=z0.
+
+flag:
+nonlinear	0: linear power spectrum (BBKS CDM transfer function)
+		1: Peacock & Dodds (1996) fitting formula
+		2: Smith et al. (2003) halofit
+
+Note that Smith et al. uses the Bond & Efstathiou (1984) transfer
+function to calculate the linear power spectrum.
+
+
+============================================================================
+4. Extrapolation
+============================================================================
+
+In the highly non-linear regime, the power spectrum is
+extrapolated. For the linear power spectrum, P(k) \propto
+k^{n_spec-4.0} is assumed. In the PD96-case, the stable clustering
+result P(k) \propto k^{-2.5} is used. For Smith, the asymptotic form
+of the halofit formula is taken, see Rob's paper eq.(61).
+
+In the linear regime, the extrapolation is P(k) \propto k^n_spec.
+
+
+============================================================================
+5. Performance
+============================================================================
+
+Time-consuming functions store tabulated values and
+interpolate when called after the first time. The tables are
+recalculated when cosmological parameters have changed
+since the previous call.
+
+
+============================================================================
+6. Known bugs and shortcomings:
+============================================================================
+
+- For n_spec smaller than about 0.8, both Peacock&Dodds as well as
+  Smith et al. have problems and their fitting formulae are undefined.
+
+- a=1.0 should not be used, but 0.99999... instead.
+
+- the program should run within the following range of parameters:
+  Omega_m, Omega_v       [0.1; 1.5]
+  Gamma                  [0.05; 0.5]
+  sigma_8                [0.1, 1.5]
+  n_spec                 [0.7, 1.3]
+  beta_p                 [1.0, 2.0]
+  z0                     [0.2, 1.5]
+
+  Although intensively tested (;-p) the program might fail. Possible reasons are:
+  - The minimum scale parameter used in smith2.c (a=0.01, z=100) might not exist
+     in a closed Universe.
+  - The nonlinear scale needed for halofit might not be found. In that case the 
+    program will hang. Try to increase kmax in the routine wint2.
+  - a, or ell are out of range causing an error in the interpolation routines.
+
+  In case of problems, questions and comments are welcome!
+  (kilbinge@astro.uni-bonn.de)
+
+
+============================================================================
+7. Changes
+============================================================================
+
+Changes in the program wrt to Rob's original version (some major ideas
+due to Jan Hartlap):
+- Tabulation of the linear (Bond&Efstathiou 1984) and non-linear
+  power spectrum, constants are calculated only once.
+- Integration cutoff for determination of non-linear scale knl
+  flexible, as function of smoothing scale rmid; using Romberg
+  integration.
+- Bisection to find knl is iterative: if the bisection gets stuck at one
+  end of the bisecting interval, the interval is shifted accordingly and
+  a new bisection is started. If knl is larger than knlstern (I chose
+  10e8 h/Mpc), the bisection is canceled and the linear power spectrum
+  is used.
+- Slope and curvature calculated only once, after knl is
+  fixed.
+
+============================================================================
+8. Contact
+============================================================================
+
+Feel free to email me at kilbinge@astro.uni-bonn.de
+
+Have fun!
+   Martin Kilbinger

@@ -1,6 +1,10 @@
-
 #include <stdio.h>
 #include "mathlink.h"
+
+/* TF Transfer function from Eisenstein&hu:
+ * http://background.uchicago.edu/~whu/transfer/transferpage.html -> C
+ * Version
+ */
 
 extern void TFset_parameters(float omega0hh, float f_baryon, float Tcmb);
 extern float TFfit_onek(float k, float *tf_baryon, float *tf_cdm); 
@@ -25,6 +29,13 @@ void TFset_parameters_wrap(float omega0hh, float f_baryon, float Tcmb){
     TFset_parameters(omega0hh, f_baryon, Tcmb);
     MLPutInteger(stdlink, 0); /* We need to return *something* */
 }
+
+
+/* CosmicEmulator version 1.1
+ * http://www.lanl.gov/projects/cosmology/CosmicEmu/emu.html
+ */
+
+
 
 int main(int argc, char* argv[]) {
     return MLMain(argc, argv);
