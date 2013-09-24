@@ -13,24 +13,30 @@ MLLIB = ML64i3 # Set this to ML64i3 if using a 64-bit system
 
 MPREP = ${CADDSDIR}/mprep
 
-OFILES = math_link_tm.o math_link.o tf_fit.o 
+HALOFIT = halofit
+
+OFILES = math_link.o math_link_tm.o tf_fit.o $(HALOFIT)/smith2.o
 
 all: math_link
 
-math_link:  $(OFILES) Makefile
-	${CC} -I${INCDIR} $(OFILES)  -L${LIBDIR} -l${MLLIB} ${EXTRALIBS} -o $@
+math_link: $(OFILES) Makefile
+	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} ${EXTRALIBS} $(OFILES) -o $@
 
 tf_fit.o: tf/tf_fit.c Makefile
 	$(CC)  -c -I$(INCDIR) $< -o $@
 
-%.o: %.c Makefile
+halofit: Makefile
+	+$(MAKE) -C $(HALOFIT)
+
+
+%.o: %.c
 	$(CC)  -c -I$(INCDIR) $< -o $@
 
-math_link_tm.c: math_link.tm Makefile
+math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@
 
 
-.PHONY: clean
+.PHONY: clean halofit
 clean:
 	rm -f *o *tm.c math_link
-
+	+$(MAKE) -C $(HALOFIT) clean
