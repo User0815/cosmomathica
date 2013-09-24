@@ -32,7 +32,23 @@ void TFset_parameters_wrap(float omega0hh, float f_baryon, float Tcmb){
 
 /* CosmicEmulator version 1.1 */
 
+extern void emu(double *xstar, double *ystar, int *outtype);
+extern void getH0fromCMB(double *xstar, double *stuff);
 
+void CEget_PkNL(double OmegaM, double OmegaB, double ns, double sigma8, double w, double z ){
+    double input[6], output[2*1995], more_output[4];
+    int type=2; // Output: P(k)
+
+    input[0] = OmegaM;
+    input[1] = OmegaB;
+    input[2] = ns;
+    input[3] = sigma8;
+    input[4] = w;
+    input[5] = z;
+
+    getH0fromCMB(input, more_output);
+    emu(input, output, &type);
+}
 
 /* Halofit+ */
 /* `real` was defined as double in smith2.h */
