@@ -19,7 +19,7 @@
 
 
 
-BeginPackage["Cosmology`"]
+BeginPackage["cosmomathica`"]
 
 
 $location=DirectoryName[$InputFileName];
@@ -171,7 +171,6 @@ Options[DimensionlessHubble]:=cosmoopts;
 
 Hubble[z_?NumericQ,opts:OptionsPattern[]]:=OV[H0,opts]DimensionlessHubble[z,opts];
 Options[Hubble]:=cosmoopts;
-
 
 
 (*TODO: Cover closed Universe; make sure a=0 at some point*)

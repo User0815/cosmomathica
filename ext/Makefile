@@ -1,5 +1,3 @@
-
-
 # Adjust the following four lines if necessary
 MLINKDIR = /opt/Wolfram/Mathematica/9.0.1/SystemFiles/Links/MathLink/DeveloperKit
 SYS = Linux-x86-64# Set this value with the result of evaluating $SystemID
@@ -7,17 +5,13 @@ EXTRALIBS = -lm -lpthread -lrt -lstdc++ # Set these with appropriate libs for yo
 MLLIB = ML64i3# Set this to ML64i3 if using a 64-bit system
 
 
-
-#
 # No changes necessary below this line
-#
+# ====================================
 
 CADDSDIR = ${MLINKDIR}/${SYS}/CompilerAdditions
 INCDIR = ${CADDSDIR}
 LIBDIR = ${CADDSDIR}
 MPREP = ${CADDSDIR}/mprep
-
-
 
 CC = gcc -Wall -O3
 
@@ -65,3 +59,4 @@ clean:
 	rm -f $(TRANSFER)/*o
 	rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o
 	+$(MAKE) -C $(HALOFIT) clean
+	+$(MAKE) -C $(CAMB) clean
