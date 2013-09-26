@@ -1,12 +1,8 @@
-# Choose your C compiler
-CC = gcc -Wall -gfortran
-#CC = icc -Wall -ifcore
+# Define your C compiler
+CC = gcc -Wall -lgfortran -fopenmp
 
-# Choose your Fortran compiler (if you want to use CAMB)
-# For compatibility reasons, you must choose the same compiler as CAMB. CAMB
-# uses ifort by default, so unless you change the compiler in camb/Makefile,
-# we need to use ifort as well.
-FC = ifort
+# Define your Fortran compiler (if you want to use CAMB)
+F90C = gfortran -fopenmp
 
 # Mathematica related variables - adjust as necessary
 MLINKDIR = /opt/Wolfram/Mathematica/9.0.1/SystemFiles/Links/MathLink/DeveloperKit
@@ -25,25 +21,42 @@ MPREP = ${CADDSDIR}/mprep
 
 OFILES = math_link.o math_link_tm.o 
 
-TRANSFER = tf
-OFILES += $(TRANSFER)/tf_fit.o 
 
-HALOFIT = halofit
-OFILES += $(HALOFIT)/smith2.o 
+ifeq ($(wildcard tf/tf_fit.c),)
+  TRANSFER = 
+else
+  TRANSFER = tf
+  OFILES += $(TRANSFER)/tf_fit.o 
+endif 
 
-COSMICEMU = CosmicEmulator
-OFILES += $(COSMICEMU)/hubble.o $(COSMICEMU)/emu.o 
-EXTRALIBS += -lgsl -lgslcblas 
+ifeq ($(wildcard halofit/smith2.c),)
+  HALOFIT = 
+else
+  HALOFIT = halofit
+  OFILES += $(HALOFIT)/smith2.o 
+endif
 
-CAMB = camb
-EXTRALIBS += -L$(CAMB) -lcamb_recfast 
-OFILES += camb_wrapper.o
+ifeq ($(wildcard CosmicEmulator/emu.c),)
+  COSMICEMU = 
+else
+  COSMICEMU = CosmicEmulator
+  OFILES += $(COSMICEMU)/hubble.o $(COSMICEMU)/emu.o 
+  EXTRALIBS += -lgsl -lgslcblas 
+endif
+
+ifeq ($(wildcard camb/camb.f90),)
+  CAMB = 
+else
+  CAMB = camb
+  #  EXTRALIBS += -L$(CAMB) -lcamb_recfast 
+  OFILES += camb_wrapper.o
+endif
 
 
 all: math_link
 
 math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(OFILES) Makefile
-	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) -o $@ ${EXTRALIBS} 
+	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) -o $@ ${EXTRALIBS}  camb/*.o
 
 math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@
@@ -53,7 +66,7 @@ math_link_tm.c: math_link.tm
 	$(CC)  -c -I$(INCDIR) $< -o $@
 
 camb_wrapper.o: camb_wrapper.f90 Makefile
-	$(FC) -c $< -o $@ -I$(CAMB) 
+	$(F90C) -c $< -o $@ -I$(CAMB) 
 
 $(HALOFIT):
 	+$(MAKE) -C $@
@@ -62,6 +75,7 @@ $(COSMICEMU):
 	+$(MAKE) -C $@
 
 $(CAMB):
+	# change from ifort to gfortran
 	+$(MAKE) -C $@ all
 
 

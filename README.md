@@ -66,6 +66,11 @@ How to compile the MathLink
 
 Type `make`...
 
+CAMB uses the Intel Fortran compiler by default. Due to difficulties with
+linking the different object files, CAMB needs to be compiled with GNU
+gfortran. When building the MathLink, CAMB's Makefile is automatically
+changed accordingly.
+
 Note that all warnings and errors that you see may be cause by the external
 programs. Make sure the warning is not from compiling the MathLink and
 contact the respective authors if you have concerns. Otherwise, feel free to

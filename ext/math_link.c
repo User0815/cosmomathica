@@ -1,7 +1,22 @@
 #include <stdio.h>
 #include "mathlink.h"
 
+/* TODO use macros to exclude unwanted modules */
+
+/* Halofit+ */
+/* `real` was defined as double in smith2.h */
+
 #include "halofit/smith2.h"
+
+void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
+		   real NSPEC, real BETAP, real Z0, int NONLINEAR){
+    setparameters_(&OMEGAM, &OMEGAV, &GAMMA, &SIGMA8, &NSPEC, &BETAP, &Z0, &NONLINEAR);
+     /* We need to return *something* */
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
 
 
 
@@ -61,25 +76,10 @@ void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w
     MLPutFunction(stdlink, "List", 2);
     MLPutReal64List(stdlink, (double*)output, output_length);
     MLPutReal64List(stdlink, (double*)more_output, 4);
-    // MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
 
-
-
-/* Halofit+ */
-/* `real` was defined as double in smith2.h */
-
-
-void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
-		   real NSPEC, real BETAP, real Z0, int NONLINEAR){
-    setparameters_(&OMEGAM, &OMEGAV, &GAMMA, &SIGMA8, &NSPEC, &BETAP, &Z0, &NONLINEAR);
-     /* We need to return *something* */
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
-}
 
 
 /* CAMB */
@@ -88,10 +88,14 @@ extern void runcamb();
 
 
 void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
-    double *out;
-    int i;
+    /* TODO Do longs need to be converted to ints here? */
 
-    runcamb(floats, floats_len, ints, ints_len, out);
+    const int out_len = 10;
+    double out[out_len];
+
+    runcamb(floats, &floats_len, ints, &ints_len, (double*)out, &out_len);
+
+    MLPutReal64(stdlink, out[0]);
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
