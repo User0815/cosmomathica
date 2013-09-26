@@ -1,4 +1,14 @@
-# Adjust the following four lines if necessary
+# Choose your C compiler
+CC = gcc -Wall -gfortran
+#CC = icc -Wall -ifcore
+
+# Choose your Fortran compiler (if you want to use CAMB)
+# For compatibility reasons, you must choose the same compiler as CAMB. CAMB
+# uses ifort by default, so unless you change the compiler in camb/Makefile,
+# we need to use ifort as well.
+FC = ifort
+
+# Mathematica related variables - adjust as necessary
 MLINKDIR = /opt/Wolfram/Mathematica/9.0.1/SystemFiles/Links/MathLink/DeveloperKit
 SYS = Linux-x86-64# Set this value with the result of evaluating $SystemID
 EXTRALIBS = -lm -lpthread -lrt -lstdc++ # Set these with appropriate libs for your system.
@@ -13,27 +23,27 @@ INCDIR = ${CADDSDIR}
 LIBDIR = ${CADDSDIR}
 MPREP = ${CADDSDIR}/mprep
 
-CC = gcc -Wall -O3
+OFILES = math_link.o math_link_tm.o 
 
 TRANSFER = tf
-HALOFIT = halofit
-COSMICEMU = CosmicEmulator
-EXTRALIBS += -lgsl -lgslcblas # if cosmicemu is requested we need these
-CAMB = camb
-
-
-OFILES = math_link.o math_link_tm.o 
-OFILES += $(HALOFIT)/smith2.o 
-OFILES += $(COSMICEMU)/hubble.o $(COSMICEMU)/emu.o 
 OFILES += $(TRANSFER)/tf_fit.o 
-#  OFILES += $(CAMB)
-#  TODO
+
+HALOFIT = halofit
+OFILES += $(HALOFIT)/smith2.o 
+
+COSMICEMU = CosmicEmulator
+OFILES += $(COSMICEMU)/hubble.o $(COSMICEMU)/emu.o 
+EXTRALIBS += -lgsl -lgslcblas 
+
+CAMB = camb
+EXTRALIBS += -L$(CAMB) -lcamb_recfast 
+OFILES += camb_wrapper.o
 
 
 all: math_link
 
-math_link: $(HALOFIT) $(COSMICEMU) $(OFILES) Makefile
-	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} ${EXTRALIBS} $(OFILES) -o $@
+math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(OFILES) Makefile
+	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) -o $@ ${EXTRALIBS} 
 
 math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@
@@ -42,6 +52,9 @@ math_link_tm.c: math_link.tm
 %.o: %.c
 	$(CC)  -c -I$(INCDIR) $< -o $@
 
+camb_wrapper.o: camb_wrapper.f90 Makefile
+	$(FC) -c $< -o $@ -I$(CAMB) 
+
 $(HALOFIT):
 	+$(MAKE) -C $@
 
@@ -49,10 +62,10 @@ $(COSMICEMU):
 	+$(MAKE) -C $@
 
 $(CAMB):
-	+$(MAKE) -C $@
+	+$(MAKE) -C $@ all
 
 
-.PHONY: clean $(HALOFIT) $(COSMICEMU)
+.PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB)
 
 clean:
 	rm -f *o *tm.c math_link 

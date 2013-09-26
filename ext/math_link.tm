@@ -79,3 +79,11 @@
 :ReturnType:    Manual
 :End:
 
+:Begin:
+:Function:      CAMBrun
+:Pattern:       CAMBrun[floats_List, ints_List]
+:Arguments:     {floats, ints}
+:ArgumentTypes: {RealList, IntegerList}
+:ReturnType:    Manual
+:End:
+

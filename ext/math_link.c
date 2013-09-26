@@ -84,7 +84,17 @@ void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
 
 /* CAMB */
 
-// may need a wrapper here
+extern void runcamb();
+
+
+void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
+    double *out;
+    int i;
+
+    runcamb(floats, floats_len, ints, ints_len, out);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
 
 
 int main(int argc, char* argv[]) {

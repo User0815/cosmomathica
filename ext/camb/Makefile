@@ -12,7 +12,7 @@ FISHER=
 F90C     = ifort
 FFLAGS = -openmp -fast -W0 -WB -fpp2 -vec_report0
 ## This is flag is passed to the Fortran compiler allowing it to link C++ if required (not usually):
-F90CRLINK = -cxxlib
+#  F90CRLINK = -cxxlib
 ifneq ($(FISHER),)
 FFLAGS += -mkl
 endif
@@ -22,8 +22,8 @@ endif
 #if pre v4.3 add -D__GFORTRAN__
 #With v4.6+ try -Ofast -march=native -fopenmp
 #On my machine v4.5 is about 20% slower than ifort
-#F90C     = gfortran
-#FFLAGS =  -O3 -fopenmp -ffast-math -march=native -funroll-loops
+#  F90C     = gfortran
+#  FFLAGS =  -O3 -fopenmp -ffast-math -march=native -funroll-loops
 
 
 #Old Intel ifc, add -openmp for multi-processor (some have bugs):
