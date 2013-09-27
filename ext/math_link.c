@@ -95,7 +95,7 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
 
     runcamb(floats, &floats_len, ints, &ints_len, (double*)out, &out_len);
 
-    MLPutReal64(stdlink, out[0]);
+    MLPutReal64List(stdlink, (double*)out, out_len);
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }

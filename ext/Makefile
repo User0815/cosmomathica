@@ -1,14 +1,18 @@
 # Define your C compiler
 CC = gcc -Wall -lgfortran -fopenmp
 
-# Define your Fortran compiler (if you want to use CAMB)
+# Define your Fortran compiler (if you want to use CAMB) Must match CAMB
+# compiler
 F90C = gfortran -fopenmp
 
 # Mathematica related variables - adjust as necessary
 MLINKDIR = /opt/Wolfram/Mathematica/9.0.1/SystemFiles/Links/MathLink/DeveloperKit
-SYS = Linux-x86-64# Set this value with the result of evaluating $SystemID
-EXTRALIBS = -lm -lpthread -lrt -lstdc++ # Set these with appropriate libs for your system.
-MLLIB = ML64i3# Set this to ML64i3 if using a 64-bit system
+# Set this value with the result of evaluating $SystemID:
+SYS = Linux-x86-64
+# Set these with appropriate libs for your system:
+EXTRALIBS = -lm -lpthread -lrt -lstdc++ 
+# Set this to ML64i3 if using a 64-bit system:
+MLLIB = ML64i3
 
 
 # No changes necessary below this line
@@ -48,15 +52,14 @@ ifeq ($(wildcard camb/camb.f90),)
   CAMB = 
 else
   CAMB = camb
-  #  EXTRALIBS += -L$(CAMB) -lcamb_recfast 
-  OFILES += camb_wrapper.o
+  OFILES += camb_wrapper.o camb/*.o
 endif
 
 
 all: math_link
 
 math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(OFILES) Makefile
-	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) -o $@ ${EXTRALIBS}  camb/*.o
+	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) -o $@ ${EXTRALIBS}  
 
 math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@
@@ -76,13 +79,16 @@ $(COSMICEMU):
 
 $(CAMB):
 	# change from ifort to gfortran
-	+$(MAKE) -C $@ all
+	# move HighLExtrapTemplate_lenspotentialCls.dat into parent directory
+	+$(MAKE) -C $@
 
+testwrapper: $(CAMB) testwrapper.c camb_wrapper.o Makefile
+	$(CC) camb_wrapper.o $(CAMB)/*.o testwrapper.c -o $@
 
 .PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB)
 
 clean:
-	rm -f *o *tm.c math_link 
+	rm -f *o *tm.c math_link testwrapper
 	rm -f $(TRANSFER)/*o
 	rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o
 	+$(MAKE) -C $(HALOFIT) clean
