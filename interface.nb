@@ -1,0 +1,588 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     20942,        579]
+NotebookOptionsPosition[     19393,        524]
+NotebookOutlinePosition[     19884,        543]
+CellTagsIndexPosition[     19841,        540]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Preamble", "Section",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{"BeginPackage", "[", "\"\<cosmomathicaInterface`\>\"", 
+  "]"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"transfer", "::", "usage"}], "=", 
+    "\"\<This function provides an interface to Eisensteins&Hu's fitting \
+formula for the transfer function. It takes the reduced total matter density \
+\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \
+\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\
+\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble \
+constant as input, and returns the sound horizon, the peak k, the transfer \
+function...\>\""}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"halofit", "::", "usage"}], "=", 
+    "\"\<This function provides an interface to the halofit algorithm by \
+Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total \
+matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum \
+energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape \
+factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \
+\(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\
+\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter \
+power spectrum (computed in three ways: ...) at 20 different values of the \
+scale factor and the convergence power spectrum in tabulated form.\>\""}], 
+   ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"cosmicemu", "::", "usage"}], "=", 
+    "\"\<This function provides an interface to the CosmicEmulator by Earl \
+Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \
+\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \
+\(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, \
+and returns the nonlinear matter power spectrum at five different redshifts \
+as well as ...\>\""}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"camb", "::", "usage"}], "=", 
+   "\"\<This function provides an interface to CAMB by Antony Lewis and \
+Anthony Challinor. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\), \
+..., as well as a number of options as input, and returns various \
+cosmological quantities. The distinction between parameters and options is in \
+principle arbitrary. However, since some physical parameters are often \
+assumed to take on a default value, they are being interpreted as an option \
+here. The default options are ...\>\""}], ";"}]}], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Interface", "::", "CosmicEmu"}], "=", 
+   "\"\<Parameter out of bounds. `3` <= `1` <= `4` required, but \
+`1`=`2`.\>\""}], ";"}]], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Main", "Section",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"$location", "=", 
+   RowBox[{"DirectoryName", "[", "$InputFileName", "]"}]}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Transfer", " ", "function"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"transfer", "[", 
+     RowBox[{
+      RowBox[{"omegaM_", "?", "NumericQ"}], ",", 
+      RowBox[{"fBaryon_", "?", "NumericQ"}], ",", 
+      RowBox[{"Tcmb_", "?", "NumericQ"}], ",", 
+      RowBox[{"h_", "?", "NumericQ"}]}], "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "result", ",", "link", ",", "fitonek", ",", "horizon", ",", "peak"}], 
+       "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"link", "=", 
+        RowBox[{"Install", "[", 
+         RowBox[{"$location", "<>", "\"\<ext/math_link\>\""}], "]"}]}], ";", 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"Global`TFSetParameters", "[", 
+        RowBox[{
+         RowBox[{"N", "@", "omegaM"}], ",", 
+         RowBox[{"N", "@", "fBaryon"}], ",", 
+         RowBox[{"N", "@", "Tcmb"}]}], "]"}], ";", "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"fitonek", "[", "k_", "]"}], ":=", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Sequence", "@@", 
+           RowBox[{"Global`TFFitOneK", "[", "k", "]"}]}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Global`TFNoWiggles", "[", 
+           RowBox[{
+            RowBox[{"N", "@", "omegaM"}], ",", 
+            RowBox[{"N", "@", "fBaryon"}], ",", 
+            RowBox[{"N", "@", "h"}], ",", 
+            RowBox[{"N", "@", "Tcmb"}], ",", "k"}], "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"Global`TFZeroBaryon", "[", 
+           RowBox[{
+            RowBox[{"N", "@", "omegaM"}], ",", 
+            RowBox[{"N", "@", "h"}], ",", 
+            RowBox[{"N", "@", "Tcmb"}], ",", "k"}], "]"}]}], "}"}]}], ";", 
+       " ", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"result", "=", 
+        RowBox[{"Table", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"10", "^", "lk"}], ",", 
+            RowBox[{"fitonek", "[", 
+             RowBox[{"10", "^", "lk"}], "]"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"lk", ",", 
+            RowBox[{"-", "6."}], ",", "4.", ",", ".01"}], "}"}]}], "]"}]}], 
+       ";", "\[IndentingNewLine]", 
+       RowBox[{"horizon", "=", 
+        RowBox[{"Global`TFSoundHorizon", "[", 
+         RowBox[{
+          RowBox[{"N", "@", "omegaM"}], ",", 
+          RowBox[{"N", "@", "fBaryon"}], ",", 
+          RowBox[{"N", "@", "h"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"peak", "=", 
+        RowBox[{"Global`TFkPeak", "[", 
+         RowBox[{
+          RowBox[{"N", "@", "omegaM"}], ",", 
+          RowBox[{"N", "@", "fBaryon"}], ",", 
+          RowBox[{"N", "@", "h"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", 
+       RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{"horizon", ",", "peak", ",", "result"}], "}"}]}]}], 
+     "\[IndentingNewLine]", "]"}]}], ";"}]}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"halofit", "[", 
+    RowBox[{
+     RowBox[{"OmegaM_", "?", "NumericQ"}], ",", 
+     RowBox[{"OmegaL_", "?", "NumericQ"}], ",", 
+     RowBox[{"gammaShape_", "?", "NumericQ"}], ",", 
+     RowBox[{"sigma8_", "?", "NumericQ"}], ",", 
+     RowBox[{"ns_", "?", "NumericQ"}], ",", 
+     RowBox[{"betaP_", "?", "NumericQ"}], ",", 
+     RowBox[{"z0_", "?", "NumericQ"}]}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"link", ",", 
+       RowBox[{"Pk", "=", 
+        RowBox[{"{", "}"}]}], ",", 
+       RowBox[{"Kappa", "=", 
+        RowBox[{"{", "}"}]}], ",", "arange", ",", "krange", ",", "ellrange"}],
+       "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"link", "=", 
+       RowBox[{"Install", "[", 
+        RowBox[{"$location", "<>", "\"\<ext/math_link\>\""}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"arange", "=", 
+       RowBox[{
+        RowBox[{"Range", "[", 
+         RowBox[{".01", ",", ".9999", ",", ".04"}], "]"}], "~", "Join", "~", 
+        RowBox[{"{", ".99999", "}"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"krange", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"Range", "[", 
+         RowBox[{
+          RowBox[{"-", "4"}], ",", "3", ",", ".1"}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"ellrange", "=", 
+       RowBox[{"10", "^", 
+        RowBox[{"Range", "[", 
+         RowBox[{
+          RowBox[{"-", "2"}], ",", "6", ",", ".1"}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Do", "[", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Global`HFSetParameters", "[", 
+           RowBox[{
+            RowBox[{"N", "@", "OmegaM"}], ",", 
+            RowBox[{"N", "@", "OmegaL"}], ",", 
+            RowBox[{"N", "@", "gammaShape"}], ",", 
+            RowBox[{"N", "@", "sigma8"}], ",", 
+            RowBox[{"N", "@", "ns"}], ",", 
+            RowBox[{"N", "@", "betaP"}], ",", 
+            RowBox[{"N", "@", "z0"}], ",", "i"}], "]"}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"AppendTo", "[", 
+           RowBox[{"Pk", ",", 
+            RowBox[{"Table", "[", 
+             RowBox[{
+              RowBox[{"Global`HFGetPkNL", "[", 
+               RowBox[{"a", ",", "k"}], "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"a", ",", "arange"}], "}"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"k", ",", "krange"}], "}"}]}], "]"}]}], "]"}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{"AppendTo", "[", 
+           RowBox[{"Kappa", ",", 
+            RowBox[{"Table", "[", 
+             RowBox[{
+              RowBox[{"Global`HFGetKappa", "[", "ell", "]"}], ",", 
+              RowBox[{"{", 
+               RowBox[{"ell", ",", "ellrange"}], "}"}]}], "]"}]}], "]"}]}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"{", 
+          RowBox[{"i", ",", "0", ",", "2"}], "}"}]}], "]"}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"Uninstall", "[", "link", "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Just", " ", "return", " ", "the", " ", "raw", " ", "numbers"}], 
+       "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"arange", ",", "krange", ",", "Pk"}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"ellrange", ",", "Kappa"}], "}"}]}], "}"}]}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"cosmicemu", "[", 
+    RowBox[{
+     RowBox[{"omegaM_", "?", "NumericQ"}], ",", 
+     RowBox[{"omegaB_", "?", "NumericQ"}], ",", 
+     RowBox[{"sigma8_", "?", "NumericQ"}], ",", 
+     RowBox[{"ns_", "?", "NumericQ"}], ",", 
+     RowBox[{"w_", "?", "NumericQ"}]}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "link", ",", "result", ",", "labels", ",", "limits", ",", "parameters", 
+       ",", "check"}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"labels", "=", 
+       RowBox[{"{", 
+        RowBox[{
+        "\"\<\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)\>\"", ",", 
+         "\"\<\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)\>\"", ",", 
+         "\"\<\!\(\*SubscriptBox[\(n\), \(s\)]\)\>\"", ",", 
+         "\"\<\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)\>\"", ",", 
+         "\"\<w\>\""}], "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"limits", "=", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{".12", ",", ".155"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{".0214", ",", ".0235"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{".85", ",", "1.05"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{".61", ",", ".9"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "1.3"}], ",", 
+           RowBox[{"-", ".7"}]}], "}"}]}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "these", " ", "are", " ", "hard", " ", "limits", " ", "as", " ", 
+         "given", " ", "by", " ", "the", " ", "authors", " ", "of", " ", 
+         "the", " ", "cosmic", " ", "emulator"}], " ", "-", " ", 
+        RowBox[{
+        "the", " ", "program", " ", "will", " ", "crash", " ", "if", " ", 
+         "any", " ", "parameter", " ", "is", " ", "outside", " ", "its", " ", 
+         "bounds"}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"parameters", "=", 
+       RowBox[{"{", 
+        RowBox[{"omegaM", ",", "omegaB", ",", "sigma8", ",", "ns", ",", "w"}],
+         "}"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"check", "=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"#", "[", 
+            RowBox[{"[", 
+             RowBox[{"2", ",", "1"}], "]"}], "]"}], "<=", 
+           RowBox[{"#", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], "<=", 
+           RowBox[{"#", "[", 
+            RowBox[{"[", 
+             RowBox[{"2", ",", "2"}], "]"}], "]"}]}], ")"}], "&"}], "/@", 
+        RowBox[{"Transpose", "[", 
+         RowBox[{"{", 
+          RowBox[{"parameters", ",", "limits"}], "}"}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Do", "[", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"!", 
+           RowBox[{"check", "[", 
+            RowBox[{"[", "i", "]"}], "]"}]}], ",", 
+          RowBox[{"Message", "[", 
+           RowBox[{
+            RowBox[{"Interface", "::", "CosmicEmu"}], ",", 
+            RowBox[{"labels", "[", 
+             RowBox[{"[", "i", "]"}], "]"}], ",", 
+            RowBox[{"parameters", "[", 
+             RowBox[{"[", "i", "]"}], "]"}], ",", 
+            RowBox[{"limits", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", "1"}], "]"}], "]"}], ",", 
+            RowBox[{"limits", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", ",", "2"}], "]"}], "]"}]}], "]"}]}], "]"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"i", ",", 
+          RowBox[{"Length", "@", "check"}]}], "}"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"!", 
+         RowBox[{"And", "@@", "check"}]}], ",", 
+        RowBox[{
+         RowBox[{"Return", "[", "$Failed", "]"}], ";", 
+         RowBox[{"Abort", "[", "]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"link", "=", 
+       RowBox[{"Install", "[", 
+        RowBox[{"$location", "<>", "\"\<ext/math_link\>\""}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"result", "=", 
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"1", "/", "a"}], "-", "1"}], ",", 
+           RowBox[{"Global`CEGetPkNL", "[", 
+            RowBox[{
+             RowBox[{"N", "@", "omegaM"}], ",", 
+             RowBox[{"N", "@", "omegaB"}], ",", 
+             RowBox[{"N", "@", "sigma8"}], ",", 
+             RowBox[{"N", "@", "ns"}], ",", 
+             RowBox[{"N", "@", "w"}], ",", 
+             RowBox[{
+              RowBox[{"1", "/", "a"}], "-", "1"}]}], "]"}]}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"a", ",", ".5", ",", "1.", ",", ".1"}], "}"}]}], "]"}]}], 
+      ";", "\[IndentingNewLine]", " ", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "CosmicEmu", " ", "only", " ", "does", " ", "these", " ", "five", " ",
+          "redshifts"}], ",", " ", 
+        RowBox[{"everything", " ", "else", " ", "is", " ", "interpolated"}]}],
+        "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "Just", " ", "return", " ", "the", " ", "raw", " ", "numbers"}], 
+       "*)"}], "\[IndentingNewLine]", "result"}]}], "\[IndentingNewLine]", 
+    "]"}]}], ";"}]], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"camb", "[", 
+    RowBox[{
+     RowBox[{"OmegaC_", "?", "NumericQ"}], ",", 
+     RowBox[{"OmegaB_", "?", "NumericQ"}], ",", 
+     RowBox[{"OmegaL_", "?", "NumericQ"}], ",", 
+     RowBox[{"h_", "?", "NumericQ"}], ",", 
+     RowBox[{"w_", "?", "NumericQ"}], ",", 
+     RowBox[{"opts", ":", 
+      RowBox[{"OptionsPattern", "[", "]"}]}]}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"link", ",", "result", ",", "floats", ",", "ints"}], "}"}], ",",
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"link", "=", 
+       RowBox[{"Install", "[", 
+        RowBox[{"$location", "<>", "\"\<ext/math_link\>\""}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"floats", "=", 
+       RowBox[{"{", 
+        RowBox[{"OmegaC", ",", "OmegaB", ",", "OmegaL", ",", 
+         RowBox[{"OptionValue", "[", "Tcmb", "]"}]}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"ints", "=", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", "0", ",", "1"}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"result", "=", 
+       RowBox[{"Global`CAMBrun", "[", 
+        RowBox[{
+         RowBox[{"N", "/@", "floats"}], ",", "ints"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", "result"}]}], "\[IndentingNewLine]", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"SetOptions", "[", 
+  RowBox[{"camb", ",", 
+   RowBox[{"Tcmb", "\[Rule]", "2.725"}], ",", 
+   RowBox[{"OmegaNu", "\[Rule]", "0"}]}], "]"}]}], "Input",
+ InitializationCell->True],
+
+Cell[BoxData[{
+ RowBox[{"End", "[", " ", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"EndPackage", "[", " ", "]"}]}], "Input",
+ InitializationCell->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Test", "Section"],
+
+Cell[BoxData[
+ RowBox[{"<<", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<interface.m\>\""}], 
+   ")"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"hfdata", "=", 
+   RowBox[{"halofit", "[", 
+    RowBox[{
+    ".25", ",", ".75", ",", ".5", ",", ".8", ",", ".9", ",", ".7", ",", 
+     "1.5"}], "]"}]}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cedata", "=", 
+   RowBox[{"cosmicemu", "[", 
+    RowBox[{".15", ",", ".022", ",", ".9", ",", ".9", ",", 
+     RowBox[{"-", "1"}]}], "]"}]}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"tfdata", "=", 
+   RowBox[{"transfer", "[", 
+    RowBox[{".15", ",", ".05", ",", "2.7", ",", ".7"}], "]"}]}], 
+  ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"link", "=", 
+   RowBox[{"Install", "[", 
+    RowBox[{
+     RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<ext/math_link\>\""}],
+     "]"}]}], ";"}], "\n", 
+ RowBox[{"Global`CAMBrun", "[", 
+  RowBox[{
+   RowBox[{"{", "1.", "}"}], ",", 
+   RowBox[{"{", "2", "}"}]}], "]"}]}], "Input"],
+
+Cell[BoxData["1.`"], "Output"]
+}, Open  ]]
+}, Open  ]]
+},
+AutoGeneratedPackage->Automatic,
+WindowSize->{1680, 991},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+CellContext->Notebook,
+TrackCellChangeTimes->False,
+FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
+StyleDefinitions->FrontEnd`FileName[{"Creative"}, "NaturalColor.nb", 
+  CharacterEncoding -> "UTF-8"]
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 54, 1, 78, "Section",
+ InitializationCell->True],
+Cell[636, 25, 124, 3, 42, "Input",
+ InitializationCell->True],
+Cell[763, 30, 2591, 47, 418, "Input",
+ InitializationCell->True],
+Cell[3357, 79, 213, 6, 42, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3607, 90, 50, 1, 78, "Section",
+ InitializationCell->True],
+Cell[3660, 93, 101, 2, 42, "Input",
+ InitializationCell->True],
+Cell[3764, 97, 156, 4, 42, "Input",
+ InitializationCell->True],
+Cell[3923, 103, 3186, 79, 439, "Input",
+ InitializationCell->True],
+Cell[7112, 184, 3624, 92, 439, "Input",
+ InitializationCell->True],
+Cell[10739, 278, 5582, 142, 483, "Input",
+ InitializationCell->True],
+Cell[16324, 422, 1722, 43, 307, "Input",
+ InitializationCell->True],
+Cell[18049, 467, 149, 3, 65, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18235, 475, 23, 0, 78, "Section"],
+Cell[18261, 477, 156, 5, 42, "Input"],
+Cell[18420, 484, 203, 6, 42, "Input"],
+Cell[18626, 492, 192, 5, 42, "Input"],
+Cell[18821, 499, 163, 5, 42, "Input"],
+Cell[CellGroupData[{
+Cell[19009, 508, 323, 10, 65, "Input"],
+Cell[19335, 520, 30, 0, 42, "Output"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

@@ -1,0 +1,7 @@
+ext/math_link
+ext/testwrapper
+ext/HighLExtrapTemplate_lenspotentialCls.dat
+ext/camb/*
+ext/CosmicEmulator/*
+ext/halofit/*
+ext/tf/*

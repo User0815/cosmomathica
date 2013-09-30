@@ -46,7 +46,9 @@ contains
         ! camb/inidriver.f90 for how it works.
 
         ! call CAMB_SetDefParams(P)
-        ! Compare the following to the function CAMB_SetDefParams
+        ! Compare the following to the function CAMB_SetDefParams.
+        ! Obviously the order of the following matters a lot - don't change it
+        ! unless you really know what you're doing.
 
         fi = 1
         ii = 1
