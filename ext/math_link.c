@@ -33,6 +33,7 @@ extern float TFk_peak(float omega0, float f_baryon, float hubble);
 void TFfit_onek_wrap(float k){
     float tf_baryon, tf_cdm, tf_full;
     tf_full = TFfit_onek(k, &tf_baryon, &tf_cdm);
+
         /* return tf_full, tf_baryon, tf_cdm */
     MLPutFunction(stdlink, "List", 3);
     MLPutReal32(stdlink, tf_full);
@@ -93,8 +94,11 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
     const int out_len = 10;
     double out[out_len];
 
+    /* TODO make sure the arrays have the right size */
+
     runcamb(floats, &floats_len, ints, &ints_len, (double*)out, &out_len);
 
+    // MLPutIntegerList(stdlink, (double*)out, out_len);
     MLPutReal64List(stdlink, (double*)out, out_len);
     MLEndPacket(stdlink);
     MLFlush(stdlink);

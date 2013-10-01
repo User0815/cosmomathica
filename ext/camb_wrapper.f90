@@ -37,7 +37,7 @@ contains
         integer(c_int), intent(in)    :: ints(ints_len)
         real(c_double), intent(out)   :: output(out_len)
 
-        integer error, fi, ii
+        integer error, fi, ii, eigenstates, fitemp
 
         Type(CAMBparams) P
 
@@ -45,47 +45,52 @@ contains
         ! one full of ints. We need to fill the structure P with it. See
         ! camb/inidriver.f90 for how it works.
 
+        fi = 1
+        ii = 1
+
         ! call CAMB_SetDefParams(P)
         ! Compare the following to the function CAMB_SetDefParams.
         ! Obviously the order of the following matters a lot - don't change it
         ! unless you really know what you're doing.
 
-        fi = 1
-        ii = 1
-
-        P%omegab  = floats(fi); fi=fi+1
         P%omegac  = floats(fi); fi=fi+1
+        P%omegab  = floats(fi); fi=fi+1
         P%omegav  = floats(fi); fi=fi+1
-        P%omegan  = floats(fi); fi=fi+1
         P%H0      = floats(fi); fi=fi+1
+        P%omegan  = floats(fi); fi=fi+1
 
         P%TCMB    = floats(fi); fi=fi+1
         P%YHe     = floats(fi); fi=fi+1
 
         P%Num_Nu_massless     = floats(fi); fi=fi+1
         P%Num_Nu_massive      = ints(ii); ii=ii+1
-        P%Nu_mass_splittings  = int2bool(ints(ii)); ii=ii+1
-        P%same_neutrino_Neff  = int2bool(ints(ii)); ii=ii+1
+        P%Nu_mass_splittings  = .true. ! int2bool(ints(ii)); ii=ii+1
         P%Nu_mass_eigenstates = ints(ii); ii=ii+1
+        eigenstates = P%Nu_mass_eigenstates
+
+        P%Nu_mass_degeneracies(1:eigenstates) = floats(fi:fi+eigenstates)
+        fi = fi+eigenstates
+        P%Nu_mass_fractions(1:eigenstates) = floats(fi:fi+eigenstates)
+        fi = fi+eigenstates
+
+        P%same_neutrino_Neff  = .false. ! ?? no idea what this does
 
         P%Scalar_initial_condition = ints(ii); ii=ii+1
         P%NonLinear                = ints(ii); ii=ii+1
-        P%Want_CMB                 = int2bool(ints(ii)); ii=ii+1
-
-        P%WantTransfer = int2bool(ints(ii)); ii=ii+1
-        P%WantCls      = int2bool(ints(ii)); ii=ii+1
 
         ! call SetDefPowerParams(P%InitPower)
         ! Compare with SetDefPowerParams
         ! These are arrays with length nn
          P%InitPower%nn     = ints(ii); ii=ii+1 !number of initial power spectra
-         P%InitPower%an     = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1) !scalar spectral index
-         P%InitPower%n_run  = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1) !running of scalar spectral index
-         P%InitPower%ant    = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1) !tensor spectra index
-         P%InitPower%rat    = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1)
+         fitemp = ints(ii-1)
+         P%InitPower%an(1:fitemp)     = floats(fi:fi+fitemp); fi=fi+fitemp !scalar spectral index
+         P%InitPower%n_run(1:fitemp)  = floats(fi:fi+fitemp); fi=fi+fitemp !running of scalar spectral index
+         P%InitPower%ant(1:fitemp)    = floats(fi:fi+fitemp); fi=fi+fitemp !tensor spectra index
+         P%InitPower%rat = 1
+         P%InitPower%rat(1:fitemp)    = floats(fi:fi+fitemp); fi=fi+fitemp
+         P%InitPower%ScalarPowerAmp(1:fitemp) = floats(fi:fi+fitemp); fi=fi+fitemp
          P%InitPower%k_0_scalar = floats(fi); fi=fi+1
          P%InitPower%k_0_tensor = floats(fi); fi=fi+1
-         P%InitPower%ScalarPowerAmp = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1)
 
         ! call Recombination_SetDefParams(P%Recomb)
         ! this depends whether recfast (default), hyrec  or cosmorec is used. 
@@ -103,13 +108,16 @@ contains
 
         P%Transfer%high_precision = int2bool(ints(ii)); ii=ii+1
 
-        P%OutputNormalization = ints(ii); ii=ii+1
-
+        P%Want_CMB     = int2bool(ints(ii)); ii=ii+1
+        P%WantTransfer = int2bool(ints(ii)); ii=ii+1
+        P%WantCls      = int2bool(ints(ii)); ii=ii+1
         P%WantScalars = int2bool(ints(ii)); ii=ii+1
         P%WantVectors = int2bool(ints(ii)); ii=ii+1
         P%WantTensors = int2bool(ints(ii)); ii=ii+1
         P%want_zstar  = int2bool(ints(ii)); ii=ii+1
         P%want_zdrag  = int2bool(ints(ii)); ii=ii+1
+
+        P%OutputNormalization = ints(ii); ii=ii+1
 
         P%Max_l            = ints(ii); ii=ii+1
         P%Max_eta_k        = floats(fi); fi=fi+1
@@ -126,14 +134,11 @@ contains
         P%AccurateBB           = int2bool(ints(ii)); ii=ii+1
 
         P%DoLensing = int2bool(ints(ii)); ii=ii+1
-
-        P%MassiveNuMethod = ints(ii); ii=ii+1
         P%OnlyTransfers   = int2bool(ints(ii)); ii=ii+1
-
         P%DerivedParameters = int2bool(ints(ii)); ii=ii+1
+        P%MassiveNuMethod = ints(ii); ii=ii+1
 
         if (.not. CAMB_ValidateParams(P)) stop 'Stopped due to parameter error'
-
 
         ! Now call CAMB
         error = 0
