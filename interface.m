@@ -40,6 +40,8 @@ CAMB::Tcmb="Temperature of the CMB (default:)";
 CAMB::Eigenstates="NuMassEigenstates and NuMassFractions must have the same length  (can be zero).";
 CAMB::InvalidOption="Option `1` is '`2`', but must be one of the following: `3`";
 CAMB::Lists="The following options need to be non-empty lists of the same length: `1`";
+CAMB::Error="CAMB exited with the following error code: `1`";
+CAMB::LinkBroken="CAMB crashed. See if there is anything useful on stdout.";
 
 
 Begin["`Private`"]
@@ -48,7 +50,7 @@ Begin["`Private`"]
 $location=DirectoryName[$InputFileName];
 
 
-camb[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{link,result,floats,ints,bool2int,initialcond,nonlinear,massivenu,validateoption,validatelists,limits,check},
+camb[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{link,result,resultfloat,resultint,floats,ints,bool2int,initialcond,nonlinear,massivenu,validateoption,validatelists,limits,check},
 
 bool2int[b_]:=If[OptionValue@b,1,0];
 validateoption[op_,poss_]:=If[!MemberQ[poss,OptionValue[op]],Message[CAMB::InvalidOption,ToString@op,OptionValue@op,StringJoin@@poss(*TODO fix the string*)];Return[$Failed];Abort[]];
@@ -74,15 +76,19 @@ floats=Flatten@{OmegaC,OmegaB,OmegaL,h*100,OptionValue[#]&/@{OmegaNu,Tcmb,YHe,Ma
 
 ints=Flatten@{OptionValue[MassiveNeutrinos],Length@OptionValue[NuMassFractions],Position[initialcond,OptionValue[ScalarInitialCondition]][[1,1]]-1,Position[nonlinear,OptionValue[NonLinear]][[1,1]]-1,Length@OptionValue@ScalarSpectralIndex,bool2int/@{DoReionization,UseOpticalDepth,TransferHighPrecision,WantCMB,WantTransfer,WantCls,WantScalars,WantVectors,WantTensors,WantZstar, WantZdrag},OptionValue[#]&/@{OutputNormalization,MaxEll,MaxEllTensor,TransferKperLogInt},Length@OptionValue@TransferRedshifts,bool2int/@{AccuratePolarization,AccurateReionization,AccurateBB,DoLensing,OnlyTransfers,DerivedParameters},Position[massivenu,OptionValue[MassiveNuMethod]][[1,1]]-1};
 
-Print[floats,ints];
 
 SetDirectory[$location<>"ext/camb"];
 link=Install[$location<>"ext/math_link"];
 result=Global`CAMBrun[N/@floats,ints];
 ResetDirectory[];
+If[result==$Failed,Message[CAMB::LinkBroken];Return[$Failed];Abort[]];
 Uninstall[link];
 
-result
+{resultfloat,resultint}=result;
+If[resultint[[1]]!=0,Message[CAMB::Error,resultint[[1]]];Return[$Failed];Abort[]];
+resultint=Drop[resultint,1];
+
+{resultint,resultfloat}
 ];
 Options[camb]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->True,WantTransfer->True,WantCls->True,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantVectors->True,WantTensors->True,WantZstar->True, WantZdrag->True,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->True,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
 

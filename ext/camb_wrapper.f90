@@ -28,21 +28,75 @@ contains
 
     end function int2bool
 
+    subroutine add2Darray(array, output, offset, intarray, intoffset)
+        implicit none
+        integer, intent(inout) :: offset, intoffset
+        double precision, intent(in) :: array(:,:)
+        double precision, intent(out) :: output(:)
+        integer, intent(out) :: intarray(:)
+        integer i,j
 
-    subroutine runcamb(floats, floats_len, ints, ints_len, output, out_len) bind(c)
+        if (offset + size(array) > size(output)) stop "camb_wrapper: array too small"
+
+        do i=1,size(array,1)
+            do j=1,size(array,2)
+                output(offset+j+(i-1)*size(array,1)) = array(i,j)
+            end do
+        end do
+
+        intarray(intoffset+1) = 2
+        intarray(intoffset+2) = size(array,1)
+        intarray(intoffset+3) = size(array,2)
+        offset = offset + size(array)
+        intoffset = intoffset + 3
+
+    end subroutine add2Darray
+
+
+    subroutine add3Darray(array, output, offset, intarray, intoffset)
+        implicit none
+        integer, intent(inout) :: offset, intoffset
+        double precision, intent(in) :: array(:,:,:)
+        double precision, intent(out) :: output(:)
+        integer, intent(out) :: intarray(:)
+        integer i,j,k
+
+        if (offset + size(array) > size(output)) stop "camb_wrapper: array too small"
+
+        do i=1,size(array,1)
+            do j=1,size(array,2)
+                do k=1,size(array,3)
+                    output(offset+k+(j-1)*size(array,2)+(i-1)*size(array,1)*size(array,2)) = array(i,j,k)
+                end do
+            end do
+        end do
+
+        intarray(intoffset+1) = 3
+        intarray(intoffset+2) = size(array,1)
+        intarray(intoffset+3) = size(array,2)
+        intarray(intoffset+4) = size(array,3)
+        offset = offset + size(array)
+        intoffset = intoffset + 4
+
+    end subroutine add3Darray
+
+
+    subroutine runcamb(floats, floats_len, ints, ints_len, floats_out, floats_out_len, ints_out, ints_out_len) bind(c)
         implicit none
 
-        integer(c_int), intent(in)    :: floats_len, ints_len, out_len
+        integer(c_int), intent(in)    :: floats_len, ints_len, ints_out_len, floats_out_len
         real(c_double), intent(in)    :: floats(floats_len)
         integer(c_int), intent(in)    :: ints(ints_len)
-        real(c_double), intent(out)   :: output(out_len)
+        real(c_double), intent(out)   :: floats_out(floats_out_len)
+        integer(c_int), intent(out)   :: ints_out(ints_out_len)
 
-        integer error, fi, ii, eigenstates, fitemp, lmax
-        double precision age, zre, sigma8
+        integer error, fi, ii, eigenstates, fitemp, lmax, i, float_offset, int_offset
+        double precision age, zre
         real(4), allocatable :: clout(:,:)
 
         Type(CAMBparams) P
         Type(CAMBdata) CAMBout
+        Type(MatterPowerData) PK_data
 
         ! We have two arrays containing all the parameters: one full of doubles,
         ! one full of ints. We need to fill the structure P with it. See
@@ -163,20 +217,35 @@ contains
         allocate(clout(2:lmax,1:4))
         call CAMB_GetCls(clout, lmax, 1, .false.)
 
+
+
+
         age = CAMB_GetAge(P)
         zre = CAMB_GetZreFromTau(P,P%Reion%optical_depth) 
-        sigma8 = CAMBout%MTrans%sigma_8(1,1)!(:P%Transfer%num_redshifts, :P%InitPower%nn) 
 
-        write(*,*) size(CAMBout%MTrans%TransferData,1)
-        write(*,*) size(CAMBout%MTrans%TransferData,2)
-        write(*,*) size(CAMBout%MTrans%TransferData,3)
+        ints_out(1) = error
+        int_offset = 1
+
+        floats_out(1) = age
+        floats_out(2) = zre
+        float_offset = 2
 
         ! Pass contents from CAMBout and clout back to MMA
-        ! CAMBout%ClTransScal, ClTransVec, ClTransTens
-        output(1) = 1d0*error
-        output(2) = age
-        output(3) = zre
-        output(4) = sigma8
+
+
+        call add3darray(CAMBout%ClTransScal%Delta_p_l_k, floats_out, float_offset, ints_out, int_offset)
+
+        call add3darray(CAMBout%ClTransVec%Delta_p_l_k, floats_out, float_offset, ints_out, int_offset)
+
+        call add3darray(CAMBout%ClTransTens%Delta_p_l_k, floats_out, float_offset, ints_out, int_offset)
+
+        do i=1,P%InitPower%nn     
+            call Transfer_GetMatterPowerData(CAMBout%MTrans, PK_data, i)
+            call MatterPowerdata_MakeNonlinear(PK_data)
+            call add2darray(PK_data%matpower, floats_out, float_offset, ints_out, int_offset)
+        end do
+
+        call add2darray(CAMBout%MTrans%sigma_8, floats_out, float_offset, ints_out, int_offset)
 
         
     end subroutine runcamb
