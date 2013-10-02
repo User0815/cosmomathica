@@ -165,10 +165,14 @@ contains
 
         age = CAMB_GetAge(P)
         zre = CAMB_GetZreFromTau(P,P%Reion%optical_depth) 
-        sigma8 = MT%sigma_8(1,1)!(:P%Transfer%num_redshifts, :P%InitPower%nn) 
+        sigma8 = CAMBout%MTrans%sigma_8(1,1)!(:P%Transfer%num_redshifts, :P%InitPower%nn) 
 
+        write(*,*) size(CAMBout%MTrans%TransferData,1)
+        write(*,*) size(CAMBout%MTrans%TransferData,2)
+        write(*,*) size(CAMBout%MTrans%TransferData,3)
 
         ! Pass contents from CAMBout and clout back to MMA
+        ! CAMBout%ClTransScal, ClTransVec, ClTransTens
         output(1) = 1d0*error
         output(2) = age
         output(3) = zre
