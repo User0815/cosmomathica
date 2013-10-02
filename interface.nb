@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     43499,       1126]
-NotebookOptionsPosition[     41487,       1058]
-NotebookOutlinePosition[     41978,       1077]
-CellTagsIndexPosition[     41935,       1074]
+NotebookDataLength[     39326,       1006]
+NotebookOptionsPosition[     37293,        936]
+NotebookOutlinePosition[     37784,        955]
+CellTagsIndexPosition[     37741,        952]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -125,137 +125,6 @@ Cell[BoxData[
   RowBox[{"$location", "=", 
    RowBox[{"DirectoryName", "[", "$InputFileName", "]"}]}], ";"}]], "Input",
  InitializationCell->True],
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{
-   RowBox[{
-    RowBox[{"validateoption", "[", 
-     RowBox[{"op_", ",", "poss_"}], "]"}], ":=", 
-    RowBox[{"If", "[", 
-     RowBox[{
-      RowBox[{"!", 
-       RowBox[{"MemberQ", "[", 
-        RowBox[{"poss", ",", 
-         RowBox[{"OptionValue", "[", "op", "]"}]}], "]"}]}], ",", 
-      RowBox[{
-       RowBox[{"Message", "[", 
-        RowBox[{
-         RowBox[{"CAMB", "::", "InvalidOption"}], ",", 
-         RowBox[{"ToString", "@", "op"}], ",", 
-         RowBox[{"OptionValue", "@", "op"}], ",", 
-         RowBox[{"StringJoin", "@@", "poss"}]}], 
-        RowBox[{"(*", 
-         RowBox[{"TODO", " ", "fix", " ", "the", " ", "string"}], "*)"}], 
-        "]"}], ";", 
-       RowBox[{"Return", "[", "$Failed", "]"}], ";", 
-       RowBox[{"Abort", "[", "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]",
-   "\[IndentingNewLine]", 
-  RowBox[{"(*", 
-   RowBox[{
-   "some", " ", "parameters", " ", "must", " ", "be", " ", "within", " ", 
-    "certain", " ", "limits"}], "*)"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"limits", "=", 
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"{", 
-      RowBox[{"ReionizationFraction", ",", "0", ",", "1.5"}], "}"}], ",", 
-     RowBox[{"{", 
-      RowBox[{"OpticalDepth", ",", "0", ",", ".9"}], "}"}]}], "}"}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"check", "=", 
-   RowBox[{
-    RowBox[{
-     RowBox[{"{", 
-      RowBox[{
-       RowBox[{"#", "[", 
-        RowBox[{"[", "1", "]"}], "]"}], ",", 
-       RowBox[{
-        RowBox[{"#", "[", 
-         RowBox[{"[", "2", "]"}], "]"}], "\[LessEqual]", 
-        RowBox[{"OptionValue", "[", 
-         RowBox[{"#", "[", 
-          RowBox[{"[", "1", "]"}], "]"}], "]"}], "<=", 
-        RowBox[{"#", "[", 
-         RowBox[{"[", "3", "]"}], "]"}]}]}], "}"}], "&"}], "/@", "limits"}]}],
-   ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"Print", "[", "1", "]"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{
-    RowBox[{"validatelists", "[", "ops_", "]"}], ":=", 
-    RowBox[{"If", "[", 
-     RowBox[{
-      RowBox[{"1", "!=", 
-       RowBox[{"Length", "@", 
-        RowBox[{"Union", "[", 
-         RowBox[{"Length", "/@", 
-          RowBox[{"OptionValue", "/@", "ops"}]}], "]"}]}]}], ",", 
-      RowBox[{
-       RowBox[{"Message", "[", 
-        RowBox[{
-         RowBox[{"CAMB", "::", "Lists"}], ",", "ops"}], "]"}], ";", 
-       RowBox[{"Return", "[", "$Failed", "]"}], ";", 
-       RowBox[{"Abort", "[", "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
-  RowBox[{"(*", 
-   RowBox[{
-    RowBox[{"validatelists", "[", 
-     RowBox[{"{", 
-      RowBox[{
-      "ScalarSpectralIndex", ",", "ScalarRunning", ",", "TensorSpectralIndex",
-        ",", "RatioScalarTensorAmplitudes", ",", "ScalarPowerAmplitude"}], 
-      "}"}], "]"}], ";", "\[IndentingNewLine]", 
-    RowBox[{"validatelists", "[", 
-     RowBox[{"{", 
-      RowBox[{"NuMassDegeneracies", ",", "NuMassFractions"}], "}"}], "]"}], 
-    ";"}], "*)"}], "\[IndentingNewLine]", 
-  RowBox[{"(*", 
-   RowBox[{
-    RowBox[{"If", "[", 
-     RowBox[{
-      RowBox[{"Not", "[", 
-       RowBox[{"0", "\[LessEqual]", 
-        RowBox[{"OptionValue", "[", "ReionizationFraction", "]"}], 
-        "\[LessEqual]", "1.5"}], "]"}], ",", 
-      RowBox[{"Abort", "[", "]"}]}], "]"}], ";"}], " ", 
-   RowBox[{"(*", "TODO", "*)"}], "*)"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"Print", "[", "2", "]"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"initialcond", "=", 
-   RowBox[{"{", 
-    RowBox[{
-    "\"\<vector\>\"", ",", "\"\<adiabatic\>\"", ",", "\"\<iso_CDM\>\"", ",", 
-     "\"\<iso_baryon\>\"", ",", "\"\<iso_neutrino\>\"", ",", 
-     "\"\<iso_neutrino_vel\>\""}], "}"}]}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"nonlinear", "=", 
-   RowBox[{"{", 
-    RowBox[{"\"\<none\>\"", ",", "\"\<pk\>\"", ",", "\"\<cl\>\""}], "}"}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{
-   RowBox[{"massivenu", "=", 
-    RowBox[{"{", 
-     RowBox[{
-     "\"\<int\>\"", ",", "\"\<trunc\>\"", ",", "\"\<approx\>\"", ",", 
-      "\"\<best\>\""}], "}"}]}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"(*", 
-   RowBox[{
-    RowBox[{"validateoption", "[", 
-     RowBox[{"ScalarInitialCondition", ",", "initialcond"}], "]"}], ";", 
-    "\[IndentingNewLine]", 
-    RowBox[{"validateoption", "[", 
-     RowBox[{"NonLinear", ",", "nonlinear"}], "]"}], ";", 
-    "\[IndentingNewLine]", 
-    RowBox[{"validateoption", "[", 
-     RowBox[{"MassiveNuMethod", ",", "massivenu"}], "]"}], ";"}], 
-   "*)"}]}]}], "Input"],
 
 Cell[BoxData[{
  RowBox[{
@@ -446,8 +315,8 @@ Cell[BoxData[{
             RowBox[{
             "DoReionization", ",", "UseOpticalDepth", ",", 
              "TransferHighPrecision", ",", "WantCMB", ",", "WantTransfer", 
-             ",", "WantCls", ",", "TransferHighPrecision", ",", "WantScalars",
-              ",", "WantTensors", ",", "WantZstar", ",", " ", "WantZdrag"}], 
+             ",", "WantCls", ",", "WantScalars", ",", "WantVectors", ",", 
+             "WantTensors", ",", "WantZstar", ",", " ", "WantZdrag"}], 
             "}"}]}], ",", 
           RowBox[{
            RowBox[{
@@ -475,15 +344,20 @@ Cell[BoxData[{
       ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"Print", "[", 
        RowBox[{"floats", ",", "ints"}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"SetDirectory", "[", 
+       RowBox[{"$location", "<>", "\"\<ext/camb\>\""}], "]"}], ";", 
+      "\[IndentingNewLine]", 
       RowBox[{"link", "=", 
        RowBox[{"Install", "[", 
         RowBox[{"$location", "<>", "\"\<ext/math_link\>\""}], "]"}]}], ";", 
-      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
       RowBox[{"result", "=", 
        RowBox[{"Global`CAMBrun", "[", 
         RowBox[{
          RowBox[{"N", "/@", "floats"}], ",", "ints"}], "]"}]}], ";", 
-      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"ResetDirectory", "[", "]"}], ";", "\[IndentingNewLine]", 
       RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
       "\[IndentingNewLine]", "result"}]}], "\[IndentingNewLine]", "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
@@ -504,9 +378,9 @@ Cell[BoxData[{
      RowBox[{"ScalarInitialCondition", "\[Rule]", "\"\<adiabatic\>\""}], ",", 
      
      RowBox[{"NonLinear", "\[Rule]", "\"\<none\>\""}], ",", 
-     RowBox[{"WantCMB", "\[Rule]", "False"}], ",", 
+     RowBox[{"WantCMB", "\[Rule]", "True"}], ",", 
      RowBox[{"WantTransfer", "\[Rule]", "True"}], ",", 
-     RowBox[{"WantCls", "\[Rule]", "False"}], ",", 
+     RowBox[{"WantCls", "\[Rule]", "True"}], ",", 
      RowBox[{"ScalarSpectralIndex", "\[Rule]", 
       RowBox[{"{", ".96", "}"}]}], ",", 
      RowBox[{"ScalarRunning", "\[Rule]", 
@@ -527,9 +401,10 @@ Cell[BoxData[{
      RowBox[{"ReionizationDeltaRedshift", "\[Rule]", ".5"}], ",", 
      RowBox[{"TransferHighPrecision", "\[Rule]", "False"}], ",", 
      RowBox[{"WantScalars", "\[Rule]", "True"}], ",", 
-     RowBox[{"WantTensors", "\[Rule]", "False"}], ",", 
-     RowBox[{"WantZstar", "\[Rule]", "False"}], ",", " ", 
-     RowBox[{"WantZdrag", "\[Rule]", "False"}], ",", 
+     RowBox[{"WantVectors", "\[Rule]", "True"}], ",", 
+     RowBox[{"WantTensors", "\[Rule]", "True"}], ",", 
+     RowBox[{"WantZstar", "\[Rule]", "True"}], ",", " ", 
+     RowBox[{"WantZdrag", "\[Rule]", "True"}], ",", 
      RowBox[{"OutputNormalization", "\[Rule]", "1"}], ",", 
      RowBox[{"MaxEll", "\[Rule]", "1500"}], ",", 
      RowBox[{"MaxEtaK", "\[Rule]", "3000."}], ",", 
@@ -542,7 +417,7 @@ Cell[BoxData[{
      RowBox[{"AccuratePolarization", "\[Rule]", "True"}], ",", 
      RowBox[{"AccurateReionization", "\[Rule]", "False"}], ",", 
      RowBox[{"AccurateBB", "\[Rule]", "False"}], ",", 
-     RowBox[{"DoLensing", "\[Rule]", "False"}], ",", 
+     RowBox[{"DoLensing", "\[Rule]", "True"}], ",", 
      RowBox[{"OnlyTransfers", "\[Rule]", "False"}], ",", 
      RowBox[{"DerivedParameters", "\[Rule]", "True"}], ",", 
      RowBox[{"MassiveNuMethod", "\[Rule]", "\"\<best\>\""}]}], "}"}]}], 
@@ -656,8 +531,7 @@ Cell[BoxData[
           RowBox[{"result", "[", 
            RowBox[{"[", "5", "]"}], "]"}]}]}], "}"}]}]}], 
      "\[IndentingNewLine]", "]"}]}], ";"}]}]], "Input",
- InitializationCell->True,
- EmphasizeSyntaxErrors->True],
+ InitializationCell->True],
 
 Cell[BoxData[
  RowBox[{
@@ -890,7 +764,7 @@ Cell[BoxData[
       RowBox[{"link", "=", 
        RowBox[{"Install", "[", 
         RowBox[{"$location", "<>", "\"\<ext/math_link\>\""}], "]"}]}], ";", 
-      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
       RowBox[{"result", "=", 
        RowBox[{"Table", "[", 
         RowBox[{
@@ -971,7 +845,9 @@ Cell[BoxData[
  RowBox[{"cambdata", "=", 
   RowBox[{"camb", "[", 
    RowBox[{".2", ",", ".05", ",", ".75", ",", ".7", ",", 
-    RowBox[{"-", "1."}]}], "]"}]}]], "Input"],
+    RowBox[{"-", "1."}], ",", 
+    RowBox[{"WantCls", "\[Rule]", "True"}], ",", 
+    RowBox[{"WantScalars", "\[Rule]", "True"}]}], "]"}]}]], "Input"],
 
 Cell[BoxData[
  InterpretationBox[
@@ -981,19 +857,20 @@ Cell[BoxData[
     "0.2`", ",", "0.05`", ",", "0.75`", ",", "70.`", ",", "0", ",", "2.7255`",
       ",", "0.24`", ",", "3.046`", ",", "0", ",", "1", ",", "0.96`", ",", "0",
       ",", "0", ",", "1", ",", "2.1`*^-9", ",", "0.05`", ",", "0.05`", ",", 
-     "0.`", ",", "10.`", ",", "1.`", ",", "0.5`", ",", "3000.`", ",", "0.9`", 
-     ",", "0.`"}], "}"}], "\[InvisibleSpace]", 
+     "0.`", ",", "10.`", ",", "1.`", ",", "0.5`", ",", "3000.`", ",", "800.`",
+      ",", "0.9`", ",", "0.`"}], "}"}], "\[InvisibleSpace]", 
    RowBox[{"{", 
     RowBox[{
     "0", ",", "1", ",", "1", ",", "0", ",", "1", ",", "1", ",", "0", ",", "0",
-      ",", "0", ",", "1", ",", "0", ",", "0", ",", "1", ",", "0", ",", "0", 
-     ",", "0", ",", "1", ",", "1500", ",", "400", ",", "0", ",", "1", ",", 
-     "1", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1", ",", "3"}], 
-    "}"}]}],
+      ",", "1", ",", "1", ",", "1", ",", "0", ",", "1", ",", "1", ",", "1", 
+     ",", "1", ",", "1", ",", "1", ",", "1500", ",", "400", ",", "0", ",", 
+     "1", ",", "1", ",", "0", ",", "0", ",", "1", ",", "0", ",", "1", ",", 
+     "3"}], "}"}]}],
   SequenceForm[{
    0.2, 0.05, 0.75, 70., 0, 2.7255, 0.24, 3.046, 0, 1, 0.96, 0, 0, 1, 2.1*^-9,
-     0.05, 0.05, 0., 10., 1., 0.5, 3000., 0.9, 0.}, {0, 1, 1, 0, 1, 1, 0, 0, 
-   0, 1, 0, 0, 1, 0, 0, 0, 1, 1500, 400, 0, 1, 1, 0, 0, 0, 0, 1, 3}],
+     0.05, 0.05, 0., 10., 1., 0.5, 3000., 800., 0.9, 0.}, {0, 1, 1, 0, 1, 1, 
+   0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1500, 400, 0, 1, 1, 0, 0, 1, 0, 1, 3}],
+  
   Editable->False]], "Print"],
 
 Cell[BoxData[
@@ -1003,7 +880,7 @@ Cell[BoxData[
   RowBox[{
   ":", " "}], "\<\"Unable to communicate with closed link \
 \[NoBreak]\\!\\(LinkObject[\\(\\(\\\"/home/vollmer/projects/cosmomathica/ext/\
-math_link\\\", 3856, 6\\)\\)]\\)\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\
+math_link\\\", 463, 4\\)\\)]\\)\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\
 \[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
 ButtonData:>\\\"paclet:ref/message/LinkObject/linkd\\\", ButtonNote -> \
 \\\"LinkObject::linkd\\\"]\\)\"\>"}]], "Message", "MSG"],
@@ -1015,9 +892,9 @@ Cell[BoxData[
   RowBox[{
   ":", " "}], "\<\"Argument \
 \[NoBreak]\\!\\(LinkObject[\\(\\(\\\"/home/vollmer/projects/cosmomathica/ext/\
-math_link\\\", 3856, 6\\)\\)]\\)\[NoBreak] in \
+math_link\\\", 463, 4\\)\\)]\\)\[NoBreak] in \
 \[NoBreak]\\!\\(LinkClose[\\(\\(LinkObject[\\(\\(\\\"/home/vollmer/projects/\
-cosmomathica/ext/math_link\\\", 3856, 6\\)\\)]\\)\\)]\\)\[NoBreak] has an \
+cosmomathica/ext/math_link\\\", 463, 4\\)\\)]\\)\\)]\\)\[NoBreak] has an \
 invalid LinkObject number; the link may be closed. \\!\\(\\*ButtonBox[\\\"\
 \[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
 ButtonData:>\\\"paclet:ref/message/LinkObject/linkn\\\", ButtonNote -> \
@@ -1028,31 +905,32 @@ Cell[BoxData["$Failed"], "Output"]
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"link", "=", 
-   RowBox[{"Install", "[", 
-    RowBox[{
-     RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<ext/math_link\>\""}],
-     "]"}]}], ";"}], "\n", 
- RowBox[{"Global`CAMBrun", "[", 
-  RowBox[{
-   RowBox[{"{", "1.", "}"}], ",", 
-   RowBox[{"{", "2", "}"}]}], "]"}]}], "Input"],
+Cell[BoxData[
+ RowBox[{"Length", "@", 
+  RowBox[{"{", 
+   RowBox[{
+   "0.2`", ",", "0.05`", ",", "0.75`", ",", "70.`", ",", "0", ",", "2.7255`", 
+    ",", "0.24`", ",", "3.046`", ",", "0", ",", "1", ",", "0.96`", ",", "0", 
+    ",", "0", ",", "1", ",", "2.1`*^-9", ",", "0.05`", ",", "0.05`", ",", 
+    "0.`", ",", "10.`", ",", "1.`", ",", "0.5`", ",", "3000.`", ",", "800.`", 
+    ",", "0.9`", ",", "0.`"}], "}"}]}]], "Input"],
+
+Cell[BoxData["25"], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"LinkObject", "::", "linkd"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Unable to communicate with closed link \
-\[NoBreak]\\!\\(LinkObject[\\(\\(\\\"/home/vollmer/projects/cosmomathica/ext/\
-math_link\\\", 3625, 6\\)\\)]\\)\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\
-\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/LinkObject/linkd\\\", ButtonNote -> \
-\\\"LinkObject::linkd\\\"]\\)\"\>"}]], "Message", "MSG"],
+ RowBox[{"Length", "@", 
+  RowBox[{"{", 
+   RowBox[{
+   "0", ",", "1", ",", "1", ",", "0", ",", "1", ",", "1", ",", "0", ",", "0", 
+    ",", "1", ",", "1", ",", "1", ",", "0", ",", "1", ",", "1", ",", "1", ",",
+     "1", ",", "1", ",", "1", ",", "1500", ",", "400", ",", "0", ",", "1", 
+    ",", "1", ",", "0", ",", "0", ",", "1", ",", "0", ",", "1", ",", "3"}], 
+   "}"}]}]], "Input"],
 
-Cell[BoxData["$Failed"], "Output"]
+Cell[BoxData["29"], "Output"]
 }, Open  ]]
 }, Open  ]]
 },
@@ -1081,7 +959,7 @@ Cell[579, 22, 54, 1, 78, "Section",
  InitializationCell->True],
 Cell[636, 25, 124, 3, 42, "Input",
  InitializationCell->True],
-Cell[763, 30, 2591, 47, 418, "Input",
+Cell[763, 30, 2591, 47, 550, "Input",
  InitializationCell->True],
 Cell[3357, 79, 213, 6, 42, "Input",
  InitializationCell->True],
@@ -1097,35 +975,37 @@ Cell[4426, 118, 101, 2, 42, "Input",
  InitializationCell->True],
 Cell[4530, 122, 156, 4, 42, "Input",
  InitializationCell->True],
-Cell[4689, 128, 4558, 129, 439, "Input"],
-Cell[9250, 259, 12804, 290, 1165, "Input",
+Cell[4689, 128, 13035, 296, 1187, "Input",
  InitializationCell->True],
-Cell[22057, 551, 4523, 108, 615, "Input",
+Cell[17727, 426, 4493, 107, 615, "Input",
  InitializationCell->True],
-Cell[26583, 661, 4938, 121, 549, "Input",
+Cell[22223, 535, 4938, 121, 549, "Input",
  InitializationCell->True],
-Cell[31524, 784, 5582, 142, 483, "Input",
+Cell[27164, 658, 5559, 142, 461, "Input",
  InitializationCell->True],
-Cell[37109, 928, 149, 3, 65, "Input",
+Cell[32726, 802, 149, 3, 65, "Input",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[37295, 936, 23, 0, 78, "Section"],
-Cell[37321, 938, 156, 5, 42, "Input"],
-Cell[37480, 945, 203, 6, 42, "Input"],
-Cell[37686, 953, 192, 5, 42, "Input"],
-Cell[37881, 960, 163, 5, 42, "Input"],
+Cell[32912, 810, 23, 0, 78, "Section"],
+Cell[32938, 812, 156, 5, 42, "Input"],
+Cell[33097, 819, 203, 6, 42, "Input"],
+Cell[33303, 827, 192, 5, 42, "Input"],
+Cell[33498, 834, 163, 5, 42, "Input"],
 Cell[CellGroupData[{
-Cell[38069, 969, 168, 4, 42, "Input"],
-Cell[38240, 975, 1058, 21, 26, "Print"],
-Cell[39301, 998, 513, 10, 24, "Message"],
-Cell[39817, 1010, 692, 13, 43, "Message"],
-Cell[40512, 1025, 34, 0, 42, "Output"]
+Cell[33686, 843, 272, 6, 42, "Input"],
+Cell[33961, 851, 1095, 22, 45, "Print"],
+Cell[35059, 875, 512, 10, 24, "Message"],
+Cell[35574, 887, 690, 13, 24, "Message"],
+Cell[36267, 902, 34, 0, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[40583, 1030, 323, 10, 65, "Input"],
-Cell[40909, 1042, 513, 10, 24, "Message"],
-Cell[41425, 1054, 34, 0, 42, "Output"]
+Cell[36338, 907, 427, 8, 42, "Input"],
+Cell[36768, 917, 29, 0, 42, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[36834, 922, 399, 8, 42, "Input"],
+Cell[37236, 932, 29, 0, 42, "Output"]
 }, Open  ]]
 }, Open  ]]
 }

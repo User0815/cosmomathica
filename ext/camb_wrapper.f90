@@ -37,9 +37,12 @@ contains
         integer(c_int), intent(in)    :: ints(ints_len)
         real(c_double), intent(out)   :: output(out_len)
 
-        integer error, fi, ii, eigenstates, fitemp
+        integer error, fi, ii, eigenstates, fitemp, lmax
+        double precision age, zre, sigma8
+        real(4), allocatable :: clout(:,:)
 
         Type(CAMBparams) P
+        Type(CAMBdata) CAMBout
 
         ! We have two arrays containing all the parameters: one full of doubles,
         ! one full of ints. We need to fill the structure P with it. See
@@ -86,18 +89,17 @@ contains
          P%InitPower%an(1:fitemp)     = floats(fi:fi+fitemp); fi=fi+fitemp !scalar spectral index
          P%InitPower%n_run(1:fitemp)  = floats(fi:fi+fitemp); fi=fi+fitemp !running of scalar spectral index
          P%InitPower%ant(1:fitemp)    = floats(fi:fi+fitemp); fi=fi+fitemp !tensor spectra index
-         P%InitPower%rat = 1
+         P%InitPower%rat = 1d0
          P%InitPower%rat(1:fitemp)    = floats(fi:fi+fitemp); fi=fi+fitemp
          P%InitPower%ScalarPowerAmp(1:fitemp) = floats(fi:fi+fitemp); fi=fi+fitemp
          P%InitPower%k_0_scalar = floats(fi); fi=fi+1
          P%InitPower%k_0_tensor = floats(fi); fi=fi+1
 
         ! call Recombination_SetDefParams(P%Recomb)
-        ! this depends whether recfast (default), hyrec  or cosmorec is used. 
-        ! If recfast, then Recomb is empty. Also see Makefile_main
-             ! P%Recomb%runmode  = ints(ii); ii = ii+1
-             ! P%Recomb%fdm      = floats(fi); fi = fi+1
-             ! P%Recomb%accuracy = floats(fi); fi = fi+1
+             P%Recomb%RECFAST_fudge = 1.14d0
+             P%Recomb%RECFAST_fudge_He =.86d0
+             P%Recomb%RECFAST_Heswitch = 6
+             P%Recomb%RECFAST_Hswitch  = .true.
         ! call Reionization_SetDefParams(P%Reion)
          P%Reion%Reionization      = int2bool(ints(ii)); ii = ii+1
          P%Reion%use_optical_depth = int2bool(ints(ii)); ii = ii+1
@@ -105,6 +107,8 @@ contains
          P%Reion%redshift          = floats(fi); fi = fi+1
          P%Reion%fraction          = floats(fi); fi = fi+1
          P%Reion%delta_redshift    = floats(fi); fi = fi+1
+
+         !TODO bispectrum?
 
         P%Transfer%high_precision = int2bool(ints(ii)); ii=ii+1
 
@@ -138,16 +142,38 @@ contains
         P%DerivedParameters = int2bool(ints(ii)); ii=ii+1
         P%MassiveNuMethod = ints(ii); ii=ii+1
 
-        if (.not. CAMB_ValidateParams(P)) stop 'Stopped due to parameter error'
+        !TODO DoTensorNeutrinos? ThreadNum?
 
-        ! Now call CAMB
+        if (ii-1 /= ints_len .or. fi-1 /= floats_len) then
+            write(*,*) "Wrong number of parameters: ", fi-1,ii-1
+            write(*,*) "Expected: ", floats_len, ints_len
+            stop
+        endif
+
         error = 0
-        call CAMB_GetResults(P, error)
-
+        if (.not. CAMB_ValidateParams(P)) stop 'Stopped due to parameter error'
+        call  CAMBParams_Set(P, error, .false.)
         if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
 
-        ! return the results TODO
+        ! Return the results
+        call CAMB_GetTransfers(P, CAMBout, error)
+        if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
+
+        lmax = P%Max_l
+        allocate(clout(2:lmax,1:4))
+        call CAMB_GetCls(clout, lmax, 1, .false.)
+
+        age = CAMB_GetAge(P)
+        zre = CAMB_GetZreFromTau(P,P%Reion%optical_depth) 
+        sigma8 = MT%sigma_8(1,1)!(:P%Transfer%num_redshifts, :P%InitPower%nn) 
+
+
+        ! Pass contents from CAMBout and clout back to MMA
         output(1) = 1d0*error
+        output(2) = age
+        output(3) = zre
+        output(4) = sigma8
+
         
     end subroutine runcamb
 

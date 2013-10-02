@@ -72,18 +72,19 @@ validateoption[MassiveNuMethod,massivenu];
 
 floats=Flatten@{OmegaC,OmegaB,OmegaL,h*100,OptionValue[#]&/@{OmegaNu,Tcmb,YHe,MasslessNeutrinos,NuMassDegeneracies,NuMassFractions,ScalarSpectralIndex,ScalarRunning,TensorSpectralIndex,RatioScalarTensorAmplitudes,ScalarPowerAmplitude,PivotScalar,PivotTensor,OpticalDepth,ReionizationRedshift,ReionizationFraction,ReionizationDeltaRedshift,MaxEtaK,MaxEtaKTensor,TransferKmax,TransferRedshifts}};
 
-ints=Flatten@{OptionValue[MassiveNeutrinos],Length@OptionValue[NuMassFractions],Position[initialcond,OptionValue[ScalarInitialCondition]][[1,1]]-1,Position[nonlinear,OptionValue[NonLinear]][[1,1]]-1,Length@OptionValue@ScalarSpectralIndex,bool2int/@{DoReionization,UseOpticalDepth,TransferHighPrecision,WantCMB,WantTransfer,WantCls,TransferHighPrecision,WantScalars,WantTensors,WantZstar, WantZdrag},OptionValue[#]&/@{OutputNormalization,MaxEll,MaxEllTensor,TransferKperLogInt},Length@OptionValue@TransferRedshifts,bool2int/@{AccuratePolarization,AccurateReionization,AccurateBB,DoLensing,OnlyTransfers,DerivedParameters},Position[massivenu,OptionValue[MassiveNuMethod]][[1,1]]-1};
+ints=Flatten@{OptionValue[MassiveNeutrinos],Length@OptionValue[NuMassFractions],Position[initialcond,OptionValue[ScalarInitialCondition]][[1,1]]-1,Position[nonlinear,OptionValue[NonLinear]][[1,1]]-1,Length@OptionValue@ScalarSpectralIndex,bool2int/@{DoReionization,UseOpticalDepth,TransferHighPrecision,WantCMB,WantTransfer,WantCls,WantScalars,WantVectors,WantTensors,WantZstar, WantZdrag},OptionValue[#]&/@{OutputNormalization,MaxEll,MaxEllTensor,TransferKperLogInt},Length@OptionValue@TransferRedshifts,bool2int/@{AccuratePolarization,AccurateReionization,AccurateBB,DoLensing,OnlyTransfers,DerivedParameters},Position[massivenu,OptionValue[MassiveNuMethod]][[1,1]]-1};
 
 Print[floats,ints];
+
+SetDirectory[$location<>"ext/camb"];
 link=Install[$location<>"ext/math_link"];
-
 result=Global`CAMBrun[N/@floats,ints];
-
+ResetDirectory[];
 Uninstall[link];
 
 result
 ];
-Options[camb]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->False,WantTransfer->True,WantCls->False,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantTensors->False,WantZstar->False, WantZdrag->False,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->False,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
+Options[camb]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->True,WantTransfer->True,WantCls->True,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantVectors->True,WantTensors->True,WantZstar->True, WantZdrag->True,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->True,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
 
 
 (*Transfer function*)
@@ -152,7 +153,6 @@ Do[If[!check[[i]],Message[Interface::CosmicEmu,labels[[i]],parameters[[i]],limit
 If[!And@@check,Return[$Failed];Abort[]];
 
 link=Install[$location<>"ext/math_link"];
-
 result=Table[{1/a-1,Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1]},{a,.5,1.,.1}];
  (*CosmicEmu only does these five redshifts, everything else is interpolated*)
 

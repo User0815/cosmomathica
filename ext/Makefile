@@ -3,7 +3,7 @@ CC = gcc -Wall -lgfortran -fopenmp
 
 # Define your Fortran compiler (if you want to use CAMB) Must match CAMB
 # compiler
-F90C = gfortran -fopenmp
+F90C = gfortran -fopenmp -Wall -Wextra -Wconversion-extra
 
 # Mathematica related variables - adjust as necessary
 MLINKDIR = /opt/Wolfram/Mathematica/9.0.1/SystemFiles/Links/MathLink/DeveloperKit
@@ -81,9 +81,6 @@ $(CAMB):
 	# change from ifort to gfortran
 	# move HighLExtrapTemplate_lenspotentialCls.dat into parent directory
 	+$(MAKE) -C $@
-
-testwrapper: $(CAMB) testwrapper.c camb_wrapper.o Makefile
-	$(CC) camb_wrapper.o $(CAMB)/*.o testwrapper.c -o $@
 
 .PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB)
 
