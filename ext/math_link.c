@@ -90,12 +90,10 @@ extern void runcamb();
 void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
     /* TODO Do longs need to be converted to ints here? */
 
-    const int floats_out_len = 1000000;
-    double floats_out[floats_out_len];
+    const int floats_out_len = 2000000;
+    double *floats_out = malloc(sizeof(*floats_out) * floats_out_len);
     const int ints_out_len = 100;
     double ints_out[ints_out_len];
-
-    /* TODO make sure the arrays have the right size */
 
     runcamb(floats, &floats_len, ints, &ints_len, (double*)floats_out, &floats_out_len, (int*)ints_out, &ints_out_len);
 
@@ -104,6 +102,8 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
     MLPutIntegerList(stdlink, (int*)ints_out, ints_out_len);
     MLEndPacket(stdlink);
     MLFlush(stdlink);
+
+    free(floats_out);
 }
 
 

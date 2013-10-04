@@ -79,10 +79,14 @@ $(COSMICEMU):
 
 $(CAMB):
 	# change from ifort to gfortran
-	# move HighLExtrapTemplate_lenspotentialCls.dat into parent directory
 	+$(MAKE) -C $@
 
-.PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB)
+
+download:
+	./download.sh
+
+cleanall:
+	rm -rf  $(HALOFIT) $(COSMICEMU) $(TRANSFER)
 
 clean:
 	rm -f *o *tm.c math_link testwrapper
@@ -90,3 +94,5 @@ clean:
 	rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o
 	+$(MAKE) -C $(HALOFIT) clean
 	+$(MAKE) -C $(CAMB) clean
+
+.PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB) download cleanall

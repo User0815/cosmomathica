@@ -50,10 +50,16 @@ Begin["`Private`"]
 $location=DirectoryName[$InputFileName];
 
 
-camb[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{link,result,resultfloat,resultint,floats,ints,bool2int,initialcond,nonlinear,massivenu,validateoption,validatelists,limits,check},
+camb[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{link,result,resultfloat,resultint,floats,ints,bool2int,initialcond,nonlinear,massivenu,validateoption,validatelists,limits,check,getDimensions,dimensions,age,zre,array},
 
 bool2int[b_]:=If[OptionValue@b,1,0];
 validateoption[op_,poss_]:=If[!MemberQ[poss,OptionValue[op]],Message[CAMB::InvalidOption,ToString@op,OptionValue@op,StringJoin@@poss(*TODO fix the string*)];Return[$Failed];Abort[]];
+
+getDimensions[list_]:=Module[{i,r},
+i=1;r={};
+While[i<Length@list,AppendTo[r,list[[i+1;;i+list[[i]]]]];i=i+1+list[[i]]];
+r];
+
 
 (*some parameters must be within certain limits*)
 limits={{ReionizationFraction,0,1.5},{OpticalDepth,0,.9}};
@@ -87,8 +93,16 @@ Uninstall[link];
 {resultfloat,resultint}=result;
 If[resultint[[1]]!=0,Message[CAMB::Error,resultint[[1]]];Return[$Failed];Abort[]];
 resultint=Drop[resultint,1];
+dimensions=getDimensions@resultint;
 
-{resultint,resultfloat}
+{age,zre}=resultfloat[[;;2]];
+resultfloat=Drop[resultfloat,2];
+
+Do[array=Take[resultfloat,Times@@d];
+resultfloat=Drop[resultfloat,Times@@d];
+AppendTo[resultfloat,ArrayReshape[array,d]],{d,dimensions}];
+
+{camb["Age"]->age,camb["zRec"]->zre,resultint,resultfloat}
 ];
 Options[camb]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->True,WantTransfer->True,WantCls->True,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantVectors->True,WantTensors->True,WantZstar->True, WantZdrag->True,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->True,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
 
