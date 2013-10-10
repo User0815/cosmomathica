@@ -31,7 +31,7 @@ cosmicemu::usage="This function provides an interface to the CosmicEmulator by E
 camb::usage="This function provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\), ..., as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. The default options are ...";
 
 
-Interface::CosmicEmu="Parameter out of bounds. `3` <= `1` <= `4` required, but `1`=`2`.";
+CosmicEmu::OutsideBounds="Parameter out of bounds. CosmicEmu requires `3` <= `1` <= `4`, but you have `1`=`2`.";
 
 
 CAMB::Tcmb="Temperature of the CMB (default:)";
@@ -42,6 +42,7 @@ CAMB::InvalidOption="Option `1` is '`2`', but must be one of the following: `3`"
 CAMB::Lists="The following options need to be non-empty lists of the same length: `1`";
 CAMB::Error="CAMB exited with the following error code: `1`";
 CAMB::LinkBroken="CAMB crashed. See if there is anything useful on stdout.";
+CAMB::OutsideBounds="Parameter out of bounds. CAMB requires `3` <= `1` <= `4`, but you have `1`=`2`.";
 
 
 Begin["`Private`"]
@@ -50,10 +51,12 @@ Begin["`Private`"]
 $location=DirectoryName[$InputFileName];
 
 
-camb[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{link,result,resultfloat,resultint,floats,ints,bool2int,initialcond,nonlinear,massivenu,validateoption,validatelists,limits,check,getDimensions,dimensions,age,zre,array},
+camb[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{link,result,resultfloat,resultint,floats,ints,bool2int,initialcond,nonlinear,massivenu,validatestring,validatelists,validatelimits,limits,check,getDimensions,dimensions,age,zre,array},
 
 bool2int[b_]:=If[OptionValue@b,1,0];
-validateoption[op_,poss_]:=If[!MemberQ[poss,OptionValue[op]],Message[CAMB::InvalidOption,ToString@op,OptionValue@op,StringJoin@@poss(*TODO fix the string*)];Return[$Failed];Abort[]];
+validatestring[op_,poss_]:=If[!MemberQ[poss,OptionValue[op]],Message[CAMB::InvalidOption,ToString[op],OptionValue[op],StringJoin@@Riffle[poss,", "]];Abort[]];
+validatelimits[op_,lower_,upper_]:=If[!(lower<=OptionValue[op]<=upper),Message[CAMB::OutsideBounds,op,OptionValue[op],lower,upper];Abort[]];
+validatelimits[val_,name_,lower_,upper_]:=If[!(lower<=val<=upper),Message[CAMB::OutsideBounds,name,val,lower,upper];Abort[]];
 
 getDimensions[list_]:=Module[{i,r},
 i=1;r={};
@@ -62,21 +65,29 @@ r];
 
 
 (*some parameters must be within certain limits*)
-limits={{ReionizationFraction,0,1.5},{OpticalDepth,0,.9}};
-check={#[[1]],#[[2]]<=OptionValue[#[[1]]]<=#[[3]]}&/@limits;
+limits={{ReionizationFraction,0,1.5},
+{OpticalDepth,0,.9},
+{h,"h",.2,1.},
+{Tcmb,2.7,2.8},
+{Yhe,.2,.8},
+{MasslessNeutrinos,0,3.1},
+(*MassiveNeutrinos?*)
+{OmegaB,"\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(B\)]\)",.001/h^2,1./h^2},
+{OmegaC ,"\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\)",0./h^2,3./h^2}
+};
 
-validatelists[ops_]:=If[1!=Length@Union[Length/@OptionValue/@ops],Message[CAMB::Lists,ops];Return[$Failed];Abort[]];
+validatelists[ops_]:=If[1!=Length@Union[Length/@OptionValue/@ops],Message[CAMB::Lists,ops];Abort[]];
 validatelists[{ScalarSpectralIndex,ScalarRunning,TensorSpectralIndex,RatioScalarTensorAmplitudes,ScalarPowerAmplitude}];
 validatelists[{NuMassDegeneracies,NuMassFractions}];
-(*If[Not[0\[LessEqual]OptionValue[ReionizationFraction]\[LessEqual]1.5],Abort[]]; (*TODO*)*)
+validatelimits[Sequence@@#]&/@limits;
 
 initialcond={"vector","adiabatic","iso_CDM","iso_baryon","iso_neutrino","iso_neutrino_vel"};
-nonlinear={"none","pk","cl"};
+nonlinear={"none","pk","lens"};
 massivenu={"int","trunc","approx","best"};
 
-validateoption[ScalarInitialCondition,initialcond];
-validateoption[NonLinear,nonlinear];
-validateoption[MassiveNuMethod,massivenu];
+validatestring[ScalarInitialCondition,initialcond];
+validatestring[NonLinear,nonlinear];
+validatestring[MassiveNuMethod,massivenu];
 
 floats=Flatten@{OmegaC,OmegaB,OmegaL,h*100,OptionValue[#]&/@{OmegaNu,Tcmb,YHe,MasslessNeutrinos,NuMassDegeneracies,NuMassFractions,ScalarSpectralIndex,ScalarRunning,TensorSpectralIndex,RatioScalarTensorAmplitudes,ScalarPowerAmplitude,PivotScalar,PivotTensor,OpticalDepth,ReionizationRedshift,ReionizationFraction,ReionizationDeltaRedshift,MaxEtaK,MaxEtaKTensor,TransferKmax,TransferRedshifts}};
 
@@ -102,7 +113,14 @@ Do[array=Take[resultfloat,Times@@d];
 resultfloat=Drop[resultfloat,Times@@d];
 AppendTo[resultfloat,ArrayReshape[array,d]],{d,dimensions}];
 
-{camb["Age"]->age,camb["zRec"]->zre,resultint,resultfloat}
+{camb["Age"]->age,camb["zRec"]->zre,
+camb["ints"]->resultint,camb["floats"]->resultfloat,
+camb["CLscalar"]->resultfloat[[1,All,1,1]],
+camb["CLvector"]->resultfloat[[2,All,1,1]],
+camb["CLtensor"]->resultfloat[[3,All,1,1]],
+camb["PSlinear"]->Transpose@{Exp@resultfloat[[4]],Flatten@resultfloat[[5]]},
+camb["PSnonlinear"]->Transpose@{Exp@resultfloat[[4]],Flatten@resultfloat[[6]]},
+camb["sigma8"]->resultfloat[[-1]]}
 ];
 Options[camb]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->True,WantTransfer->True,WantCls->True,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantVectors->True,WantTensors->True,WantZstar->True, WantZdrag->True,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->True,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
 
@@ -169,7 +187,7 @@ limits={{.12,.155},{.0214,.0235},{.85,1.05},{.61,.9},{-1.3,-.7}};
 parameters={omegaM,omegaB,sigma8,ns,w};
 
 check=(#[[2,1]]<=#[[1]]<=#[[2,2]])&/@Transpose[{parameters,limits}];
-Do[If[!check[[i]],Message[Interface::CosmicEmu,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]]]],{i,Length@check}];
+Do[If[!check[[i]],Message[CosmicEmu::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]]]],{i,Length@check}];
 If[!And@@check,Return[$Failed];Abort[]];
 
 link=Install[$location<>"ext/math_link"];
