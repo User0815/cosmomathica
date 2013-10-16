@@ -115,7 +115,6 @@ contains
         integer(c_int), intent(out)   :: ints_out(ints_out_len)
 
         integer error, fi, ii, eigenstates, fitemp, i, float_offset, int_offset
-        double precision age, zre
 
         Type(CAMBparams) P
         Type(CAMBdata) CAMBout
@@ -123,29 +122,36 @@ contains
 
         ! We have two arrays containing all the parameters: one full of doubles,
         ! one full of ints. We need to fill the structure P with it. See
-        ! camb/inidriver.f90 for how it works.
+        ! camb/inidriver.f90 for how it works. We avoid passing structures
+        ! between C and Fortran because of compatibility issues, so we pass flat
+        ! arrays.
 
-        fi = 1
-        ii = 1
 
         ! call CAMB_SetDefParams(P)
         ! Compare the following to the function CAMB_SetDefParams.
         ! Obviously the order of the following matters a lot - don't change it
         ! unless you really know what you're doing.
 
-        P%omegac  = floats(fi); fi=fi+1
-        P%omegab  = floats(fi); fi=fi+1
-        P%omegav  = floats(fi); fi=fi+1
-        P%H0      = floats(fi); fi=fi+1
-        P%omegan  = floats(fi); fi=fi+1
+        fi = 1
+        ii = 1
 
-        P%TCMB    = floats(fi); fi=fi+1
-        P%YHe     = floats(fi); fi=fi+1
+#define nextfloat floats(fi); fi=fi+1
+#define nextint ints(ii); ii=ii+1
+#define nextbool int2bool(ints(ii)); ii=ii+1
 
-        P%Num_Nu_massless     = floats(fi); fi=fi+1
-        P%Num_Nu_massive      = ints(ii); ii=ii+1
+        P%omegac  = nextfloat
+        P%omegab  = nextfloat
+        P%omegav  = nextfloat
+        P%H0      = nextfloat
+        P%omegan  = nextfloat
+
+        P%TCMB    = nextfloat
+        P%YHe     = nextfloat
+
+        P%Num_Nu_massless     = nextfloat
+        P%Num_Nu_massive      = nextint
         P%Nu_mass_splittings  = .true. ! int2bool(ints(ii)); ii=ii+1
-        P%Nu_mass_eigenstates = ints(ii); ii=ii+1
+        P%Nu_mass_eigenstates = nextint
         eigenstates = P%Nu_mass_eigenstates
 
         P%Nu_mass_degeneracies(1:eigenstates) = floats(fi:fi+eigenstates)
@@ -155,8 +161,8 @@ contains
 
         P%same_neutrino_Neff  = .false. ! ?? no idea what this does
 
-        P%Scalar_initial_condition = ints(ii); ii=ii+1
-        P%NonLinear                = ints(ii); ii=ii+1
+        P%Scalar_initial_condition = nextint
+        P%NonLinear                = nextint
 
         ! call SetDefPowerParams(P%InitPower)
         ! Compare with SetDefPowerParams
@@ -169,8 +175,8 @@ contains
          P%InitPower%rat = 1d0
          P%InitPower%rat(1:fitemp)    = floats(fi:fi+fitemp); fi=fi+fitemp
          P%InitPower%ScalarPowerAmp(1:fitemp) = floats(fi:fi+fitemp); fi=fi+fitemp
-         P%InitPower%k_0_scalar = floats(fi); fi=fi+1
-         P%InitPower%k_0_tensor = floats(fi); fi=fi+1
+         P%InitPower%k_0_scalar = nextfloat
+         P%InitPower%k_0_tensor = nextfloat
 
         ! call Recombination_SetDefParams(P%Recomb)
              P%Recomb%RECFAST_fudge = 1.14d0
@@ -178,47 +184,48 @@ contains
              P%Recomb%RECFAST_Heswitch = 6
              P%Recomb%RECFAST_Hswitch  = .true.
         ! call Reionization_SetDefParams(P%Reion)
-         P%Reion%Reionization      = int2bool(ints(ii)); ii = ii+1
-         P%Reion%use_optical_depth = int2bool(ints(ii)); ii = ii+1
-         P%Reion%optical_depth     = floats(fi); fi = fi+1
-         P%Reion%redshift          = floats(fi); fi = fi+1
-         P%Reion%fraction          = floats(fi); fi = fi+1
-         P%Reion%delta_redshift    = floats(fi); fi = fi+1
+         P%Reion%Reionization      = nextbool
+         P%Reion%use_optical_depth = nextbool
+         P%Reion%optical_depth     = nextfloat
+         P%Reion%redshift          = nextfloat
+         P%Reion%fraction          = nextfloat
+         P%Reion%delta_redshift    = nextfloat
 
          !TODO bispectrum?
 
-        P%Transfer%high_precision = int2bool(ints(ii)); ii=ii+1
+        P%Transfer%high_precision = nextbool
 
-        P%Want_CMB     = int2bool(ints(ii)); ii=ii+1
-        P%WantTransfer = int2bool(ints(ii)); ii=ii+1
-        P%WantCls      = int2bool(ints(ii)); ii=ii+1
-        P%WantScalars = int2bool(ints(ii)); ii=ii+1
-        P%WantVectors = int2bool(ints(ii)); ii=ii+1
-        P%WantTensors = int2bool(ints(ii)); ii=ii+1
-        P%want_zstar  = int2bool(ints(ii)); ii=ii+1
-        P%want_zdrag  = int2bool(ints(ii)); ii=ii+1
+        P%Want_CMB     = nextbool
+        P%WantTransfer = nextbool
+        P%WantCls      = nextbool
+        P%WantScalars = nextbool
+        P%WantVectors = nextbool
+        P%WantTensors = nextbool
+        P%want_zstar  = nextbool
+        P%want_zdrag  = nextbool
 
-        P%OutputNormalization = ints(ii); ii=ii+1
+        P%OutputNormalization = nextint
 
-        P%Max_l            = ints(ii); ii=ii+1
-        P%Max_eta_k        = floats(fi); fi=fi+1
-        P%Max_l_tensor     = ints(ii); ii=ii+1
-        P%Max_eta_k_tensor = floats(fi); fi=fi+1
-        P%Transfer%kmax          = floats(fi); fi = fi+1
-        P%Transfer%k_per_logint  = ints(ii); ii=ii+1
-        P%Transfer%num_redshifts = ints(ii); ii=ii+1
+        P%Max_l            = nextint
+        P%Max_eta_k        = nextfloat
+        P%Max_l_tensor     = nextint
+        P%Max_eta_k_tensor = nextfloat
+        P%Transfer%kmax          = nextfloat
+        P%Transfer%k_per_logint  = nextint
+        P%Transfer%num_redshifts = nextint
         ! This is an array with length num_redshifts
         P%Transfer%redshifts     = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1) 
 
-        P%AccuratePolarization = int2bool(ints(ii)); ii=ii+1
-        P%AccurateReionization = int2bool(ints(ii)); ii=ii+1
-        P%AccurateBB           = int2bool(ints(ii)); ii=ii+1
+        P%AccuratePolarization = nextbool
+        P%AccurateReionization = nextbool
+        P%AccurateBB           = nextbool
 
-        P%DoLensing = int2bool(ints(ii)); ii=ii+1
-        P%OnlyTransfers   = int2bool(ints(ii)); ii=ii+1
-        P%DerivedParameters = int2bool(ints(ii)); ii=ii+1
-        P%MassiveNuMethod = ints(ii); ii=ii+1
+        P%DoLensing = nextbool
+        P%OnlyTransfers   = nextbool
+        P%DerivedParameters = nextbool
+        P%MassiveNuMethod = nextint
 
+        CP%DerivedParameters = .true.
         !TODO DoTensorNeutrinos? ThreadNum?
 
         if (ii-1 /= ints_len .or. fi-1 /= floats_len) then
@@ -233,44 +240,66 @@ contains
         if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
 
         ! Return the results
-        call CAMB_GetTransfers(P, CAMBout, error)
-        if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
+        write(*,*) "hi"
 
-        age = CAMB_GetAge(P)
-        zre = CAMB_GetZreFromTau(P,P%Reion%optical_depth) 
+        if (P%WantTransfer) then
+            call CAMB_GetTransfers(P, CAMBout, error)
+            if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
+        endif
 
+        write(*,*) "hi"
         ints_out(1) = error
         int_offset = 1
 
-        floats_out(1) = age
-        floats_out(2) = zre
-        float_offset = 2
+#define add3d(array) call add3darray(array, floats_out, float_offset, ints_out, int_offset)
+#define add2d(array) call add2darray(array, floats_out, float_offset, ints_out, int_offset)
+#define add1d(array) call add1darray(array, floats_out, float_offset, ints_out, int_offset)
 
+        ! Derived parameters first
+        float_offset = 0
+        call add1darray( (/ ThermoDerivedParams( derived_Age ),&
+            ThermoDerivedParams( derived_zstar ),&
+            ThermoDerivedParams( derived_rstar ),&
+            ThermoDerivedParams( derived_thetastar ),&
+            ThermoDerivedParams( derived_zdrag ),&
+            ThermoDerivedParams( derived_rdrag ),&
+            ThermoDerivedParams( derived_kD ),&
+            ThermoDerivedParams( derived_thetaD ),&
+            ThermoDerivedParams( derived_zEQ ),&
+            ThermoDerivedParams( derived_thetaEQ ) /), floats_out, float_offset, ints_out, int_offset)
 
-        ! Pass contents from CAMBout and clout back to MMA
+        write(*,*) "hi"
+        if (P%WantTransfer) add2d(CAMBout%MTrans%sigma_8)
 
-        call CAMB_TransfersToPowers(CAMBout)
-        call add3darray(Cl_scalar, floats_out, float_offset, ints_out, int_offset)
-        call add3darray(Cl_vector, floats_out, float_offset, ints_out, int_offset)
-        call add3darray(Cl_tensor, floats_out, float_offset, ints_out, int_offset)
+        write(*,*) "hi"
 
-        do i=1,P%InitPower%nn     
-            call Transfer_GetMatterPowerData(CAMBout%MTrans, PK_data, i)
-            call add1darray(PK_data%log_kh, floats_out, float_offset, ints_out, int_offset)
-            call add2darray(PK_data%matpower, floats_out, float_offset, ints_out, int_offset)
-            call MatterPowerdata_MakeNonlinear(PK_data)
-            call add2darray(PK_data%matpower, floats_out, float_offset, ints_out, int_offset)
-        end do
+        ! Pass contents from CAMBout back to MMA
 
-        call add2darray(CAMBout%MTrans%sigma_8, floats_out, float_offset, ints_out, int_offset)
+        if(P%WantScalars) add3d(Cl_scalar)
+        if(P%WantVectors) add3d(Cl_vector)
+        if(P%WantTensors) add3d(Cl_tensor)
+
+        write(*,*) "hi"
+        if (P%WantTransfer) then
+            call CAMB_TransfersToPowers(CAMBout)
+            do i=1,P%InitPower%nn     
+                call Transfer_GetMatterPowerData(CAMBout%MTrans, PK_data, i)
+                add1d(PK_data%log_kh)
+                add2d(PK_data%matpower)
+                call MatterPowerdata_MakeNonlinear(PK_data)
+                add2d(PK_data%matpower)
+            end do
+        endif
+
+        write(*,*) "hi"
 
         ! Background: TODO: CAMB never fills these arrays. But the functions
         ! exist, so we have to do it by hand.
         if (associated(BackgroundOutputs%z_outputs)) then
-            call add1darray(BackgroundOutputs%z_outputs, floats_out, float_offset, ints_out, int_offset)
-            call add1darray(BackgroundOutputs%H, floats_out, float_offset, ints_out, int_offset)
-            call add1darray(BackgroundOutputs%DA, floats_out, float_offset, ints_out, int_offset)
-            call add1darray(BackgroundOutputs%rs_by_D_v, floats_out, float_offset, ints_out, int_offset)
+            add1d(BackgroundOutputs%z_outputs)
+            add1d(BackgroundOutputs%H)
+            add1d(BackgroundOutputs%DA)
+            add1d(BackgroundOutputs%rs_by_D_v)
         endif
 
         ints_out_len = int_offset

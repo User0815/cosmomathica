@@ -22,27 +22,71 @@
 BeginPackage["cosmomathicaInterface`"]
 
 
-transfer::usage="This function provides an interface to Eisensteins&Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the peak k, the transfer function...";
+Transfer::usage="This function provides an interface to Eisenstein&Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the peak k, the transfer function...";
 
-halofit::usage="This function provides an interface to the halofit algorithm by Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: ...) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
+Halofit::usage="This function provides an interface to the halofit algorithm by R. E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: ...) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
 
-cosmicemu::usage="This function provides an interface to the CosmicEmulator by Earl Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns the nonlinear matter power spectrum at five different redshifts as well as ...";
+CosmicEmu::usage="This function provides an interface to the CosmicEmulator by Earl Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns the nonlinear matter power spectrum at five different redshifts as well as ...";
 
-camb::usage="This function provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\), ..., as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. The default options are ...";
-
-
-CosmicEmu::OutsideBounds="Parameter out of bounds. CosmicEmu requires `3` <= `1` <= `4`, but you have `1`=`2`.";
+CAMB::usage="This function provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\), ..., as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. To see the default options, type `Options[CAMB]`.";
 
 
-CAMB::Tcmb="Temperature of the CMB (default:)";
+Tcmb::usage="An option for CAMB";
+OmegaNu::usage="An option for CAMB";
+YHe::usage="An option for CAMB";
+MasslessNeutrinos::usage="An option for CAMB";
+MassiveNeutrinos::usage="An option for CAMB";
+NuMassDegeneracies::usage="An option for CAMB";
+NuMassFractions::usage="An option for CAMB";
+ScalarInitialCondition::usage="An option for CAMB";
+NonLinear::usage="An option for CAMB";
+WantCMB::usage="An option for CAMB";
+WantTransfer::usage="An option for CAMB";
+WantCls::usage="An option for CAMB";
+ScalarSpectralIndex::usage="An option for CAMB";
+ScalarRunning::usage="An option for CAMB";
+TensorSpectralIndex::usage="An option for CAMB";
+RatioScalarTensorAmplitudes::usage="An option for CAMB";
+ScalarPowerAmplitude::usage="An option for CAMB";
+PivotScalar::usage="An option for CAMB";
+PivotTensor::usage="An option for CAMB";
+DoReionization::usage="An option for CAMB";
+UseOpticalDepth::usage="An option for CAMB";
+OpticalDepth::usage="An option for CAMB";
+ReionizationRedshift::usage="An option for CAMB";
+ReionizationFraction::usage="An option for CAMB";
+ReionizationDeltaRedshift::usage="An option for CAMB";
+TransferHighPrecision::usage="An option for CAMB";
+WantScalars::usage="An option for CAMB";
+WantVectors::usage="An option for CAMB";
+WantTensors::usage="An option for CAMB";
+WantZstar::usage="An option for CAMB";
+WantZdrag::usage="An option for CAMB";
+OutputNormalization::usage="An option for CAMB";
+MaxEll::usage="An option for CAMB";
+MaxEtaK::usage="An option for CAMB";
+MaxEtaKTensor::usage="An option for CAMB";
+MaxEllTensor::usage="An option for CAMB";
+TransferKmax::usage="An option for CAMB";
+TransferKperLogInt::usage="An option for CAMB";
+TransferRedshifts::usage="An option for CAMB";
+AccuratePolarization::usage="An option for CAMB";
+AccurateReionization::usage="An option for CAMB";
+AccurateBB::usage="An option for CAMB";
+DoLensing::usage="An option for CAMB";
+OnlyTransfers::usage="An option for CAMB";
+DerivedParameters::usage="An option for CAMB";
+MassiveNuMethod::usage="An option for CAMB";
+
+
 
 
 CAMB::Eigenstates="NuMassEigenstates and NuMassFractions must have the same length  (can be zero).";
 CAMB::InvalidOption="Option `1` is '`2`', but must be one of the following: `3`";
 CAMB::Lists="The following options need to be non-empty lists of the same length: `1`";
 CAMB::Error="CAMB exited with the following error code: `1`";
-CAMB::LinkBroken="CAMB crashed. See if there is anything useful on stdout.";
-CAMB::OutsideBounds="Parameter out of bounds. CAMB requires `3` <= `1` <= `4`, but you have `1`=`2`.";
+Interface::LinkBroken="`1` crashed. See if there is anything useful on stdout.";
+Interface::OutsideBounds="Parameter out of bounds. `5` requires `3` <= `1` <= `4`, but you have `1`=`2`.";
 
 
 Begin["`Private`"]
@@ -51,12 +95,13 @@ Begin["`Private`"]
 $location=DirectoryName[$InputFileName];
 
 
-camb[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{link,result,resultfloat,resultint,floats,ints,bool2int,initialcond,nonlinear,massivenu,validatestring,validatelists,validatelimits,limits,check,getDimensions,dimensions,age,zre,array},
+bool2int[b_]:=If[b,1,0];
+validatestring[val_,name_,poss_]:=If[!MemberQ[poss,val],Message[CAMB::InvalidOption,name,val,StringJoin@@Riffle[poss,", "]];Abort[]];
+validatelimits[val_,name_,lower_,upper_,module_]:=If[!(lower<=val<=upper),Message[Interface::OutsideBounds,name,val,lower,upper,module];Abort[]];
+validatelists[list_]:=If[1!=Length@Union[Length/@list],Message[CAMB::Lists,list];Abort[]];
 
-bool2int[b_]:=If[OptionValue@b,1,0];
-validatestring[op_,poss_]:=If[!MemberQ[poss,OptionValue[op]],Message[CAMB::InvalidOption,ToString[op],OptionValue[op],StringJoin@@Riffle[poss,", "]];Abort[]];
-validatelimits[op_,lower_,upper_]:=If[!(lower<=OptionValue[op]<=upper),Message[CAMB::OutsideBounds,op,OptionValue[op],lower,upper];Abort[]];
-validatelimits[val_,name_,lower_,upper_]:=If[!(lower<=val<=upper),Message[CAMB::OutsideBounds,name,val,lower,upper];Abort[]];
+
+CAMB[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{j,link,result,resultfloat,resultint,floats,ints,initialcond,nonlinear,massivenu,limits,check,getDimensions,dimensions,array},
 
 getDimensions[list_]:=Module[{i,r},
 i=1;r={};
@@ -69,36 +114,36 @@ limits={{ReionizationFraction,0,1.5},
 {OpticalDepth,0,.9},
 {h,"h",.2,1.},
 {Tcmb,2.7,2.8},
-{Yhe,.2,.8},
+{YHe,.2,.8},
 {MasslessNeutrinos,0,3.1},
 (*MassiveNeutrinos?*)
 {OmegaB,"\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(B\)]\)",.001/h^2,1./h^2},
 {OmegaC ,"\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\)",0./h^2,3./h^2}
 };
 
-validatelists[ops_]:=If[1!=Length@Union[Length/@OptionValue/@ops],Message[CAMB::Lists,ops];Abort[]];
-validatelists[{ScalarSpectralIndex,ScalarRunning,TensorSpectralIndex,RatioScalarTensorAmplitudes,ScalarPowerAmplitude}];
-validatelists[{NuMassDegeneracies,NuMassFractions}];
-validatelimits[Sequence@@#]&/@limits;
+
+validatelists[OptionValue@{ScalarSpectralIndex,ScalarRunning,TensorSpectralIndex,RatioScalarTensorAmplitudes,ScalarPowerAmplitude}];
+validatelists[OptionValue@{NuMassDegeneracies,NuMassFractions}];
+validatelimits[Sequence@@If[NumericQ[#[[1]]],#,{OptionValue[#[[1]]],ToString[#[[1]]]}~Join~Rest@#],"CAMB"]&/@limits;
 
 initialcond={"vector","adiabatic","iso_CDM","iso_baryon","iso_neutrino","iso_neutrino_vel"};
 nonlinear={"none","pk","lens"};
 massivenu={"int","trunc","approx","best"};
 
-validatestring[ScalarInitialCondition,initialcond];
-validatestring[NonLinear,nonlinear];
-validatestring[MassiveNuMethod,massivenu];
+validatestring[OptionValue[ScalarInitialCondition],"ScalarInitialCondition",initialcond];
+validatestring[OptionValue[NonLinear],"NonLinear",nonlinear];
+validatestring[OptionValue[MassiveNuMethod],"MassiveNuMethod",massivenu];
 
 floats=Flatten@{OmegaC,OmegaB,OmegaL,h*100,OptionValue[#]&/@{OmegaNu,Tcmb,YHe,MasslessNeutrinos,NuMassDegeneracies,NuMassFractions,ScalarSpectralIndex,ScalarRunning,TensorSpectralIndex,RatioScalarTensorAmplitudes,ScalarPowerAmplitude,PivotScalar,PivotTensor,OpticalDepth,ReionizationRedshift,ReionizationFraction,ReionizationDeltaRedshift,MaxEtaK,MaxEtaKTensor,TransferKmax,TransferRedshifts}};
 
-ints=Flatten@{OptionValue[MassiveNeutrinos],Length@OptionValue[NuMassFractions],Position[initialcond,OptionValue[ScalarInitialCondition]][[1,1]]-1,Position[nonlinear,OptionValue[NonLinear]][[1,1]]-1,Length@OptionValue@ScalarSpectralIndex,bool2int/@{DoReionization,UseOpticalDepth,TransferHighPrecision,WantCMB,WantTransfer,WantCls,WantScalars,WantVectors,WantTensors,WantZstar, WantZdrag},OptionValue[#]&/@{OutputNormalization,MaxEll,MaxEllTensor,TransferKperLogInt},Length@OptionValue@TransferRedshifts,bool2int/@{AccuratePolarization,AccurateReionization,AccurateBB,DoLensing,OnlyTransfers,DerivedParameters},Position[massivenu,OptionValue[MassiveNuMethod]][[1,1]]-1};
+ints=Flatten@{OptionValue[MassiveNeutrinos],Length@OptionValue[NuMassFractions],Position[initialcond,OptionValue[ScalarInitialCondition]][[1,1]]-1,Position[nonlinear,OptionValue[NonLinear]][[1,1]]-1,Length@OptionValue@ScalarSpectralIndex,bool2int/@OptionValue@{DoReionization,UseOpticalDepth,TransferHighPrecision,WantCMB,WantTransfer,WantCls,WantScalars,WantVectors,WantTensors,WantZstar, WantZdrag},OptionValue[#]&/@{OutputNormalization,MaxEll,MaxEllTensor,TransferKperLogInt},Length@OptionValue@TransferRedshifts,bool2int/@OptionValue@{AccuratePolarization,AccurateReionization,AccurateBB,DoLensing,OnlyTransfers,DerivedParameters},Position[massivenu,OptionValue[MassiveNuMethod]][[1,1]]-1};
 
-
+(*Print[ints,floats];*)
 SetDirectory[$location<>"ext/camb"];
 link=Install[$location<>"ext/math_link"];
 result=Global`CAMBrun[N/@floats,ints];
 ResetDirectory[];
-If[result==$Failed,Message[CAMB::LinkBroken];Return[$Failed];Abort[]];
+If[result==$Failed,Message[Interface::LinkBroken,"CAMB"];Return[$Failed];Abort[]];
 Uninstall[link];
 
 {resultfloat,resultint}=result;
@@ -106,27 +151,39 @@ If[resultint[[1]]!=0,Message[CAMB::Error,resultint[[1]]];Return[$Failed];Abort[]
 resultint=Drop[resultint,1];
 dimensions=getDimensions@resultint;
 
-{age,zre}=resultfloat[[;;2]];
-resultfloat=Drop[resultfloat,2];
-
 Do[array=Take[resultfloat,Times@@d];
 resultfloat=Drop[resultfloat,Times@@d];
 AppendTo[resultfloat,ArrayReshape[array,d]],{d,dimensions}];
 
-{camb["Age"]->age,camb["zRec"]->zre,
-camb["ints"]->resultint,camb["floats"]->resultfloat,
-camb["CLscalar"]->resultfloat[[1,All,1,1]],
-camb["CLvector"]->resultfloat[[2,All,1,1]],
-camb["CLtensor"]->resultfloat[[3,All,1,1]],
-camb["PSlinear"]->Transpose@{Exp@resultfloat[[4]],Flatten@resultfloat[[5]]},
-camb["PSnonlinear"]->Transpose@{Exp@resultfloat[[4]],Flatten@resultfloat[[6]]},
-camb["sigma8"]->resultfloat[[-1]]}
+j=3;
+DeleteCases[{
+CAMB["age"]->resultfloat[[1,1]],
+CAMB["zstar"]->resultfloat[[1,2]],
+CAMB["rstar"]->resultfloat[[1,3]],
+CAMB["100thetastar"]->resultfloat[[1,4]],
+CAMB["zdrag"]->resultfloat[[1,5]],
+CAMB["rdrag"]->resultfloat[[1,6]],
+CAMB["kD"]->resultfloat[[1,7]],
+CAMB["100thetaD"]->resultfloat[[1,8]],
+CAMB["zEQ"]->resultfloat[[1,9]],
+CAMB["100thetaEQ"]->resultfloat[[1,10]],
+CAMB["sigma8"]->resultfloat[[2]],
+If[OptionValue[WantScalars],CAMB["CLscalar"]->Transpose@First@Transpose[resultfloat[[j++]]]],
+If[OptionValue[WantVectors],CAMB["CLvector"]->Transpose@First@Transpose[resultfloat[[j++]]]],
+If[OptionValue[WantTensors],CAMB["CLtensor"]->Transpose@First@Transpose[resultfloat[[j++]]]],
+If[OptionValue[WantTransfer],Sequence@@Flatten@Table[{
+CAMB["PSlinear"<>ToString@k]->Transpose@{Exp@resultfloat[[j]],Flatten@resultfloat[[j+1]]},
+CAMB["PSnonlinear"<>ToString@k]->Transpose@{Exp@resultfloat[[j++]],Flatten@resultfloat[[++j]]}},{k,Length@OptionValue@ScalarSpectralIndex}
+]],
+CAMB["ints"]->resultint,CAMB["floats"]->resultfloat
+},Null]
 ];
-Options[camb]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->True,WantTransfer->True,WantCls->True,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantVectors->True,WantTensors->True,WantZstar->True, WantZdrag->True,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->True,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
+Options[CAMB]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->True,WantTransfer->True,WantCls->True,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantVectors->True,WantTensors->True,WantZstar->True, WantZdrag->True,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->True,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
+Options[validatestring]=Options[CAMB];
 
 
 (*Transfer function*)
-transfer[omegaM_?NumericQ,fBaryon_?NumericQ,Tcmb_?NumericQ,h_?NumericQ]:=Module[{result,link,krange,fitonek,horizon,peak},
+Transfer[omegaM_?NumericQ,fBaryon_?NumericQ,Tcmb_?NumericQ,h_?NumericQ]:=Module[{result,link,krange,fitonek,horizon,peak},
 
 link=Install[$location<>"ext/math_link"];
 
@@ -140,21 +197,21 @@ krange=10^Range[-6.,4.,.01];
 result=Transpose[fitonek/@krange];
 horizon=Global`TFSoundHorizon[N@omegaM,N@fBaryon,N@h];
 peak=Global`TFkPeak[N@omegaM,N@fBaryon,N@h];
-
+If[result==$Failed,Message[Interface::LinkBroken,"tf"];Return[$Failed];Abort[]];
 Uninstall[link];
 
-{transfer["soundhorizon"]->horizon,
-transfer["peak"]->peak,
-transfer["kvalues"]->krange,
- transfer["full"]->result[[1]],
-transfer["baryon"]->result[[2]],
-transfer["cdm"]->result[[3]],
-transfer["nowiggles"]->result[[4]],
-transfer["zerobaryons"]->result[[5]]}
+{Transfer["soundhorizon"]->horizon,
+Transfer["peak"]->peak,
+Transfer["kvalues"]->krange,
+Transfer["full"]->result[[1]],
+Transfer["baryon"]->result[[2]],
+Transfer["cdm"]->result[[3]],
+Transfer["nowiggles"]->result[[4]],
+Transfer["zerobaryons"]->result[[5]]}
 ];
 
 
-halofit[OmegaM_?NumericQ,OmegaL_?NumericQ,gammaShape_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,betaP_?NumericQ,z0_?NumericQ]:=Module[{link,Tf={},Kappa={},arange,krange,ellrange},
+Halofit[OmegaM_?NumericQ,OmegaL_?NumericQ,gammaShape_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,betaP_?NumericQ,z0_?NumericQ]:=Module[{link,Tf={},Kappa={},arange,krange,ellrange},
 link=Install[$location<>"ext/math_link"];
 
 arange=Range[.01,.9999,.04]~Join~{.99999};
@@ -165,21 +222,21 @@ Do[
 Global`HFSetParameters[N@OmegaM,N@OmegaL,N@gammaShape,N@sigma8,N@ns,N@betaP,N@z0,i];
 AppendTo[Tf,Table[Global`HFGetPkNL[a,k],{a,arange},{k,krange}]];
 AppendTo[Kappa,Table[Global`HFGetKappa[ell],{ell,ellrange}]],
-{i,0,2}]
-
+{i,0,2}];
+If[result==$Failed,Message[Interface::LinkBroken,"Halofit"];Return[$Failed];Abort[]];
 Uninstall[link];
 
 (*Just return the raw numbers*)
-{halofit["avalues"]->arange,
-halofit["kvalues"]->krange,
-halofit["ellvalues"]->ellrange,
-halofit["kappaBBKS"]->Kappa[[1]],halofit["tfBBKS"]->Tf[[1]],
-halofit["kappaPD96"]->Kappa[[2]],halofit["tfPD96"]->Tf[[2]],
-halofit["kappaHalofit"]->Kappa[[3]],halofit["tfHalofit"]->Tf[[3]]}
+{Halofit["avalues"]->arange,
+Halofit["kvalues"]->krange,
+Halofit["ellvalues"]->ellrange,
+Halofit["kappaBBKS"]->Kappa[[1]],Halofit["tfBBKS"]->Tf[[1]],
+Halofit["kappaPD96"]->Kappa[[2]],Halofit["tfPD96"]->Tf[[2]],
+Halofit["kappaHalofit"]->Kappa[[3]],Halofit["tfHalofit"]->Tf[[3]]}
 ];
 
 
-cosmicemu[omegaM_?NumericQ,omegaB_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=Module[{link,result,labels,limits,parameters,check},
+CosmicEmu[omegaM_?NumericQ,omegaB_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=Module[{link,result,labels,limits,parameters,check},
 
 labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","w"};
 limits={{.12,.155},{.0214,.0235},{.85,1.05},{.61,.9},{-1.3,-.7}};
@@ -187,17 +244,17 @@ limits={{.12,.155},{.0214,.0235},{.85,1.05},{.61,.9},{-1.3,-.7}};
 parameters={omegaM,omegaB,sigma8,ns,w};
 
 check=(#[[2,1]]<=#[[1]]<=#[[2,2]])&/@Transpose[{parameters,limits}];
-Do[If[!check[[i]],Message[CosmicEmu::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]]]],{i,Length@check}];
+Do[If[!check[[i]],Message[Interface::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]],"CosmicEmu"]],{i,Length@check}];
 If[!And@@check,Return[$Failed];Abort[]];
 
 link=Install[$location<>"ext/math_link"];
-result=Table[{1/a-1,Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1]},{a,.5,1.,.1}];
+result=Table[{Transpose@Partition[#[[1]],Length@#[[1]]/2],#[[2]]}&@Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1],{a,.5,1.,.1}];
  (*CosmicEmu only does these five redshifts, everything else is interpolated*)
-
+If[result==$Failed,Message[Interface::LinkBroken,"CosmicEmu"];Return[$Failed];Abort[]];
 Uninstall[link];
 
 (*Just return the raw numbers*)
-result
+{CosmicEmu["zvalues"]->Table[1/a-1,{a,.5,1.,.1}],CosmicEmu["pk"]->result[[All,1]],CosmicEmu["background"]->result[[All,2]]}
 ];
 
 

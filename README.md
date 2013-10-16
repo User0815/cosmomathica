@@ -25,7 +25,7 @@ Requirements
 
   * Wolfram Mathematica version ??
 
-  * For CosmicEmulator: GSL
+  * For CosmicEmulator: GSL (GNU Scientific Library)
 
   * For CAMB: cfitsio, healpix?
 

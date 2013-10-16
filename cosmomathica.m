@@ -156,7 +156,7 @@ Fiducial[x_,opts:OptionsPattern[]]:=OV[x,opts];
 Options[Fiducial]:=cosmoopts;
 
 
-Redshift=Compile[{{a,_Real}},1/a+1];
+Redshift=Compile[{{a,_Real}},1/a-1];
 
 
 w[z_,opts:OptionsPattern[]]:=OV[w0,opts]+OV[w1,opts]*z/(1+z);
