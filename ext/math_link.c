@@ -1,10 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "mathlink.h"
 
 /* TODO use macros to exclude unwanted modules */
 
 /* Halofit+ */
 /* `real` was defined as double in smith2.h */
+
+#ifdef HALOFIT
 
 #include "halofit/smith2.h"
 
@@ -17,8 +20,22 @@ void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
     MLFlush(stdlink);
 }
 
+#else
+
+#define real double
+void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
+		   real NSPEC, real BETAP, real Z0, int NONLINEAR){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+real P_NL(real, real){return 0.;}
+real Pkappa(real){return 0.;}
+
+#endif
 
 
+#ifdef TRANSFER
 
 /* TF Transfer function from Eisenstein&hu */
 
@@ -51,10 +68,27 @@ void TFset_parameters_wrap(float omega0hh, float f_baryon, float Tcmb){
     MLFlush(stdlink);
 }
 
+#else
+void TFfit_onek_wrap(float k){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+void TFset_parameters_wrap(float omega0hh, float f_baryon, float Tcmb){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb, float k_hmpc){return 0.;}
+float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc){return 0.;}
+float TFsound_horizon_fit(float omega0, float f_baryon, float hubble){return 0.;}
+float TFk_peak(float omega0, float f_baryon, float hubble){return 0.;}
+#endif
 
 
 /* CosmicEmulator version 1.1 */
 
+#ifdef COSMICEMU
 extern void emu(double *xstar, double *ystar, int *outtype);
 extern void getH0fromCMB(double *xstar, double *stuff);
 
@@ -81,10 +115,20 @@ void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w
     MLFlush(stdlink);
 }
 
+#else
+void emu(double *xstar, double *ystar, int *outtype){}
+void getH0fromCMB(double *xstar, double *stuff){}
+void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w, double z ){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+#endif
 
 
 /* CAMB */
 
+#ifdef CAMB
 extern void runcamb();
 
 void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
@@ -106,6 +150,16 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
     free(floats_out);
 }
 
+#else
+
+void runcamb(){}
+void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+#endif
 
 int main(int argc, char* argv[]) {
     return MLMain(argc, argv);

@@ -31,6 +31,7 @@ ifeq ($(wildcard tf/tf_fit.c),)
 else
   TRANSFER = tf
   OFILES += $(TRANSFER)/tf_fit.o 
+  CC += -DTRANSFER
 endif 
 
 ifeq ($(wildcard halofit/smith2.c),)
@@ -38,6 +39,7 @@ ifeq ($(wildcard halofit/smith2.c),)
 else
   HALOFIT = halofit
   OFILES += $(HALOFIT)/smith2.o 
+  CC += -DHALOFIT
 endif
 
 ifeq ($(wildcard CosmicEmulator/emu.c),)
@@ -46,6 +48,7 @@ else
   COSMICEMU = CosmicEmulator
   OFILES += $(COSMICEMU)/hubble.o $(COSMICEMU)/emu.o 
   EXTRALIBS += -lgsl -lgslcblas 
+  CC += -DCOSMICEMU
 endif
 
 ifeq ($(wildcard camb/camb.f90),)
@@ -53,6 +56,7 @@ ifeq ($(wildcard camb/camb.f90),)
 else
   CAMB = camb
   OFILES += camb_wrapper.o camb/*.o
+  CC += -DCAMB
 endif
 
 
@@ -90,9 +94,9 @@ cleanall:
 
 clean:
 	rm -f *o *tm.c math_link testwrapper
-	rm -f $(TRANSFER)/*o
-	rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o
-	+$(MAKE) -C $(HALOFIT) clean
-	+$(MAKE) -C $(CAMB) clean
+	if [ ! -z $(TRANSFER) ]; then rm -f $(TRANSFER)/*o; fi
+	if [ ! -z $(COSMICEMU) ]; then rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o ; fi
+	if [ ! -z $(HALOFIT) ]; then $(MAKE) -C $(HALOFIT) clean ; fi
+	if [ ! -z $(CAMB) ]; then $(MAKE) -C $(CAMB) clean ; fi
 
 .PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB) download cleanall
