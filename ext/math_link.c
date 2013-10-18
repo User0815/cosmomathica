@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "mathlink.h"
 
-/* TODO use macros to exclude unwanted modules */
-
 /* Halofit+ */
 /* `real` was defined as double in smith2.h */
 

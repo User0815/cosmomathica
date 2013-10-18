@@ -10,33 +10,34 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     19047,        554]
-NotebookOptionsPosition[     17555,        504]
-NotebookOutlinePosition[     17993,        521]
-CellTagsIndexPosition[     17950,        518]
+NotebookDataLength[     18743,        544]
+NotebookOptionsPosition[     17317,        496]
+NotebookOutlinePosition[     17756,        513]
+CellTagsIndexPosition[     17713,        510]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 Cell[BoxData[
- RowBox[{"BeginPackage", "[", "\"\<Halofit`\>\"", "]"}]], "Input",
- InitializationCell->True,
- CellChangeTimes->{{3.569928839172699*^9, 3.569928853571781*^9}}],
+ RowBox[{"BeginPackage", "[", "\"\<cosmomathica`halofit`\>\"", "]"}]], "Input",\
 
-Cell[BoxData[{
+ InitializationCell->True,
+ CellChangeTimes->{{3.569928839172699*^9, 3.569928853571781*^9}, {
+   3.591072163471093*^9, 3.591072165014224*^9}, 3.591073857013569*^9}],
+
+Cell[BoxData[
  RowBox[{
-  RowBox[{"HaloFitPS", "::", "usage"}], "=", 
-  "\"\<Applies nonlinear corrections using the Halofit algorithm (Smith et al \
-2003)\>\""}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"HaloFitInit", "::", "usage"}], "=", 
-  "\"\<Initialize functions in order to apply corrections to a new linear \
-power spectrum. Needs to be called before HaloFitPS and everytime the linear \
-power spectrum changes.\>\""}]}], "Input",
+  RowBox[{"HaloFitCorrection", "::", "usage"}], "=", 
+  "\"\<HaloFitCorrection[LinearPS, OmegaM, OmegaL] applies nonlinear \
+corrections to a linear power spectrum given in tabulated form \
+{{\!\(\*SubscriptBox[\(k\), \(1\)]\),P(\!\(\*SubscriptBox[\(k\), \
+\(1\)]\))},...}.\>\""}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.56992974338654*^9, 3.569929762207574*^9}, {
   3.570167007104711*^9, 3.57016703237261*^9}, {3.570276488455552*^9, 
-  3.570276489327067*^9}, {3.570276664750757*^9, 3.570276684809661*^9}}],
+  3.570276489327067*^9}, {3.570276664750757*^9, 3.570276684809661*^9}, {
+  3.591073824405633*^9, 3.5910738256430387`*^9}, {3.5910751377189903`*^9, 
+  3.5910751970893707`*^9}}],
 
 Cell[BoxData[
  RowBox[{"Begin", "[", "\"\<`Private`\>\"", "]"}]], "Input",
@@ -378,105 +379,44 @@ Cell[BoxData[
 Cell[BoxData[
  RowBox[{
   RowBox[{
-   RowBox[{"HaloFitPS", "[", 
-    RowBox[{
-     RowBox[{"k_", "?", "NumericQ"}], ",", "OmegaM_", ",", "OmegaL_", ",", 
-     "LinearPS_"}], "]"}], ":=", 
+   RowBox[{"HaloFitCorrection", "[", 
+    RowBox[{"LinearPS_", ",", "OmegaM_", ",", "OmegaL_"}], "]"}], ":=", 
    RowBox[{"Block", "[", 
     RowBox[{
      RowBox[{"{", 
       RowBox[{
-       RowBox[{"linearPS", "=", "LinearPS"}], ",", 
+       RowBox[{"linearPS", "=", 
+        RowBox[{"Interpolation", "@", "LinearPS"}]}], ",", 
        RowBox[{"omegaM", "=", "OmegaM"}], ",", 
        RowBox[{"omegaL", "=", "OmegaL"}]}], "}"}], ",", "\[IndentingNewLine]", 
-     RowBox[{"nonlinearPS", "[", "k", "]"}]}], "]"}]}], ";"}]], "Input",
- InitializationCell->True,
- CellChangeTimes->{{3.569929336383263*^9, 3.569929437575612*^9}, {
-  3.569929486415183*^9, 3.5699294868812113`*^9}, {3.569932376462575*^9, 
-  3.569932381581608*^9}, {3.5702760966241693`*^9, 3.570276129403191*^9}, {
-  3.5702763685039682`*^9, 3.570276382896185*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"(*", 
-   RowBox[{"clear", " ", "memoized", " ", "variables"}], "*)"}], 
-  "\[IndentingNewLine]", 
-  RowBox[{
-   RowBox[{
-    RowBox[{"HaloFitInit", "[", "LinearPS_", "]"}], ":=", 
-    RowBox[{"Block", "[", 
      RowBox[{
-      RowBox[{"{", 
-       RowBox[{"linearPS", "=", "LinearPS"}], "}"}], ",", 
-      "\[IndentingNewLine]", 
-      RowBox[{
-       RowBox[{"ksig", "=", 
-        RowBox[{"x", "/.", 
-         RowBox[{"FindRoot", "[", 
+      RowBox[{"ksig", "=", 
+       RowBox[{"x", "/.", 
+        RowBox[{"FindRoot", "[", 
+         RowBox[{
           RowBox[{
-           RowBox[{
-            RowBox[{"sigmaSq", "[", 
-             RowBox[{"1", "/", "x"}], "]"}], "\[Equal]", "1"}], ",", 
-           RowBox[{"{", 
-            RowBox[{"x", ",", "1"}], "}"}]}], "]"}]}]}], ";", "\n", 
-       RowBox[{"neff", "=", 
-        RowBox[{
-         RowBox[{"-", "3"}], "+", 
-         RowBox[{"NIntegrate", "[", 
-          RowBox[{
-           RowBox[{
-            RowBox[{"deltaLsq", "[", 
-             RowBox[{"Exp", "@", "lk"}], "]"}], "2", 
-            RowBox[{
-             RowBox[{"Exp", "[", 
-              RowBox[{"2", "lk"}], "]"}], "/", 
-             RowBox[{"ksig", "^", "2"}]}], 
-            RowBox[{"Exp", "[", 
-             RowBox[{
-              RowBox[{"-", 
-               RowBox[{"Exp", "[", 
-                RowBox[{"2", "lk"}], "]"}]}], "/", 
-              RowBox[{"ksig", "^", "2"}]}], "]"}]}], ",", 
-           RowBox[{"{", 
-            RowBox[{"lk", ",", 
-             RowBox[{"Log", "[", 
-              RowBox[{"10", "^", 
-               RowBox[{"-", "6"}]}], "]"}], ",", 
-             RowBox[{"Log", "[", 
-              RowBox[{"10", "^", "4"}], "]"}]}], "}"}], ",", 
-           RowBox[{"PrecisionGoal", "\[Rule]", "5"}], ",", 
-           RowBox[{"MaxRecursion", "\[Rule]", "12"}]}], "]"}]}]}], ";", "\n", 
-       
-       RowBox[{"curve", "=", 
+           RowBox[{"sigmaSq", "[", 
+            RowBox[{"1", "/", "x"}], "]"}], "\[Equal]", "1"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"x", ",", "1"}], "}"}]}], "]"}]}]}], ";", "\n", 
+      RowBox[{"neff", "=", 
+       RowBox[{
+        RowBox[{"-", "3"}], "+", 
         RowBox[{"NIntegrate", "[", 
          RowBox[{
           RowBox[{
+           RowBox[{"deltaLsq", "[", 
+            RowBox[{"Exp", "@", "lk"}], "]"}], "2", 
            RowBox[{
-            RowBox[{"deltaLsq", "[", 
-             RowBox[{"Exp", "@", "lk"}], "]"}], "4", 
-            RowBox[{
-             RowBox[{"Exp", "[", 
-              RowBox[{"2", "lk"}], "]"}], "/", 
-             RowBox[{"ksig", "^", "2"}]}], 
             RowBox[{"Exp", "[", 
-             RowBox[{
-              RowBox[{"-", 
-               RowBox[{"Exp", "[", 
-                RowBox[{"2", "lk"}], "]"}]}], "/", 
-              RowBox[{"ksig", "^", "2"}]}], "]"}]}], "-", 
-           RowBox[{
-            RowBox[{"deltaLsq", "[", 
-             RowBox[{"Exp", "@", "lk"}], "]"}], "4", 
+             RowBox[{"2", "lk"}], "]"}], "/", 
+            RowBox[{"ksig", "^", "2"}]}], 
+           RowBox[{"Exp", "[", 
             RowBox[{
-             RowBox[{"Exp", "[", 
-              RowBox[{"4", "lk"}], "]"}], "/", 
-             RowBox[{"ksig", "^", "4"}]}], 
-            RowBox[{"Exp", "[", 
-             RowBox[{
-              RowBox[{"-", 
-               RowBox[{"Exp", "[", 
-                RowBox[{"2", "lk"}], "]"}]}], "/", 
-              RowBox[{"ksig", "^", "2"}]}], "]"}]}]}], ",", 
+             RowBox[{"-", 
+              RowBox[{"Exp", "[", 
+               RowBox[{"2", "lk"}], "]"}]}], "/", 
+             RowBox[{"ksig", "^", "2"}]}], "]"}]}], ",", 
           RowBox[{"{", 
            RowBox[{"lk", ",", 
             RowBox[{"Log", "[", 
@@ -485,8 +425,58 @@ Cell[BoxData[
             RowBox[{"Log", "[", 
              RowBox[{"10", "^", "4"}], "]"}]}], "}"}], ",", 
           RowBox[{"PrecisionGoal", "\[Rule]", "5"}], ",", 
-          RowBox[{"MaxRecursion", "\[Rule]", "12"}]}], "]"}]}], ";"}]}], 
-     "\[IndentingNewLine]", "]"}]}], ";"}]}]], "Input",
+          RowBox[{"MaxRecursion", "\[Rule]", "12"}]}], "]"}]}]}], ";", "\n", 
+      RowBox[{"curve", "=", 
+       RowBox[{"NIntegrate", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{"deltaLsq", "[", 
+            RowBox[{"Exp", "@", "lk"}], "]"}], "4", 
+           RowBox[{
+            RowBox[{"Exp", "[", 
+             RowBox[{"2", "lk"}], "]"}], "/", 
+            RowBox[{"ksig", "^", "2"}]}], 
+           RowBox[{"Exp", "[", 
+            RowBox[{
+             RowBox[{"-", 
+              RowBox[{"Exp", "[", 
+               RowBox[{"2", "lk"}], "]"}]}], "/", 
+             RowBox[{"ksig", "^", "2"}]}], "]"}]}], "-", 
+          RowBox[{
+           RowBox[{"deltaLsq", "[", 
+            RowBox[{"Exp", "@", "lk"}], "]"}], "4", 
+           RowBox[{
+            RowBox[{"Exp", "[", 
+             RowBox[{"4", "lk"}], "]"}], "/", 
+            RowBox[{"ksig", "^", "4"}]}], 
+           RowBox[{"Exp", "[", 
+            RowBox[{
+             RowBox[{"-", 
+              RowBox[{"Exp", "[", 
+               RowBox[{"2", "lk"}], "]"}]}], "/", 
+             RowBox[{"ksig", "^", "2"}]}], "]"}]}]}], ",", 
+         RowBox[{"{", 
+          RowBox[{"lk", ",", 
+           RowBox[{"Log", "[", 
+            RowBox[{"10", "^", 
+             RowBox[{"-", "6"}]}], "]"}], ",", 
+           RowBox[{"Log", "[", 
+            RowBox[{"10", "^", "4"}], "]"}]}], "}"}], ",", 
+         RowBox[{"PrecisionGoal", "\[Rule]", "5"}], ",", 
+         RowBox[{"MaxRecursion", "\[Rule]", "12"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Table", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"k", ",", 
+          RowBox[{"nonlinearPS", "[", "k", "]"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"k", ",", 
+          RowBox[{"LinearPS", "[", 
+           RowBox[{"[", 
+            RowBox[{"All", ",", "1"}], "]"}], "]"}]}], "}"}]}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.570166961691329*^9, 3.570166996170624*^9}, {
    3.570184877845677*^9, 3.570184880976582*^9}, {3.570186187734106*^9, 
@@ -495,7 +485,9 @@ Cell[BoxData[
    3.570186954192051*^9}, {3.570187258605585*^9, 3.5701872904610233`*^9}, 
    3.57018837379772*^9, {3.570276197143187*^9, 3.570276197563856*^9}, {
    3.570276406025199*^9, 3.570276439664564*^9}, {3.570443828022678*^9, 
-   3.570443830671818*^9}}],
+   3.570443830671818*^9}, {3.5910733489439707`*^9, 3.59107345322788*^9}, {
+   3.591073772059964*^9, 3.591073804115686*^9}, {3.591075836464764*^9, 
+   3.591075836737438*^9}}],
 
 Cell[BoxData[{
  RowBox[{"End", "[", " ", "]"}], "\[IndentingNewLine]", 
@@ -503,8 +495,8 @@ Cell[BoxData[{
  InitializationCell->True]
 },
 AutoGeneratedPackage->Automatic,
-WindowSize->{832, 981},
-WindowMargins->{{Automatic, 1}, {Automatic, 0}},
+WindowSize->{1680, 991},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
 StyleDefinitions->FrontEnd`FileName[{"Creative"}, "NaturalColor.nb", 
   CharacterEncoding -> "UTF-8"]
@@ -520,41 +512,39 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[557, 20, 173, 3, 42, "Input",
+Cell[557, 20, 260, 5, 42, "Input",
  InitializationCell->True],
-Cell[733, 25, 679, 13, 175, "Input",
+Cell[820, 27, 654, 12, 42, "Input",
  InitializationCell->True],
-Cell[1415, 40, 101, 2, 42, "Input",
+Cell[1477, 41, 101, 2, 42, "Input",
  InitializationCell->True],
-Cell[1519, 44, 523, 15, 42, "Input",
+Cell[1581, 45, 523, 15, 42, "Input",
  InitializationCell->True],
-Cell[2045, 61, 1072, 28, 87, "Input",
+Cell[2107, 62, 1072, 28, 42, "Input",
  InitializationCell->True],
-Cell[3120, 91, 863, 24, 109, "Input",
+Cell[3182, 92, 863, 24, 109, "Input",
  InitializationCell->True],
-Cell[3986, 117, 757, 22, 109, "Input",
+Cell[4048, 118, 757, 22, 109, "Input",
  InitializationCell->True],
-Cell[4746, 141, 1784, 53, 109, "Input",
+Cell[4808, 142, 1784, 53, 109, "Input",
  InitializationCell->True],
-Cell[6533, 196, 2707, 74, 241, "Input",
+Cell[6595, 197, 2707, 74, 197, "Input",
  InitializationCell->True],
-Cell[9243, 272, 1023, 27, 65, "Input",
+Cell[9305, 273, 1023, 27, 42, "Input",
  InitializationCell->True],
-Cell[10269, 301, 706, 17, 42, "Input",
+Cell[10331, 302, 706, 17, 42, "Input",
  InitializationCell->True],
-Cell[10978, 320, 293, 9, 42, "Input",
+Cell[11040, 321, 293, 9, 42, "Input",
  InitializationCell->True],
-Cell[11274, 331, 810, 22, 65, "Input",
+Cell[11336, 332, 810, 22, 42, "Input",
  InitializationCell->True],
-Cell[12087, 355, 297, 8, 42, "Input",
+Cell[12149, 356, 297, 8, 42, "Input",
  InitializationCell->True],
-Cell[12387, 365, 348, 10, 42, "Input",
+Cell[12449, 366, 348, 10, 42, "Input",
  InitializationCell->True],
-Cell[12738, 377, 805, 19, 87, "Input",
+Cell[12800, 378, 4361, 111, 175, "Input",
  InitializationCell->True],
-Cell[13546, 398, 3853, 99, 241, "Input",
- InitializationCell->True],
-Cell[17402, 499, 149, 3, 65, "Input",
+Cell[17164, 491, 149, 3, 65, "Input",
  InitializationCell->True]
 }
 ]

@@ -19,11 +19,10 @@
 
 
 
-BeginPackage["Halofit`"]
+BeginPackage["cosmomathica`halofit`"]
 
 
-HaloFitPS::usage="Applies nonlinear corrections using the Halofit algorithm (Smith et al 2003)"
-HaloFitInit::usage="Initialize functions in order to apply corrections to a new linear power spectrum. Needs to be called before HaloFitPS and everytime the linear power spectrum changes."
+HaloFitCorrection::usage="HaloFitCorrection[LinearPS, OmegaM, OmegaL] applies nonlinear corrections to a linear power spectrum given in tabulated form {{\!\(\*SubscriptBox[\(k\), \(1\)]\),P(\!\(\*SubscriptBox[\(k\), \(1\)]\))},...}."
 
 
 Begin["`Private`"]
@@ -81,15 +80,11 @@ deltaNLsq[k_]:=deltaQsq[k]+deltaHsq[k];
 nonlinearPS[k_]:=deltaNLsq[k]*2Pi^2/k^3;
 
 
-HaloFitPS[k_?NumericQ,OmegaM_,OmegaL_,LinearPS_]:=Block[{linearPS=LinearPS,omegaM=OmegaM,omegaL=OmegaL},
-nonlinearPS[k]];
-
-
-(*clear memoized variables*)
-HaloFitInit[LinearPS_]:=Block[{linearPS=LinearPS},
+HaloFitCorrection[LinearPS_,OmegaM_,OmegaL_]:=Block[{linearPS=Interpolation@LinearPS,omegaM=OmegaM,omegaL=OmegaL},
 ksig=x/.FindRoot[sigmaSq[1/x]==1,{x,1}];
 neff=-3+NIntegrate[deltaLsq[Exp@lk]2Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5,MaxRecursion->12];
 curve=NIntegrate[deltaLsq[Exp@lk]4Exp[2lk]/ksig^2Exp[-Exp[2lk]/ksig^2]-deltaLsq[Exp@lk]4Exp[4lk]/ksig^4Exp[-Exp[2lk]/ksig^2],{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5,MaxRecursion->12];
+Table[{k,nonlinearPS[k]},{k,LinearPS[[All,1]]}]
 ];
 
 

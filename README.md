@@ -19,6 +19,8 @@ inevitably introduce new bugs given the complexity of these algorithms.
 For further details on how MathLink works, see
 http://arxiv.org/abs/1107.4379.
 
+For a detailed documentation of cosmomathica, see XXXX
+
 
 Requirements
 ============
@@ -56,15 +58,24 @@ the files in question are given here.
     CosmicEmu_v1.1.tar.gz   [a3c7da2b41152b7d30ba458e56f7e4ab]  
     http://www.lanl.gov/projects/cosmology/CosmicEmu/emu.html
 
-The (extracted) files need to placed in directories with names 'tf',
-'halofit', 'camb', and 'CosmicEmulator', respectively, inside the 'ext'
+The (extracted) files need to placed in directories with names `tf`,
+`halofit`, `camb`, and `CosmicEmulator`, respectively, inside the `ext`
 directory.
+
+If you wish to use a different version of CAMB, for instance, cosmomathica
+may still work, but it has not been tested for it. If you use a modified
+version of CAMB, the same applies. In general, if you modify things like the
+type `CAMBparams`, you almost certainly will have to modify cosmomathica as
+well.
 
 
 How to compile the MathLink
 ===========================
 
-Type `make`...
+The paths to the required Mathematica libraries are often different on every
+system, so first you should adjust the Mathematica-related lines in the
+Makefile, which is located in the `ext` directory. Next, change into the
+`ext` directory and type `make`. 
 
 CAMB uses the Intel Fortran compiler by default. Due to difficulties with
 linking the different object files, CAMB needs to be compiled with GNU
@@ -75,6 +86,7 @@ Note that all warnings and errors that you see may be cause by the external
 programs. Make sure the warning is not from compiling the MathLink and
 contact the respective authors if you have concerns. Otherwise, feel free to
 file a bug report on GitHub.
+
 
 Copyright and licensing
 =======================

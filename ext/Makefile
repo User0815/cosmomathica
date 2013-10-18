@@ -1,9 +1,9 @@
 # Define your C compiler
-CC = gcc -Wall -lgfortran -fopenmp
+CC = gcc -O2 -Wall -lgfortran -fopenmp
 
 # Define your Fortran compiler (if you want to use CAMB) Must match CAMB
 # compiler
-F90C = gfortran -fopenmp -Wall -Wextra -Wconversion-extra -cpp
+F90C = gfortran -O2 -fopenmp -Wall -Wextra -Wconversion-extra -cpp
 
 # Mathematica related variables - adjust as necessary
 MLINKDIR = /opt/Wolfram/Mathematica/9.0.1/SystemFiles/Links/MathLink/DeveloperKit
@@ -25,6 +25,8 @@ MPREP = ${CADDSDIR}/mprep
 
 OFILES = math_link.o math_link_tm.o 
 
+
+# Check if the external programs are present
 
 ifeq ($(wildcard tf/tf_fit.c),)
   TRANSFER = 
@@ -82,7 +84,7 @@ $(COSMICEMU):
 	+$(MAKE) -C $@
 
 $(CAMB):
-	# change from ifort to gfortran
+	./patchmakefile.sh
 	+$(MAKE) -C $@
 
 

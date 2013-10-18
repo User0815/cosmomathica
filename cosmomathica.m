@@ -19,7 +19,7 @@
 
 
 
-BeginPackage["cosmomathica`"]
+BeginPackage["cosmomathica`",{"cosmomathica`interface`","cosmomathica`halofit`"}]
 
 
 $location=DirectoryName[$InputFileName];
@@ -34,7 +34,7 @@ SetCosmology::usage="Modify the fiducial cosmology by passing the new options to
 Fiducial::usage="Fiducial[X] returns the fiducial value of parameter X."
 
 
-Redshift::usage="Redshift[a] returns the redshift as a function of the scale factor, i.e. z=1/a+1."
+Redshift::usage="Redshift[a] returns the redshift as a function of the scale factor, i.e. z=1/a-1."
 
 
 Hubble::usage="Hubble[z] returns the Hubble parameter at a given redshift z."
@@ -68,6 +68,9 @@ LinearPS::usage="LinearPS[k,z,path] returns a list of five values using the fitt
 
 
 PowerSpectrum::usage="PowerSpectrum[k,z] returns the power spectrum at wavenumber k and redshift z. The algorithm can be specified with PSType."
+
+
+FindSigma8Norm::usage="FindSigma8Norm[PS] returns the factor you need to multiply the power spectrum PS[k] with to have it normalized to \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)."
 
 
 NonlinearPowerSpectrumTRG::usage="NonlinearPowerSpectrumTRG[k,LinearPS,Omega21,Omega22] returns the power spectrum at wavenumber k and redshift z using the background functions Omega21 and Omega22 as specified by the TRG package. LinearPS[k] is a one-parameter function representing the linear power spectrum."
@@ -107,6 +110,12 @@ FitCDM::usage="CDM transfer function from the Eisenstein&Hu1999 fitting function
 FitNoWiggles::usage="'No wiggle' transfer function (wiggles removed, but baryon suppression still there) from the Eisenstein&Hu1999 fitting function"
 FitZeroBaryon::usage="Transfer function in Universe with no baryons from the Eisenstein&Hu1999 fitting function"
 PSType::usage="Specifies the algorithm used to compute the power spectrum"
+betaP::usage="betaP"
+z0::usage="z0"
+ShapeFactor::usage="Shape"
+
+
+Cosmomathica::UnkownOption="Option `1` has an invalid value: `2`";
 
 
 Begin["`Private`"]
@@ -145,7 +154,7 @@ sigma8->.8,
 ns->.9,
 Tcmb->2.728};
 Protect[Cosmology];
-cosmoopts:=Cosmology~Join~{DistanceType->"Comoving",PSType->"EH",TransferType->FitFull};
+cosmoopts:=Cosmology~Join~{DistanceType->"Comoving",PSType->"EH",TransferType->"full",betaP->1.5,z0->1.,ShapeFactor->.21};
 
 
 OV[x_,opts:OptionsPattern[]]:=(OptionValue@x/.If[List@opts!={},List@opts,1->1]//.cosmoopts);
@@ -216,21 +225,26 @@ GrowthFunction[z_?NumericQ,opts:OptionsPattern[]]:=Exp[antideriv3[opts][z]];
 Options[GrowthFunction]:=cosmoopts;
 
 
-(*Transfer function*)
+memoizedValues[namespace_]:=Last/@Select[ReleaseHold[First/@DownValues[globalMemo,Sort->False]/.globalMemo->List],First[#]==namespace&];
+isMemoized[namespace_,hash_]:=MemberQ[memoizedValues[namespace],hash];
+setMemoization[namespace_,hash_,result_]:=(globalMemo[namespace,hash]=result);
+getMemoization[namespace_,hash_]:=globalMemo[namespace,hash];
+clearMemoization[namespace_]:=DownValues[globalMemo]=DeleteCases[DownValues[globalMemo,Sort->False],_?(First[ReleaseHold[First@#/.globalMemo->List]]==namespace&)];
 
-transferfitint[opts:OptionsPattern[]]:= transferfitint[opts]=Module[{result,link,fitonek},
-link=Install[$location<>"/tf_fit_link"];
-Global`TFSetParameters[OV[omegaM,opts],OV[OmegaB,opts]/OV[OmegaC,opts],OV[Tcmb,opts]];
-fitonek[k_]:={Global`TFFitOneK[k],LinkRead[link],LinkRead[link],
-Global`TFNoWiggles[OV[OmegaC,opts],OV[OmegaB,opts]/OV[OmegaC,opts],OV[h,opts],OV[Tcmb,opts],k/OV[h,opts]],
-Global`TFZeroBaryon[OV[OmegaC,opts],OV[h,opts],OV[Tcmb,opts],k/OV[h,opts]]}; 
-result=Interpolation@Table[{10^lk,fitonek[10^lk]},{lk,-6,4,.01}];
-Uninstall[link];
-result
-];
-TransferFunction[k_?NumericQ,opts:OptionsPattern[]]:=transferfitint[opts][k][[Switch[OV[TransferType,opts],FitFull,1,FitBaryon,2,FitCDM,3,FitNoWiggles,4,FitZeroBaryon,5]]];
-Options[transferfitint]:=cosmoopts;
-Options[TransferFunction]:=cosmoopts;
+
+Clear[TransferFunctionMem];
+TransferFunction[k_,opts:OptionsPattern[]]:=Module[{oM,fB,Tc,hh,result},
+
+hh=OV[h,opts];
+oM=OV[omegaM,opts];
+Tc=OV[Tcmb,opts];
+fB=OV[OmegaB,opts]/OV[OmegaM,opts];
+
+TransferFunctionMem[oM_,fB_,Tc_,hh_]:=TransferFunctionMem[oM,fB,Tc,hh]=Transfer[oM,fB,Tc,hh];
+TransferFunctionMem[oM_,fB_,Tc_,hh_,type_]:=TransferFunctionMem[oM,fB,Tc,hh,type]=Interpolation[Transpose[{Transfer["kvalues"],Transfer[OV[TransferType,opts]]}/.TransferFunctionMem[oM,fB,Tc,hh]]];
+
+TransferFunctionMem[oM,fB,Tc,hh,OV[TransferType,opts]]@(k/OV[h,opts])
+]
 
 
 (*linear ps*)
@@ -243,24 +257,48 @@ LinearPS[k_,z_,opts:OptionsPattern[]]:=TransferFunction[k*OV[h,opts],opts]^2 * k
 Options[normalization]:=cosmoopts;
 
 
+FindSigma8Norm[PS_,opts:OptionsPattern[]]:=OV[sigma8,opts]^2/NIntegrate[Exp[3lk]/(2Pi^2) PS[Exp[lk]]tophatFT[8Exp[lk]]^2,{lk,Log[10^-6],Log[10^4]},PrecisionGoal->5];
+Options[FindSigma8Norm]:=cosmoopts;
+
+
 (*Umberella function for the power spectrum*)
-PowerSpectrum[k_?NumericQ,z_?NumericQ,opts:OptionsPattern[]]:=Module[{},
-LinearPS[k,z,opts]
+Needs["Combinatorica`"];
+Clear[HalofitMem,CosmicEmuMem];
+PowerSpectrum[k_?NumericQ,z_?NumericQ,opts:OptionsPattern[]]:=Module[{PS,ww,hh,OM,OL,OB,gS,s8,n,bP,zz0,hfdata},
+
+OM=OV[OmegaM,opts];
+OL=OV[OmegaL,opts];
+OB=OV[OmegaB,opts];
+s8=OV[sigma8,opts];
+n=OV[ns,opts];
+hh=OV[h,opts];
+ww=OV[w0,opts];
+
+Switch[OV[PSType,opts],
+"BBKS"|"PD96"|"Halofit",
+bP=OptionValue[betaP];
+zz0=OptionValue[z0];
+gS=OptionValue[ShapeFactor];
+HalofitMem[OM_,OL_,Shape_,s8_,n_,betaP_,z0_]:=HalofitMem[OM,OL,Shape,s8,n,betaP,z0]=Halofit[OM,OL,Shape,s8,n,betaP,z0];
+hfdata=HalofitMem[OM,OL,gS,s8,n,bP,zz0];
+HalofitMem[OM_,OL_,Shape_,s8_,n_,betaP_,z0_,type_]:=HalofitMem[OM,OL,Shape,s8,n,betaP,z0,type]=
+Interpolation@Transpose[{CartesianProduct[Halofit["kvalues"]/.hfdata,Halofit["avalues"]/.hfdata],Flatten@Transpose[Halofit[OV[PSType,opts]]/.hfdata]}];
+PS=HalofitMem[OM,OL,gS,s8,n,bP,zz0,OV[PSType,opts]][#1*2998(*halofit uses other units*),1/(#2+1)]*( 2998)^3&;
+,
+
+"CosmicEmu",(*TODO: extrapolation for small k*)
+CosmicEmuMem[oM_,oB_,s8_,n_,w_]:=CosmicEmuMem[oM,oB,s8,n,w]=With[{cedata=CosmicEmu[oM,oB,s8,n,w]},Interpolation@Transpose[{CartesianProduct[First@(CosmicEmu["pk"]/.cedata)[[All,All,1]],CosmicEmu["zvalues"]/.cedata],Flatten@Transpose[(CosmicEmu["pk"]/.cedata)[[All,All,2]]]}]];
+PS=CosmicEmuMem[OM*hh^2,OB hh^2,s8,n,ww][#1/hh,#2]*hh^3&;
+
+,_,Message[Cosmomathica::UnkownOption,"PSType",OV[PSType,opts]];Abort[];
+];
+
+PS[k,z]
 ];
 Options[PowerSpectrum]:=cosmoopts;
 
 
-Get[$location<>"halofit.m"];
-nonlinearhaloint[LinearPS_,oM_,oL_]:=nonlinearhaloint[LinearPS,oM,oL]=Module[{result},
-HaloFitInit[LinearPS];
-result=Table[{k,HaloFitPS[k,oM,oL,LinearPS]},{k,10^Range[-4,3,.01]}];
-Interpolation@result
-];
-NonlinearPowerSpectrumHalofit[k_,LinearPS_,opts:OptionsPattern[]]:=nonlinearhaloint[LinearPS,OV[OmegaM,opts],OV[OmegaL,opts]][k];
-Options[NonlinearPowerSpectrumHalofit]:=cosmoopts;
-
-
-Get[$location<>"psnonlinear.m"];
+(*Get[$location<>"psnonlinear.m"];
 Needs["NumericalCalculus`"];
 nonlineartrgint[LinearPS_,Omega21_,Omega22_,dlogGdz_,locH0_,locns_]:=nonlineartrgint[LinearPS,Omega21,Omega22,dlogGdz,locH0,locns]=Module[{pstable,klist,result,zz},
 pstable=Transpose@Table[{k,LinearPS[k]},{k,10^Range[-4,3,.01]}];
@@ -268,8 +306,11 @@ result=Transpose@TRGPowerSpectrum[pstable,35,0,dlogGdz,locH0,locns,Omega21,Omega
 Interpolation[result[[All,{1,2}]]]
 ];
 NonlinearPowerSpectrumTRG[k_,LinearPS_,Omega21_,Omega22_,opts:OptionsPattern[]]:=nonlineartrgint[LinearPS,Omega21,Omega22,Abs@ND[Log[GrowthFunction[zz,opts]],zz,35],OV[H0,opts],OV[ns,opts]][k];
-Options[NonlinearPowerSpectrumTRG]:=cosmoopts;
+Options[NonlinearPowerSpectrumTRG]:=cosmoopts;*)
 
 
 End[ ]
 EndPackage[ ]
+
+
+

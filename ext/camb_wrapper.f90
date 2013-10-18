@@ -240,14 +240,14 @@ contains
         if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
 
         ! Return the results
-        write(*,*) "hi"
 
         if (P%WantTransfer) then
             call CAMB_GetTransfers(P, CAMBout, error)
             if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
         endif
 
-        write(*,*) "hi"
+        ! Pass contents from CAMBout back to MMA
+
         ints_out(1) = error
         int_offset = 1
 
@@ -266,20 +266,16 @@ contains
             ThermoDerivedParams( derived_kD ),&
             ThermoDerivedParams( derived_thetaD ),&
             ThermoDerivedParams( derived_zEQ ),&
-            ThermoDerivedParams( derived_thetaEQ ) /), floats_out, float_offset, ints_out, int_offset)
+            ThermoDerivedParams( derived_thetaEQ ) /),&
+        floats_out, float_offset, ints_out, int_offset)
 
-        write(*,*) "hi"
         if (P%WantTransfer) add2d(CAMBout%MTrans%sigma_8)
 
-        write(*,*) "hi"
-
-        ! Pass contents from CAMBout back to MMA
 
         if(P%WantScalars) add3d(Cl_scalar)
         if(P%WantVectors) add3d(Cl_vector)
         if(P%WantTensors) add3d(Cl_tensor)
 
-        write(*,*) "hi"
         if (P%WantTransfer) then
             call CAMB_TransfersToPowers(CAMBout)
             do i=1,P%InitPower%nn     
@@ -291,7 +287,6 @@ contains
             end do
         endif
 
-        write(*,*) "hi"
 
         ! Background: TODO: CAMB never fills these arrays. But the functions
         ! exist, so we have to do it by hand.

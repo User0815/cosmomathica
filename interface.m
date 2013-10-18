@@ -19,12 +19,12 @@
 
 
 
-BeginPackage["cosmomathicaInterface`"]
+BeginPackage["cosmomathica`interface`"]
 
 
-Transfer::usage="This function provides an interface to Eisenstein&Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the peak k, the transfer function...";
+Transfer::usage="This function provides an interface to Eisenstein & Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the peak k, the transfer function...";
 
-Halofit::usage="This function provides an interface to the halofit algorithm by R. E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: ...) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
+Halofit::usage="This function provides an interface to the halofit algorithm by Robert E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: ...) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
 
 CosmicEmu::usage="This function provides an interface to the CosmicEmulator by Earl Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns the nonlinear matter power spectrum at five different redshifts as well as ...";
 
@@ -198,6 +198,7 @@ result=Transpose[fitonek/@krange];
 horizon=Global`TFSoundHorizon[N@omegaM,N@fBaryon,N@h];
 peak=Global`TFkPeak[N@omegaM,N@fBaryon,N@h];
 If[result==$Failed,Message[Interface::LinkBroken,"tf"];Return[$Failed];Abort[]];
+(*TODO: If[result\[Equal]Null,Message[not installed]];*)
 Uninstall[link];
 
 {Transfer["soundhorizon"]->horizon,
@@ -211,12 +212,22 @@ Transfer["zerobaryons"]->result[[5]]}
 ];
 
 
-Halofit[OmegaM_?NumericQ,OmegaL_?NumericQ,gammaShape_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,betaP_?NumericQ,z0_?NumericQ]:=Module[{link,Tf={},Kappa={},arange,krange,ellrange},
+Halofit[OmegaM_?NumericQ,OmegaL_?NumericQ,gammaShape_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,betaP_?NumericQ,z0_?NumericQ]:=Module[{link,Tf={},Kappa={},arange,krange,ellrange,labels,limits,parameters,check},
 link=Install[$location<>"ext/math_link"];
 
 arange=Range[.01,.9999,.04]~Join~{.99999};
-krange=10^Range[-4,3,.1];
+krange=10^Range[-4,4,.1]*2998;(*halofit uses units c Mpc/h*)
 ellrange=10^Range[-2,6,.1];
+
+labels={"\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","Gamma","\!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\)","\!\(\*SubscriptBox[\(z\), \(0\)]\)"};
+limits={{.1,1.5},{.1,1.5},{.1,1.5},{.7,1.3},{0.05,.5},{1.0,2.0},{.2,1.5}};
+(*these are soft limits as given by the authors of halofit+. Results may not be reliable if parameters are outside these bounds*)
+parameters={OmegaM,OmegaL,sigma8,ns,gammaShape,betaP,z0};
+
+check=(#[[2,1]]<=#[[1]]<=#[[2,2]])&/@Transpose[{parameters,limits}];
+Do[If[!check[[i]],Message[Interface::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]],"Halofit"]],{i,Length@check}];
+If[!And@@check,Abort[]];
+
 
 Do[
 Global`HFSetParameters[N@OmegaM,N@OmegaL,N@gammaShape,N@sigma8,N@ns,N@betaP,N@z0,i];
@@ -226,26 +237,27 @@ AppendTo[Kappa,Table[Global`HFGetKappa[ell],{ell,ellrange}]],
 If[result==$Failed,Message[Interface::LinkBroken,"Halofit"];Return[$Failed];Abort[]];
 Uninstall[link];
 
+arange[[-1]]=1.;
 (*Just return the raw numbers*)
 {Halofit["avalues"]->arange,
 Halofit["kvalues"]->krange,
 Halofit["ellvalues"]->ellrange,
-Halofit["kappaBBKS"]->Kappa[[1]],Halofit["tfBBKS"]->Tf[[1]],
-Halofit["kappaPD96"]->Kappa[[2]],Halofit["tfPD96"]->Tf[[2]],
-Halofit["kappaHalofit"]->Kappa[[3]],Halofit["tfHalofit"]->Tf[[3]]}
+Halofit["kappaBBKS"]->Kappa[[1]],Halofit["BBKS"]->Tf[[1]],
+Halofit["kappaPD96"]->Kappa[[2]],Halofit["PD96"]->Tf[[2]],
+Halofit["kappaHalofit"]->Kappa[[3]],Halofit["Halofit"]->Tf[[3]]}
 ];
 
 
 CosmicEmu[omegaM_?NumericQ,omegaB_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=Module[{link,result,labels,limits,parameters,check},
 
-labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","w"};
+labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","w"};
 limits={{.12,.155},{.0214,.0235},{.85,1.05},{.61,.9},{-1.3,-.7}};
 (*these are hard limits as given by the authors of the cosmic emulator - the program will crash if any parameter is outside its bounds*)
 parameters={omegaM,omegaB,sigma8,ns,w};
 
 check=(#[[2,1]]<=#[[1]]<=#[[2,2]])&/@Transpose[{parameters,limits}];
 Do[If[!check[[i]],Message[Interface::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]],"CosmicEmu"]],{i,Length@check}];
-If[!And@@check,Return[$Failed];Abort[]];
+If[!And@@check,Abort[]];
 
 link=Install[$location<>"ext/math_link"];
 result=Table[{Transpose@Partition[#[[1]],Length@#[[1]]/2],#[[2]]}&@Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1],{a,.5,1.,.1}];
