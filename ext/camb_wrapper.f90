@@ -243,6 +243,8 @@ contains
             write (*,*) 'Error result '//trim(global_error_message)
             stop
         endif
+        ! the global variables MT, Cl_scalar, Cl_vector, Cl_tensor now contain
+        ! meaningful data
 
         ! Return the results
 
@@ -273,7 +275,6 @@ contains
         if(P%WantTensors) add3d(Cl_tensor)
 
         if (P%WantTransfer) then
-                ! MT is a global variable (...)
             do i=1,P%InitPower%nn     
                 call Transfer_GetMatterPowerData(MT, PK_data, i)
                 add1d(PK_data%log_kh)
@@ -281,6 +282,7 @@ contains
                 call MatterPowerdata_MakeNonlinear(PK_data)
                 add2d(PK_data%matpower)
             end do
+            add3d(dble(MT%TransferData))
             add2d(MT%sigma_8)
         endif
 
