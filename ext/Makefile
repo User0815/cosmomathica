@@ -57,7 +57,8 @@ ifeq ($(wildcard camb/camb.f90),)
   CAMB = 
 else
   CAMB = camb
-  OFILES += camb_wrapper.o camb/*.o
+  OFILES += camb_wrapper.o 
+  CAMBOFILES = $(CAMB)/*.o
   CC += -DCAMB
 endif
 
@@ -65,7 +66,7 @@ endif
 all: math_link
 
 math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(OFILES) Makefile
-	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) -o $@ ${EXTRALIBS}  
+	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) $(CAMBOFILES) -o $@ ${EXTRALIBS}  
 
 math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@

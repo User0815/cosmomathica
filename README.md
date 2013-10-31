@@ -29,7 +29,7 @@ Requirements
 
   * For CosmicEmulator: GSL (GNU Scientific Library)
 
-  * For CAMB: cfitsio, healpix?
+  * For CAMB: Possibly cfitsio, healpix
 
   * The GNU Compiler Compilation (gcc) version ??
 
@@ -45,18 +45,22 @@ the files in question are given here.
   * Transfer function: 
     tf_fit.c                [38ef737fe3bab405bac17db78815559f]
     http://background.uchicago.edu/~whu/transfer/transferpage.html
+    Daniel Eisenstein and Wayne Hu 
 
   * Halofit+:
     halofit+.tar            [4ce61ec6504a2f7cf750ab007142dea8]
     http://www.roe.ac.uk/~jap/haloes/
+    Robert Smith et al, Martin Kilbinger
 
   * CAMB (July 2013):
     CAMB.tar.gz             [a538bb607cca96c4b2f8b1fece898411]  
     http://camb.info/
+    Antony Lewis and Anthony Challinor
 
   * CosmicEmulator "Coyote" (v1.1):
     CosmicEmu_v1.1.tar.gz   [a3c7da2b41152b7d30ba458e56f7e4ab]  
     http://www.lanl.gov/projects/cosmology/CosmicEmu/emu.html
+    Heitman et al
 
 The (extracted) files need to placed in directories with names `tf`,
 `halofit`, `camb`, and `CosmicEmulator`, respectively, inside the `ext`
@@ -77,8 +81,8 @@ system, so first you should adjust the Mathematica-related lines in the
 Makefile, which is located in the `ext` directory. Next, change into the
 `ext` directory and type `make`. 
 
-CAMB uses the Intel Fortran compiler by default. Due to difficulties with
-linking the different object files, CAMB needs to be compiled with GNU
+CAMB uses the Intel Fortran compiler by default. Due to compatibility issues
+with linking the different object files, CAMB needs to be compiled with GNU
 gfortran. When building the MathLink, CAMB's Makefile is automatically
 changed accordingly.
 
@@ -88,7 +92,16 @@ contact the respective authors if you have concerns. Otherwise, feel free to
 file a bug report on GitHub.
 
 
+How to use Cosmomathica
+=======================
+
+In general, each one of the functions `CAMB`, `Transfer`, `Halofit`, and
+`CosmicEmu` returns a list of replacement rules containing the raw data as
+computed by the respective program. See the notebook "demo.nb" for
+a demonstration. 
+
+
 Copyright and licensing
 =======================
 
-Cosmomathica is released under the GPL2. Contributions are welcome. 
+Cosmomathica is released under the GPL2. Contributions are welcome.

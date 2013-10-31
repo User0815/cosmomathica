@@ -117,7 +117,6 @@ contains
         integer error, fi, ii, eigenstates, fitemp, i, float_offset, int_offset
 
         Type(CAMBparams) P
-        Type(CAMBdata) CAMBout
         Type(MatterPowerData) PK_data
 
         ! We have two arrays containing all the parameters: one full of doubles,
@@ -239,14 +238,13 @@ contains
         call  CAMBParams_Set(P, error, .false.)
         if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
 
-        ! Return the results
-
-        if (P%WantTransfer) then
-            call CAMB_GetTransfers(P, CAMBout, error)
-            if (error>0) write(*,*) "Error: ",error,trim(global_error_message)
+        call CAMB_GetResults(P)
+        if (global_error_flag/=0) then
+            write (*,*) 'Error result '//trim(global_error_message)
+            stop
         endif
 
-        ! Pass contents from CAMBout back to MMA
+        ! Return the results
 
         ints_out(1) = error
         int_offset = 1
@@ -269,22 +267,21 @@ contains
             ThermoDerivedParams( derived_thetaEQ ) /),&
         floats_out, float_offset, ints_out, int_offset)
 
-        if (P%WantTransfer) add2d(CAMBout%MTrans%sigma_8)
-
 
         if(P%WantScalars) add3d(Cl_scalar)
         if(P%WantVectors) add3d(Cl_vector)
         if(P%WantTensors) add3d(Cl_tensor)
 
         if (P%WantTransfer) then
-            call CAMB_TransfersToPowers(CAMBout)
+                ! MT is a global variable (...)
             do i=1,P%InitPower%nn     
-                call Transfer_GetMatterPowerData(CAMBout%MTrans, PK_data, i)
+                call Transfer_GetMatterPowerData(MT, PK_data, i)
                 add1d(PK_data%log_kh)
                 add2d(PK_data%matpower)
                 call MatterPowerdata_MakeNonlinear(PK_data)
                 add2d(PK_data%matpower)
             end do
+            add2d(MT%sigma_8)
         endif
 
 
@@ -300,6 +297,7 @@ contains
         ints_out_len = int_offset
         floats_out_len = float_offset
         
+        call CAMB_cleanup
     end subroutine runcamb
 
 

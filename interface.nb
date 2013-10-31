@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    633223,      11332]
-NotebookOptionsPosition[    630255,      11230]
-NotebookOutlinePosition[    630767,      11250]
-CellTagsIndexPosition[    630724,      11247]
+NotebookDataLength[    634366,      11365]
+NotebookOptionsPosition[    631316,      11261]
+NotebookOutlinePosition[    631828,      11281]
+CellTagsIndexPosition[    631785,      11278]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -33,49 +33,51 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{
     RowBox[{"Transfer", "::", "usage"}], "=", 
-    "\"\<This function provides an interface to Eisenstein & Hu's fitting \
-formula for the transfer function. It takes the reduced total matter density \
-\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \
-\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\
-\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble \
-constant as input, and returns the sound horizon, the peak k, the transfer \
-function...\>\""}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+    "\"\<Transfer[omegaM, fBaryon, Tcmb, h] provides an interface to \
+Eisenstein & Hu's fitting formula for the transfer function. It takes the \
+reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the \
+fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \
+\(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB \
+temperature and the dimensionless Hubble constant as input, and returns the \
+sound horizon, the peak k, the transfer function...\>\""}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{
     RowBox[{"Halofit", "::", "usage"}], "=", 
-    "\"\<This function provides an interface to the halofit algorithm by \
-Robert E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the \
-total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the \
-vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a \
-shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \
-\!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), \
-and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns \
-the nonlinear matter power spectrum (computed in three ways: ...) at 20 \
-different values of the scale factor and the convergence power spectrum in \
-tabulated form.\>\""}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+    "\"\<Halofit[OmegaM, OmegaL, gammaShape, sigma8, ns, betaP, z0] provides \
+an interface to the halofit algorithm by Robert E. Smith et al. \
+(reimplemented in C by Martin Kilbinger). It takes the total matter density \
+\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \
+\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \
+\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \
+\(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\
+\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter \
+power spectrum (computed in three ways: ...) at 20 different values of the \
+scale factor and the convergence power spectrum in tabulated form.\>\""}], 
+   ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{
     RowBox[{"CosmicEmu", "::", "usage"}], "=", 
-    "\"\<This function provides an interface to the CosmicEmulator by Earl \
-Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \
-\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \
-\(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, \
-and returns the nonlinear matter power spectrum at five different redshifts \
-as well as ...\>\""}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+    "\"\<CosmicEmu[omegaM, omegaB, sigma8, ns, w] provides an interface to \
+the CosmicEmulator by Earl Lawrence. It takes \
+\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \
+\(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \
+\!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns \
+the nonlinear matter power spectrum at five different redshifts as well as \
+...\>\""}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"CAMB", "::", "usage"}], "=", 
-   "\"\<This function provides an interface to CAMB by Antony Lewis and \
-Anthony Challinor. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\), \
-..., as well as a number of options as input, and returns various \
-cosmological quantities. The distinction between parameters and options is in \
-principle arbitrary. However, since some physical parameters are often \
-assumed to take on a default value, they are being interpreted as an option \
-here. To see the default options, type `Options[CAMB]`.\>\""}], 
-  ";"}]}], "Input",
+   "\"\<CAMB[OmegaC, OmegaB, OmegaL, h, w] provides an interface to CAMB by \
+Antony Lewis and Anthony Challinor. It takes \!\(\*SubscriptBox[\(\
+\[CapitalOmega]\), \(C\)]\), ..., as well as a number of options as input, \
+and returns various cosmological quantities. The distinction between \
+parameters and options is in principle arbitrary. However, since some \
+physical parameters are often assumed to take on a default value, they are \
+being interpreted as an option here. To see the default options, type \
+`Options[CAMB]`.\>\""}], ";"}]}], "Input",
  InitializationCell->True],
 
 Cell[BoxData[{
@@ -261,10 +263,8 @@ Cell[BoxData[{
    "\"\<An option for CAMB\>\""}], ";"}], "\n", 
  RowBox[{
   RowBox[{
-   RowBox[{
-    RowBox[{"MassiveNuMethod", "::", "usage"}], "=", 
-    "\"\<An option for CAMB\>\""}], ";"}], 
-  "\n"}], "\[IndentingNewLine]"}], "Input",
+   RowBox[{"MassiveNuMethod", "::", "usage"}], "=", 
+   "\"\<An option for CAMB\>\""}], ";"}]}], "Input",
  InitializationCell->True],
 
 Cell[BoxData[{
@@ -697,7 +697,7 @@ Cell[BoxData[{
         RowBox[{"{", 
          RowBox[{"d", ",", "dimensions"}], "}"}]}], "]"}], ";", 
       "\[IndentingNewLine]", "\[IndentingNewLine]", 
-      RowBox[{"j", "=", "3"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"j", "=", "2"}], ";", "\[IndentingNewLine]", 
       RowBox[{"DeleteCases", "[", 
        RowBox[{
         RowBox[{"{", "\[IndentingNewLine]", 
@@ -922,7 +922,7 @@ Cell[BoxData[{
    RowBox[{"Options", "[", "validatestring", "]"}], "=", 
    RowBox[{"Options", "[", "CAMB", "]"}]}], ";"}]}], "Input",
  InitializationCell->True]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1090,8 +1090,12 @@ Cell[BoxData[
       "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{"arange", "=", 
        RowBox[{
-        RowBox[{"Range", "[", 
-         RowBox[{".01", ",", ".9999", ",", ".04"}], "]"}], "~", "Join", "~", 
+        RowBox[{"Most", "[", 
+         RowBox[{"10", "^", 
+          RowBox[{"Range", "[", 
+           RowBox[{
+            RowBox[{"-", "2"}], ",", "0", ",", ".1"}], "]"}]}], "]"}], "~", 
+        "Join", "~", 
         RowBox[{"{", ".99999", "}"}]}]}], ";", "\[IndentingNewLine]", 
       RowBox[{"krange", "=", 
        RowBox[{
@@ -1473,17 +1477,52 @@ Cell[BoxData[
             RowBox[{"1", "/", "a"}], "-", "1"}], ",", 
            RowBox[{"{", 
             RowBox[{"a", ",", ".5", ",", "1.", ",", ".1"}], "}"}]}], "]"}]}], 
-        ",", 
+        ",", "\[IndentingNewLine]", 
         RowBox[{
          RowBox[{"CosmicEmu", "[", "\"\<pk\>\"", "]"}], "->", 
          RowBox[{"result", "[", 
           RowBox[{"[", 
            RowBox[{"All", ",", "1"}], "]"}], "]"}]}], ",", 
+        "\[IndentingNewLine]", 
         RowBox[{
-         RowBox[{"CosmicEmu", "[", "\"\<background\>\"", "]"}], "->", 
-         RowBox[{"result", "[", 
+         RowBox[{"CosmicEmu", "[", "\"\<soundhorizon\>\"", "]"}], "\[Rule]", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"result", "[", 
+            RowBox[{"[", 
+             RowBox[{"All", ",", "2"}], "]"}], "]"}], ")"}], "[", 
           RowBox[{"[", 
-           RowBox[{"All", ",", "2"}], "]"}], "]"}]}]}], "}"}]}]}], 
+           RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"CosmicEmu", "[", "\"\<zlss\>\"", "]"}], "\[Rule]", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"result", "[", 
+            RowBox[{"[", 
+             RowBox[{"All", ",", "2"}], "]"}], "]"}], ")"}], "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", "2"}], "]"}], "]"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"CosmicEmu", "[", "\"\<dlss\>\"", "]"}], "\[Rule]", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"result", "[", 
+            RowBox[{"[", 
+             RowBox[{"All", ",", "2"}], "]"}], "]"}], ")"}], "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", "3"}], "]"}], "]"}]}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"CosmicEmu", "[", "\"\<hubblecmb\>\"", "]"}], "\[Rule]", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"result", "[", 
+            RowBox[{"[", 
+             RowBox[{"All", ",", "2"}], "]"}], "]"}], ")"}], "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", "4"}], "]"}], "]"}]}]}], "}"}]}]}], 
     "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
  InitializationCell->True],
 
@@ -1515,11 +1554,9 @@ Cell[BoxData[{
     ".25", ",", ".75", ",", ".259", ",", ".8", ",", ".9", ",", "1.", ",", 
      "1.5"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"hfdata", "/.", 
-  RowBox[{"Rule", "\[Rule]", 
-   RowBox[{"(", 
-    RowBox[{
-     RowBox[{"First", "[", 
-      RowBox[{"{", "#", "}"}], "]"}], "&"}], ")"}]}]}]}], "Input"],
+  RowBox[{
+   RowBox[{"Rule", "[", 
+    RowBox[{"lhs_", ",", "rhs_"}], "]"}], "\[Rule]", "lhs"}]}]}], "Input"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1565,11 +1602,9 @@ Cell[BoxData[{
     RowBox[{".15", ",", ".022", ",", ".9", ",", ".9", ",", 
      RowBox[{"-", "1"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"cedata", "/.", 
-  RowBox[{"Rule", "\[Rule]", 
-   RowBox[{"(", 
-    RowBox[{
-     RowBox[{"First", "[", 
-      RowBox[{"{", "#", "}"}], "]"}], "&"}], ")"}]}]}]}], "Input"],
+  RowBox[{
+   RowBox[{"Rule", "[", 
+    RowBox[{"lhs_", ",", "rhs_"}], "]"}], "\[Rule]", "lhs"}]}]}], "Input"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -6636,11 +6671,9 @@ Cell[BoxData[{
     RowBox[{".15", ",", ".05", ",", "2.7", ",", ".7"}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"tfdata", "/.", 
-  RowBox[{"Rule", "\[Rule]", 
-   RowBox[{"(", 
-    RowBox[{
-     RowBox[{"First", "[", 
-      RowBox[{"{", "#", "}"}], "]"}], "&"}], ")"}]}]}]}], "Input"],
+  RowBox[{
+   RowBox[{"Rule", "[", 
+    RowBox[{"lhs_", ",", "rhs_"}], "]"}], "\[Rule]", "lhs"}]}]}], "Input"],
 
 Cell[BoxData[
  RowBox[{"ListLogLogPlot", "[", 
@@ -6663,37 +6696,35 @@ Cell[BoxData[{
     RowBox[{".2", ",", ".05", ",", ".75", ",", ".6817", ",", 
      RowBox[{"-", "1."}], ",", 
      RowBox[{"WantTransfer", "\[Rule]", "True"}], ",", 
-     RowBox[{"DoLensing", "\[Rule]", "True"}], ",", 
+     RowBox[{"DoLensing", "\[Rule]", "False"}], ",", 
      RowBox[{"NonLinear", "\[Rule]", "\"\<none\>\""}], ",", 
      RowBox[{"WantZstar", "\[Rule]", "False"}]}], "]"}]}], ";"}], "\n", 
  RowBox[{"cambdata", "/.", 
-  RowBox[{"Rule", "\[Rule]", 
-   RowBox[{"(", 
-    RowBox[{
-     RowBox[{"First", "[", 
-      RowBox[{"{", "#", "}"}], "]"}], "&"}], ")"}]}]}]}], "Input"],
+  RowBox[{
+   RowBox[{"Rule", "[", 
+    RowBox[{"lhs_", ",", "rhs_"}], "]"}], "\[Rule]", "lhs"}]}]}], "Input"],
 
 Cell[BoxData[
- RowBox[{"{", 
+ RowBox[{
+  StyleBox[
+   RowBox[{"LinkObject", "::", "linkd"}], "MessageName"], 
   RowBox[{
-   RowBox[{"CAMB", "[", "\<\"age\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"zstar\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"rstar\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"100thetastar\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"zdrag\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"rdrag\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"kD\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"100thetaD\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"zEQ\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"100thetaEQ\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"sigma8\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"CLscalar\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"CLvector\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"CLtensor\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"PSlinear1\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"PSnonlinear1\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"ints\"\>", "]"}], ",", 
-   RowBox[{"CAMB", "[", "\<\"floats\"\>", "]"}]}], "}"}]], "Output"]
+  ":", " "}], "\<\"Unable to communicate with closed link \
+\[NoBreak]\\!\\(LinkObject[\\(\\(\\\"/home/vollmer/projects/cosmomathica/ext/\
+math_link\\\", 138, 4\\)\\)]\\)\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\
+\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/message/LinkObject/linkd\\\", ButtonNote -> \
+\\\"LinkObject::linkd\\\"]\\)\"\>"}]], "Message", "MSG"],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"Interface", "::", "LinkBroken"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"\[NoBreak]\\!\\(\\\"CAMB\\\"\\)\[NoBreak] crashed. See if \
+there is anything useful on stdout.\"\>"}]], "Message", "MSG"],
+
+Cell[BoxData["$Failed"], "Output"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -11254,84 +11285,86 @@ Cell[579, 22, 54, 1, 78, "Section",
  InitializationCell->True],
 Cell[636, 25, 125, 3, 42, "Input",
  InitializationCell->True],
-Cell[764, 30, 2625, 48, 418, "Input",
+Cell[764, 30, 2744, 50, 462, "Input",
  InitializationCell->True],
-Cell[3392, 80, 5692, 187, 1077, "Input",
+Cell[3511, 82, 5644, 185, 1033, "Input",
  InitializationCell->True],
-Cell[9087, 269, 1134, 31, 153, "Input",
+Cell[9158, 269, 1134, 31, 153, "Input",
  InitializationCell->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[10258, 305, 50, 1, 48, "Section",
+Cell[10329, 305, 50, 1, 48, "Section",
  InitializationCell->True],
-Cell[10311, 308, 101, 2, 42, "Input",
+Cell[10382, 308, 101, 2, 42, "Input",
  InitializationCell->True],
-Cell[10415, 312, 156, 4, 42, "Input",
+Cell[10486, 312, 156, 4, 42, "Input",
  InitializationCell->True],
-Cell[10574, 318, 1913, 58, 109, "Input",
+Cell[10645, 318, 1913, 58, 109, "Input",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[12512, 380, 26, 0, 39, "Subsection"],
-Cell[12541, 382, 23323, 541, 2089, "Input",
+Cell[12583, 380, 26, 0, 39, "Subsection"],
+Cell[12612, 382, 23323, 541, 2089, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[35972, 928, 30, 0, 39, "Subsection"],
+Cell[36005, 930, 5211, 126, 637, "Input",
  InitializationCell->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[35901, 928, 30, 0, 31, "Subsection"],
-Cell[35934, 930, 5211, 126, 637, "Input",
+Cell[41253, 1061, 29, 0, 31, "Subsection"],
+Cell[41285, 1063, 9458, 237, 797, "Input",
  InitializationCell->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[41182, 1061, 29, 0, 31, "Subsection"],
-Cell[41214, 1063, 9356, 233, 797, "Input",
- InitializationCell->True]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[50607, 1301, 31, 0, 31, "Subsection"],
-Cell[50641, 1303, 7122, 184, 461, "Input",
+Cell[50780, 1305, 31, 0, 31, "Subsection"],
+Cell[50814, 1307, 8437, 219, 571, "Input",
  InitializationCell->True],
-Cell[57766, 1489, 149, 3, 65, "Input",
+Cell[59254, 1528, 149, 3, 65, "Input",
  InitializationCell->True]
 }, Closed]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[57964, 1498, 23, 0, 78, "Section"],
-Cell[57990, 1500, 156, 5, 42, "Input"],
+Cell[59452, 1537, 23, 0, 78, "Section"],
+Cell[59478, 1539, 156, 5, 42, "Input"],
 Cell[CellGroupData[{
-Cell[58171, 1509, 401, 12, 65, "Input"],
-Cell[58575, 1523, 589, 11, 42, "Output"]
+Cell[59659, 1548, 357, 10, 65, "Input"],
+Cell[60019, 1560, 589, 11, 42, "Output"]
 }, Open  ]],
-Cell[59179, 1537, 607, 19, 42, "Input"],
+Cell[60623, 1574, 607, 19, 42, "Input"],
 Cell[CellGroupData[{
-Cell[59811, 1560, 388, 11, 65, "Input"],
-Cell[60202, 1573, 234, 5, 42, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[60473, 1583, 135, 4, 42, "Input"],
-Cell[60611, 1589, 989, 26, 65, "Output"]
+Cell[61255, 1597, 344, 9, 65, "Input"],
+Cell[61602, 1608, 234, 5, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[61637, 1620, 205, 5, 42, "Input"],
-Cell[61845, 1627, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
+Cell[61873, 1618, 135, 4, 42, "Input"],
+Cell[62011, 1624, 989, 26, 65, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[63037, 1655, 205, 5, 42, "Input"],
+Cell[63245, 1662, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]],
-Cell[359997, 6631, 359, 11, 65, "Input"],
-Cell[360359, 6644, 360, 10, 42, "Input"],
+Cell[361397, 6666, 315, 9, 65, "Input"],
+Cell[361715, 6677, 360, 10, 42, "Input"],
 Cell[CellGroupData[{
-Cell[360744, 6658, 597, 15, 65, "Input"],
-Cell[361344, 6675, 1055, 20, 65, "Output"]
+Cell[362100, 6691, 554, 13, 65, "Input"],
+Cell[362657, 6706, 512, 10, 23, "Message"],
+Cell[363172, 6718, 251, 6, 23, "Message"],
+Cell[363426, 6726, 34, 0, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[362436, 6700, 128, 4, 42, "Input"],
-Cell[362567, 6706, 91, 2, 42, "Output"]
+Cell[363497, 6731, 128, 4, 42, "Input"],
+Cell[363628, 6737, 91, 2, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[362695, 6713, 513, 14, 42, "Input"],
-Cell[363211, 6729, 251338, 4191, 364, 231003, 3856, "CachedBoxData", \
+Cell[363756, 6744, 513, 14, 42, "Input"],
+Cell[364272, 6760, 251338, 4191, 364, 231003, 3856, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[614586, 10925, 324, 9, 42, "Input"],
-Cell[614913, 10936, 15314, 290, 257, "Output"]
+Cell[615647, 10956, 324, 9, 42, "Input"],
+Cell[615974, 10967, 15314, 290, 257, "Output"]
 }, Open  ]]
 }, Open  ]]
 }

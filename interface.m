@@ -22,13 +22,13 @@
 BeginPackage["cosmomathica`interface`"]
 
 
-Transfer::usage="This function provides an interface to Eisenstein & Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the peak k, the transfer function...";
+Transfer::usage="Transfer[omegaM, fBaryon, Tcmb, h] provides an interface to Eisenstein & Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the peak k, the transfer function...";
 
-Halofit::usage="This function provides an interface to the halofit algorithm by Robert E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: ...) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
+Halofit::usage="Halofit[OmegaM, OmegaL, gammaShape, sigma8, ns, betaP, z0] provides an interface to the halofit algorithm by Robert E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: ...) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
 
-CosmicEmu::usage="This function provides an interface to the CosmicEmulator by Earl Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns the nonlinear matter power spectrum at five different redshifts as well as ...";
+CosmicEmu::usage="CosmicEmu[omegaM, omegaB, sigma8, ns, w] provides an interface to the CosmicEmulator by Earl Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns the nonlinear matter power spectrum at five different redshifts as well as ...";
 
-CAMB::usage="This function provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\), ..., as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. To see the default options, type `Options[CAMB]`.";
+CAMB::usage="CAMB[OmegaC, OmegaB, OmegaL, h, w] provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(C\)]\), ..., as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. To see the default options, type `Options[CAMB]`.";
 
 
 Tcmb::usage="An option for CAMB";
@@ -77,8 +77,6 @@ DoLensing::usage="An option for CAMB";
 OnlyTransfers::usage="An option for CAMB";
 DerivedParameters::usage="An option for CAMB";
 MassiveNuMethod::usage="An option for CAMB";
-
-
 
 
 CAMB::Eigenstates="NuMassEigenstates and NuMassFractions must have the same length  (can be zero).";
@@ -155,7 +153,7 @@ Do[array=Take[resultfloat,Times@@d];
 resultfloat=Drop[resultfloat,Times@@d];
 AppendTo[resultfloat,ArrayReshape[array,d]],{d,dimensions}];
 
-j=3;
+j=2;
 DeleteCases[{
 CAMB["age"]->resultfloat[[1,1]],
 CAMB["zstar"]->resultfloat[[1,2]],
@@ -215,7 +213,7 @@ Transfer["zerobaryons"]->result[[5]]}
 Halofit[OmegaM_?NumericQ,OmegaL_?NumericQ,gammaShape_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,betaP_?NumericQ,z0_?NumericQ]:=Module[{link,Tf={},Kappa={},arange,krange,ellrange,labels,limits,parameters,check},
 link=Install[$location<>"ext/math_link"];
 
-arange=Range[.01,.9999,.04]~Join~{.99999};
+arange=Most[10^Range[-2,0,.1]]~Join~{.99999};
 krange=10^Range[-4,4,.1]*2998;(*halofit uses units c Mpc/h*)
 ellrange=10^Range[-2,6,.1];
 
@@ -266,7 +264,12 @@ If[result==$Failed,Message[Interface::LinkBroken,"CosmicEmu"];Return[$Failed];Ab
 Uninstall[link];
 
 (*Just return the raw numbers*)
-{CosmicEmu["zvalues"]->Table[1/a-1,{a,.5,1.,.1}],CosmicEmu["pk"]->result[[All,1]],CosmicEmu["background"]->result[[All,2]]}
+{CosmicEmu["zvalues"]->Table[1/a-1,{a,.5,1.,.1}],
+CosmicEmu["pk"]->result[[All,1]],
+CosmicEmu["soundhorizon"]->(result[[All,2]])[[1,1]],
+CosmicEmu["zlss"]->(result[[All,2]])[[1,2]],
+CosmicEmu["dlss"]->(result[[All,2]])[[1,3]],
+CosmicEmu["hubblecmb"]->(result[[All,2]])[[1,4]]}
 ];
 
 
