@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    635720,      11379]
-NotebookOptionsPosition[    632869,      11281]
-NotebookOutlinePosition[    633381,      11301]
-CellTagsIndexPosition[    633338,      11298]
+NotebookDataLength[    635408,      11360]
+NotebookOptionsPosition[    632596,      11263]
+NotebookOutlinePosition[    633108,      11283]
+CellTagsIndexPosition[    633065,      11280]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -40,7 +40,8 @@ fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \
 \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB \
 temperature and the dimensionless Hubble constant as input, and returns the \
 sound horizon, the wavenumber \!\(\*SubscriptBox[\(k\), \(peak\)]\) where the \
-spectrum has a maximum, the transfer function...\>\""}], ";"}], 
+spectrum has a maximum, the transfer function for CDM, baryons, both, or with \
+no baryons or no wiggles.\>\""}], ";"}], 
   "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
@@ -54,9 +55,11 @@ an interface to the halofit algorithm by Robert E. Smith et al. \
 \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \
 \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\
 \*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter \
-power spectrum (computed in three ways: ...) at 20 different values of the \
-scale factor and the convergence power spectrum in tabulated form.\>\""}], 
-   ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+power spectrum (computed in three ways: linearly with the BBKS alogorithm, \
+nonlinear with the algorithm by Peacock and Dobbs, or nonlinearly with the \
+Halofit algorithm) at 20 different values of the scale factor and the \
+convergence power spectrum in tabulated form.\>\""}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{
@@ -66,19 +69,19 @@ the CosmicEmulator by Earl Lawrence. It takes \
 \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \
 \(b\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \
 \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns \
-the nonlinear matter power spectrum at five different redshifts as well as \
-...\>\""}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+the nonlinear matter power spectrum at five different redshifts as well as z, \
+H, d (all at last scattering), and the sound horizon.\>\""}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"CAMB", "::", "usage"}], "=", 
    "\"\<CAMB[OmegaC, OmegaB, OmegaL, h, w] provides an interface to CAMB by \
-Antony Lewis and Anthony Challinor. It takes \!\(\*SubscriptBox[\(\
-\[CapitalOmega]\), \(C\)]\), ..., as well as a number of options as input, \
-and returns various cosmological quantities. The distinction between \
-parameters and options is in principle arbitrary. However, since some \
-physical parameters are often assumed to take on a default value, they are \
-being interpreted as an option here. To see the default options, type \
-`Options[CAMB]`.\>\""}], ";"}]}], "Input",
+Antony Lewis and Anthony Challinor. It takes a few parameters as well as a \
+number of options as input, and returns various cosmological quantities. The \
+distinction between parameters and options is in principle arbitrary. \
+However, since some physical parameters are often assumed to take on a \
+default value, they are being interpreted as an option here. To see the \
+default options, type `Options[CAMB]`.\>\""}], ";"}]}], "Input",
  InitializationCell->True],
 
 Cell[BoxData[{
@@ -871,16 +874,14 @@ Cell[BoxData[{
                  RowBox[{"k", ",", 
                   RowBox[{"Length", "@", 
                    RowBox[{"OptionValue", "@", "TransferRedshifts"}]}]}], 
-                 "}"}]}], "]"}]}]}]}], "\[IndentingNewLine]", "]"}]}], 
-         RowBox[{"(*", 
-          RowBox[{",", 
-           RowBox[{
-            RowBox[{"CAMB", "[", "\"\<ints\>\"", "]"}], "->", "resultint"}], 
-           ",", 
-           RowBox[{
-            RowBox[{"CAMB", "[", "\"\<floats\>\"", "]"}], "->", 
-            "resultfloat"}]}], "*)"}], "\[IndentingNewLine]", "}"}], ",", 
-        "Null"}], "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+                 "}"}]}], "]"}]}]}]}], "\[IndentingNewLine]", "]"}], ",", 
+          RowBox[{
+           RowBox[{"CAMB", "[", "\"\<ints\>\"", "]"}], "->", "resultint"}], 
+          ",", 
+          RowBox[{
+           RowBox[{"CAMB", "[", "\"\<floats\>\"", "]"}], "->", 
+           "resultfloat"}]}], "\[IndentingNewLine]", "}"}], ",", "Null"}], 
+       "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
@@ -1637,44 +1638,10 @@ Cell[BoxData[
   RowBox[{
    RowBox[{"CosmicEmu", "[", "\<\"zvalues\"\>", "]"}], ",", 
    RowBox[{"CosmicEmu", "[", "\<\"pk\"\>", "]"}], ",", 
-   RowBox[{"CosmicEmu", "[", "\<\"background\"\>", "]"}]}], "}"}]], "Output"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"(", 
-  RowBox[{
-   RowBox[{"CosmicEmu", "[", "\"\<background\>\"", "]"}], "/.", "cedata"}], 
-  ")"}]], "Input"],
-
-Cell[BoxData[
- RowBox[{"{", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-    "142.6834374661118`", ",", "1093.0524887663983`", ",", 
-     "13734.266739021377`", ",", "0.64111328125`"}], "}"}], ",", 
-   RowBox[{"{", 
-    RowBox[{
-    "142.6834374661118`", ",", "1093.0524887663983`", ",", 
-     "13734.266739021377`", ",", "0.64111328125`"}], "}"}], ",", 
-   RowBox[{"{", 
-    RowBox[{
-    "142.6834374661118`", ",", "1093.0524887663983`", ",", 
-     "13734.266739021377`", ",", "0.64111328125`"}], "}"}], ",", 
-   RowBox[{"{", 
-    RowBox[{
-    "142.6834374661118`", ",", "1093.0524887663983`", ",", 
-     "13734.266739021377`", ",", "0.64111328125`"}], "}"}], ",", 
-   RowBox[{"{", 
-    RowBox[{
-    "142.6834374661118`", ",", "1093.0524887663983`", ",", 
-     "13734.266739021377`", ",", "0.64111328125`"}], "}"}], ",", 
-   RowBox[{"{", 
-    RowBox[{
-    "142.6834374661118`", ",", "1093.0524887663983`", ",", 
-     "13734.266739021377`", ",", "0.64111328125`"}], "}"}]}], "}"}]], "Output"]
+   RowBox[{"CosmicEmu", "[", "\<\"soundhorizon\"\>", "]"}], ",", 
+   RowBox[{"CosmicEmu", "[", "\<\"zlss\"\>", "]"}], ",", 
+   RowBox[{"CosmicEmu", "[", "\<\"dlss\"\>", "]"}], ",", 
+   RowBox[{"CosmicEmu", "[", "\<\"hubblecmb\"\>", "]"}]}], "}"}]], "Output"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -6690,6 +6657,8 @@ edoQHz5BBHva5/1a7Wjke6Y88pOx/kL2kU+O9XcUP+2vYHvh0aczr65jX2V+
 \>"]]
 }, Open  ]],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[{
  RowBox[{
   RowBox[{"tfdata", "=", 
@@ -6700,6 +6669,19 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"Rule", "[", 
     RowBox[{"lhs_", ",", "rhs_"}], "]"}], "\[Rule]", "lhs"}]}]}], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"Transfer", "[", "\<\"soundhorizon\"\>", "]"}], ",", 
+   RowBox[{"Transfer", "[", "\<\"peak\"\>", "]"}], ",", 
+   RowBox[{"Transfer", "[", "\<\"kvalues\"\>", "]"}], ",", 
+   RowBox[{"Transfer", "[", "\<\"full\"\>", "]"}], ",", 
+   RowBox[{"Transfer", "[", "\<\"baryon\"\>", "]"}], ",", 
+   RowBox[{"Transfer", "[", "\<\"cdm\"\>", "]"}], ",", 
+   RowBox[{"Transfer", "[", "\<\"nowiggles\"\>", "]"}], ",", 
+   RowBox[{"Transfer", "[", "\<\"zerobaryons\"\>", "]"}]}], "}"}]], "Output"]
+}, Open  ]],
 
 Cell[BoxData[
  RowBox[{"ListLogLogPlot", "[", 
@@ -11305,80 +11287,79 @@ Cell[579, 22, 54, 1, 78, "Section",
  InitializationCell->True],
 Cell[636, 25, 125, 3, 42, "Input",
  InitializationCell->True],
-Cell[764, 30, 2821, 51, 463, "Input",
+Cell[764, 30, 3021, 54, 485, "Input",
  InitializationCell->True],
-Cell[3588, 83, 5644, 185, 1033, "Input",
+Cell[3788, 86, 5644, 185, 1033, "Input",
  InitializationCell->True],
-Cell[9235, 270, 1134, 31, 153, "Input",
+Cell[9435, 273, 1134, 31, 153, "Input",
  InitializationCell->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[10406, 306, 50, 1, 48, "Section",
+Cell[10606, 309, 50, 1, 48, "Section",
  InitializationCell->True],
-Cell[10459, 309, 101, 2, 42, "Input",
+Cell[10659, 312, 101, 2, 42, "Input",
  InitializationCell->True],
-Cell[10563, 313, 156, 4, 42, "Input",
+Cell[10763, 316, 156, 4, 42, "Input",
  InitializationCell->True],
-Cell[10722, 319, 1913, 58, 109, "Input",
+Cell[10922, 322, 1913, 58, 109, "Input",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[12660, 381, 26, 0, 39, "Subsection"],
-Cell[12689, 383, 24457, 566, 2111, "Input",
+Cell[12860, 384, 26, 0, 39, "Subsection"],
+Cell[12889, 386, 24397, 564, 2111, "Input",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[37183, 954, 30, 0, 39, "Subsection"],
-Cell[37216, 956, 5211, 126, 637, "Input",
+Cell[37323, 955, 30, 0, 39, "Subsection"],
+Cell[37356, 957, 5211, 126, 637, "Input",
  InitializationCell->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[42464, 1087, 29, 0, 31, "Subsection"],
-Cell[42496, 1089, 9458, 237, 797, "Input",
+Cell[42604, 1088, 29, 0, 31, "Subsection"],
+Cell[42636, 1090, 9458, 237, 797, "Input",
  InitializationCell->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[51991, 1331, 31, 0, 31, "Subsection"],
-Cell[52025, 1333, 8437, 219, 571, "Input",
+Cell[52131, 1332, 31, 0, 31, "Subsection"],
+Cell[52165, 1334, 8437, 219, 571, "Input",
  InitializationCell->True],
-Cell[60465, 1554, 149, 3, 65, "Input",
+Cell[60605, 1555, 149, 3, 65, "Input",
  InitializationCell->True]
 }, Closed]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[60663, 1563, 23, 0, 78, "Section"],
-Cell[60689, 1565, 156, 5, 42, "Input"],
+Cell[60803, 1564, 23, 0, 78, "Section"],
+Cell[60829, 1566, 156, 5, 42, "Input"],
 Cell[CellGroupData[{
-Cell[60870, 1574, 357, 10, 65, "Input"],
-Cell[61230, 1586, 589, 11, 42, "Output"]
+Cell[61010, 1575, 357, 10, 65, "Input"],
+Cell[61370, 1587, 589, 11, 42, "Output"]
 }, Open  ]],
-Cell[61834, 1600, 607, 19, 42, "Input"],
+Cell[61974, 1601, 607, 19, 42, "Input"],
 Cell[CellGroupData[{
-Cell[62466, 1623, 344, 9, 65, "Input"],
-Cell[62813, 1634, 234, 5, 42, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[63084, 1644, 135, 4, 42, "Input"],
-Cell[63222, 1650, 989, 26, 65, "Output"]
+Cell[62606, 1624, 344, 9, 65, "Input"],
+Cell[62953, 1635, 415, 8, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[64248, 1681, 205, 5, 42, "Input"],
-Cell[64456, 1688, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
-"BoxData", "Output"]
-}, Open  ]],
-Cell[362608, 6692, 315, 9, 65, "Input"],
-Cell[362926, 6703, 360, 10, 42, "Input"],
-Cell[CellGroupData[{
-Cell[363311, 6717, 668, 16, 65, "Input"],
-Cell[363982, 6735, 1290, 24, 65, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[365309, 6764, 513, 14, 42, "Input"],
-Cell[365825, 6780, 251338, 4191, 364, 231003, 3856, "CachedBoxData", \
+Cell[63405, 1648, 205, 5, 42, "Input"],
+Cell[63613, 1655, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[617200, 10976, 324, 9, 42, "Input"],
-Cell[617527, 10987, 15314, 290, 257, "Output"]
+Cell[361787, 6661, 315, 9, 65, "Input"],
+Cell[362105, 6672, 533, 10, 42, "Output"]
+}, Open  ]],
+Cell[362653, 6685, 360, 10, 42, "Input"],
+Cell[CellGroupData[{
+Cell[363038, 6699, 668, 16, 65, "Input"],
+Cell[363709, 6717, 1290, 24, 65, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[365036, 6746, 513, 14, 42, "Input"],
+Cell[365552, 6762, 251338, 4191, 364, 231003, 3856, "CachedBoxData", \
+"BoxData", "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[616927, 10958, 324, 9, 42, "Input"],
+Cell[617254, 10969, 15314, 290, 257, "Output"]
 }, Open  ]]
 }, Open  ]]
 }

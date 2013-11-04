@@ -149,7 +149,6 @@ contains
 
         P%Num_Nu_massless     = nextfloat
         P%Num_Nu_massive      = nextint
-        P%Nu_mass_splittings  = .true. ! int2bool(ints(ii)); ii=ii+1
         P%Nu_mass_eigenstates = nextint
         eigenstates = P%Nu_mass_eigenstates
 
@@ -157,8 +156,6 @@ contains
         fi = fi+eigenstates
         P%Nu_mass_fractions(1:eigenstates) = floats(fi:fi+eigenstates)
         fi = fi+eigenstates
-
-        P%same_neutrino_Neff  = .false. ! ?? no idea what this does
 
         P%Scalar_initial_condition = nextint
         P%NonLinear                = nextint
@@ -211,9 +208,9 @@ contains
         P%Max_eta_k_tensor = nextfloat
         P%Transfer%kmax          = nextfloat
         P%Transfer%k_per_logint  = nextint
-        P%Transfer%num_redshifts = nextint
+        P%Transfer%PK_num_redshifts = nextint
         ! This is an array with length num_redshifts
-        P%Transfer%redshifts     = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1) 
+        P%Transfer%PK_redshifts     = floats(fi:fi+ints(ii-1)); fi=fi+ints(ii-1) 
 
         P%AccuratePolarization = nextbool
         P%AccurateReionization = nextbool
@@ -232,6 +229,10 @@ contains
             write(*,*) "Expected: ", floats_len, ints_len
             stop
         endif
+
+
+        call Transfer_SetForNonlinearLensing(P%Transfer)
+        call Transfer_SortAndIndexRedshifts(P%Transfer)
 
         error = 0
         if (.not. CAMB_ValidateParams(P)) stop 'Stopped due to parameter error'
@@ -255,6 +256,7 @@ contains
 #define add2d(array) call add2darray(array, floats_out, float_offset, ints_out, int_offset)
 #define add1d(array) call add1darray(array, floats_out, float_offset, ints_out, int_offset)
 
+    write(*,*) "*1"
         ! Derived parameters first
         float_offset = 0
         call add1darray( (/ ThermoDerivedParams( derived_Age ),&
@@ -269,11 +271,13 @@ contains
             ThermoDerivedParams( derived_thetaEQ ) /),&
         floats_out, float_offset, ints_out, int_offset)
 
+    write(*,*) "*2"
 
         if(P%WantScalars) add3d(Cl_scalar)
         if(P%WantVectors) add3d(Cl_vector)
         if(P%WantTensors) add3d(Cl_tensor)
 
+    write(*,*) "*3"
         if (P%WantTransfer) then
             do i=1,P%InitPower%nn     
                 call Transfer_GetMatterPowerData(MT, PK_data, i)
@@ -283,9 +287,13 @@ contains
                 add2d(PK_data%matpower)
             end do
             add3d(dble(MT%TransferData))
+            call Transfer_Get_sigma8(MT, 8d0)
+            write(*,*) size(MT%sigma_8,1)
+            write(*,*) size(MT%sigma_8,2)
             add2d(MT%sigma_8)
         endif
 
+    write(*,*) "*4"
 
         ! Background: TODO: CAMB never fills these arrays. But the functions
         ! exist, so we have to do it by hand.
@@ -296,6 +304,7 @@ contains
             add1d(BackgroundOutputs%rs_by_D_v)
         endif
 
+    write(*,*) "*5"
         ints_out_len = int_offset
         floats_out_len = float_offset
         
