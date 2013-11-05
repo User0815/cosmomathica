@@ -19,6 +19,9 @@
 
 
 
+(*Cosmomathica version 0.1, November 2013. By Adrian Vollmer, Institute for theoretical physics, University Heidelberg.*)
+
+
 BeginPackage["cosmomathica`interface`"]
 
 
@@ -85,6 +88,7 @@ CAMB::Lists="The following options need to be non-empty lists of the same length
 CAMB::Error="CAMB exited with the following error code: `1`";
 Interface::LinkBroken="`1` crashed. See if there is anything useful on stdout.";
 Interface::OutsideBounds="Parameter out of bounds. `5` requires `3` <= `1` <= `4`, but you have `1`=`2`.";
+Interface::NotInstalled="`1` appears to be unavailable on your system.";
 
 
 Begin["`Private`"]
@@ -97,6 +101,7 @@ bool2int[b_]:=If[b,1,0];
 validatestring[val_,name_,poss_]:=If[!MemberQ[poss,val],Message[CAMB::InvalidOption,name,val,StringJoin@@Riffle[poss,", "]];Abort[]];
 validatelimits[val_,name_,lower_,upper_,module_]:=If[!(lower<=val<=upper),Message[Interface::OutsideBounds,name,val,lower,upper,module];Abort[]];
 validatelists[list_]:=If[1!=Length@Union[Length/@list],Message[CAMB::Lists,list];Abort[]];
+validateresult[x_,name_]:=Switch[x,$Failed,Message[Interface::LinkBroken,name];Return[$Failed];Abort[],Null,Message[Interface::NotInstalled,name];Return[$Failed];Abort[]];
 
 
 CAMB[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{j,link,result,resultfloat,resultint,floats,ints,initialcond,nonlinear,massivenu,limits,check,getDimensions,dimensions,array},
@@ -141,7 +146,7 @@ SetDirectory[$location<>"ext/camb"];
 link=Install[$location<>"ext/math_link"];
 result=Global`CAMBrun[N/@floats,ints];
 ResetDirectory[];
-If[result==$Failed,Message[Interface::LinkBroken,"CAMB"];Return[$Failed];Abort[]];
+validateresult[result,"CAMB"];
 Uninstall[link];
 
 {resultfloat,resultint}=result;
@@ -173,7 +178,7 @@ If[OptionValue[WantTransfer],Sequence@@Flatten@Table[{
 CAMB["PSlinear"<>ToString@k]->Transpose@{Exp@resultfloat[[j]],Transpose[resultfloat[[j+1]]][[k]]},
 CAMB["PSnonlinear"<>ToString@k]->Transpose@{Exp@resultfloat[[j]],Transpose[resultfloat[[j+2]]][[k]]}},{k,Length@OptionValue@TransferRedshifts}
 ]~Join~Table[CAMB["Transfer"<>ToString@k]->Transpose[resultfloat[[-2,All,All,k]]],{k,Length@OptionValue@TransferRedshifts}]
-],CAMB["ints"]->resultint,CAMB["floats"]->resultfloat
+](*,CAMB["ints"]->resultint,CAMB["floats"]->resultfloat*)
 },Null]
 ];
 Options[CAMB]={Tcmb->2.7255,OmegaNu->0,YHe->.24,MasslessNeutrinos->3.046,MassiveNeutrinos->0,NuMassDegeneracies->{0},NuMassFractions->{1},ScalarInitialCondition->"adiabatic",NonLinear->"none",WantCMB->True,WantTransfer->True,WantCls->True,ScalarSpectralIndex->{.96},ScalarRunning->{0},TensorSpectralIndex->{0},RatioScalarTensorAmplitudes->{1},ScalarPowerAmplitude->{2.1*^-9},PivotScalar->.05,PivotTensor->.05,DoReionization->True,UseOpticalDepth->False,OpticalDepth->0.,ReionizationRedshift->10.,ReionizationFraction->1.,ReionizationDeltaRedshift->.5,TransferHighPrecision->False,WantScalars->True,WantVectors->True,WantTensors->True,WantZstar->True, WantZdrag->True,OutputNormalization->1,MaxEll->1500,MaxEtaK->3000.,MaxEtaKTensor->800.,MaxEllTensor->400,TransferKmax->.9,TransferKperLogInt->0,TransferRedshifts->{0.},AccuratePolarization->True,AccurateReionization->False,AccurateBB->False,DoLensing->True,OnlyTransfers->False,DerivedParameters->True,MassiveNuMethod->"best"};
@@ -195,8 +200,7 @@ krange=10^Range[-6.,4.,.01];
 result=Transpose[fitonek/@krange];
 horizon=Global`TFSoundHorizon[N@omegaM,N@fBaryon,N@h];
 peak=Global`TFkPeak[N@omegaM,N@fBaryon,N@h];
-If[result==$Failed,Message[Interface::LinkBroken,"tf"];Return[$Failed];Abort[]];
-(*TODO: If[result\[Equal]Null,Message[not installed]];*)
+validateresult[Global`TFFitOneK[.1],"transfer"];
 Uninstall[link];
 
 {Transfer["soundhorizon"]->horizon,
@@ -232,7 +236,7 @@ Global`HFSetParameters[N@OmegaM,N@OmegaL,N@gammaShape,N@sigma8,N@ns,N@betaP,N@z0
 AppendTo[Tf,Table[Global`HFGetPkNL[a,k],{a,arange},{k,krange}]];
 AppendTo[Kappa,Table[Global`HFGetKappa[ell],{ell,ellrange}]],
 {i,0,2}];
-If[result==$Failed,Message[Interface::LinkBroken,"Halofit"];Return[$Failed];Abort[]];
+validateresult[Global`HFGetKappa[10.],"halofit"];
 Uninstall[link];
 
 arange[[-1]]=1.;
@@ -260,7 +264,7 @@ If[!And@@check,Abort[]];
 link=Install[$location<>"ext/math_link"];
 result=Table[{Transpose@Partition[#[[1]],Length@#[[1]]/2],#[[2]]}&@Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1],{a,.5,1.,.1}];
  (*CosmicEmu only does these five redshifts, everything else is interpolated*)
-If[result==$Failed,Message[Interface::LinkBroken,"CosmicEmu"];Return[$Failed];Abort[]];
+validateresult[(result[[All,2]])[[1,4]],"CosmicEmu"];
 Uninstall[link];
 
 (*Just return the raw numbers*)

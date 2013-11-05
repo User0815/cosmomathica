@@ -10,16 +10,29 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    635408,      11360]
-NotebookOptionsPosition[    632596,      11263]
-NotebookOutlinePosition[    633108,      11283]
-CellTagsIndexPosition[    633065,      11280]
+NotebookDataLength[    636220,      11396]
+NotebookOptionsPosition[    633226,      11293]
+NotebookOutlinePosition[    633738,      11313]
+CellTagsIndexPosition[    633695,      11310]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
+Cell[BoxData[
+ RowBox[{"(*", 
+  RowBox[{
+   RowBox[{"Cosmomathica", " ", "version", " ", "0.1"}], ",", " ", 
+   RowBox[{
+   "November", " ", "2013.", " ", "By", " ", "Adrian", " ", "Vollmer"}], ",", 
+   " ", 
+   RowBox[{"Institute", " ", "for", " ", "theoretical", " ", "physics"}], ",",
+    " ", 
+   RowBox[{"University", " ", 
+    RowBox[{"Heidelberg", "."}]}]}], "*)"}]], "Input",
+ InitializationCell->True],
 
 Cell[CellGroupData[{
+
 Cell["Preamble", "Section",
  InitializationCell->True],
 
@@ -301,9 +314,14 @@ be zero).\>\""}], ";"}], "\[IndentingNewLine]",
   RowBox[{
    RowBox[{"Interface", "::", "OutsideBounds"}], "=", 
    "\"\<Parameter out of bounds. `5` requires `3` <= `1` <= `4`, but you have \
-`1`=`2`.\>\""}], ";"}]}], "Input",
+`1`=`2`.\>\""}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Interface", "::", "NotInstalled"}], "=", 
+   "\"\<`1` appears to be unavailable on your system.\>\""}], ";"}]}], "Input",\
+
  InitializationCell->True]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -377,6 +395,27 @@ Cell[BoxData[{
       RowBox[{"Message", "[", 
        RowBox[{
         RowBox[{"CAMB", "::", "Lists"}], ",", "list"}], "]"}], ";", 
+      RowBox[{"Abort", "[", "]"}]}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"validateresult", "[", 
+    RowBox[{"x_", ",", "name_"}], "]"}], ":=", 
+   RowBox[{"Switch", "[", 
+    RowBox[{"x", ",", "$Failed", ",", 
+     RowBox[{
+      RowBox[{"Message", "[", 
+       RowBox[{
+        RowBox[{"Interface", "::", "LinkBroken"}], ",", "name"}], "]"}], ";", 
+      
+      RowBox[{"Return", "[", "$Failed", "]"}], ";", 
+      RowBox[{"Abort", "[", "]"}]}], ",", "Null", ",", 
+     RowBox[{
+      RowBox[{"Message", "[", 
+       RowBox[{
+        RowBox[{"Interface", "::", "NotInstalled"}], ",", "name"}], "]"}], 
+      ";", 
+      RowBox[{"Return", "[", "$Failed", "]"}], ";", 
       RowBox[{"Abort", "[", "]"}]}]}], "]"}]}], ";"}]}], "Input",
  InitializationCell->True],
 
@@ -648,16 +687,9 @@ Cell[BoxData[{
          RowBox[{"N", "/@", "floats"}], ",", "ints"}], "]"}]}], ";", 
       "\[IndentingNewLine]", 
       RowBox[{"ResetDirectory", "[", "]"}], ";", "\[IndentingNewLine]", 
-      RowBox[{"If", "[", 
-       RowBox[{
-        RowBox[{"result", "\[Equal]", "$Failed"}], ",", 
-        RowBox[{
-         RowBox[{"Message", "[", 
-          RowBox[{
-           RowBox[{"Interface", "::", "LinkBroken"}], ",", "\"\<CAMB\>\""}], 
-          "]"}], ";", 
-         RowBox[{"Return", "[", "$Failed", "]"}], ";", 
-         RowBox[{"Abort", "[", "]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"validateresult", "[", 
+       RowBox[{"result", ",", "\"\<CAMB\>\""}], "]"}], ";", 
+      "\[IndentingNewLine]", 
       RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
       "\[IndentingNewLine]", 
       RowBox[{
@@ -874,14 +906,16 @@ Cell[BoxData[{
                  RowBox[{"k", ",", 
                   RowBox[{"Length", "@", 
                    RowBox[{"OptionValue", "@", "TransferRedshifts"}]}]}], 
-                 "}"}]}], "]"}]}]}]}], "\[IndentingNewLine]", "]"}], ",", 
-          RowBox[{
-           RowBox[{"CAMB", "[", "\"\<ints\>\"", "]"}], "->", "resultint"}], 
-          ",", 
-          RowBox[{
-           RowBox[{"CAMB", "[", "\"\<floats\>\"", "]"}], "->", 
-           "resultfloat"}]}], "\[IndentingNewLine]", "}"}], ",", "Null"}], 
-       "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+                 "}"}]}], "]"}]}]}]}], "\[IndentingNewLine]", "]"}]}], 
+         RowBox[{"(*", 
+          RowBox[{",", 
+           RowBox[{
+            RowBox[{"CAMB", "[", "\"\<ints\>\"", "]"}], "->", "resultint"}], 
+           ",", 
+           RowBox[{
+            RowBox[{"CAMB", "[", "\"\<floats\>\"", "]"}], "->", 
+            "resultfloat"}]}], "*)"}], "\[IndentingNewLine]", "}"}], ",", 
+        "Null"}], "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
@@ -1027,26 +1061,10 @@ Cell[BoxData[
           RowBox[{"N", "@", "omegaM"}], ",", 
           RowBox[{"N", "@", "fBaryon"}], ",", 
           RowBox[{"N", "@", "h"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
-       RowBox[{"If", "[", 
+       RowBox[{"validateresult", "[", 
         RowBox[{
-         RowBox[{"result", "\[Equal]", "$Failed"}], ",", 
-         RowBox[{
-          RowBox[{"Message", "[", 
-           RowBox[{
-            RowBox[{"Interface", "::", "LinkBroken"}], ",", "\"\<tf\>\""}], 
-           "]"}], ";", 
-          RowBox[{"Return", "[", "$Failed", "]"}], ";", 
-          RowBox[{"Abort", "[", "]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
-       
-       RowBox[{"(*", 
-        RowBox[{
-         RowBox[{"TODO", ":", " ", 
-          RowBox[{"If", "[", 
-           RowBox[{
-            RowBox[{"result", "\[Equal]", "Null"}], ",", 
-            RowBox[{"Message", "[", 
-             RowBox[{"not", " ", "installed"}], "]"}]}], "]"}]}], ";"}], 
-        "*)"}], "\[IndentingNewLine]", 
+         RowBox[{"Global`TFFitOneK", "[", ".1", "]"}], ",", 
+         "\"\<transfer\>\""}], "]"}], ";", "\[IndentingNewLine]", 
        RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
        "\[IndentingNewLine]", 
        RowBox[{"{", 
@@ -1268,16 +1286,10 @@ Cell[BoxData[
         RowBox[{"{", 
          RowBox[{"i", ",", "0", ",", "2"}], "}"}]}], "]"}], ";", 
       "\[IndentingNewLine]", 
-      RowBox[{"If", "[", 
+      RowBox[{"validateresult", "[", 
        RowBox[{
-        RowBox[{"result", "\[Equal]", "$Failed"}], ",", 
-        RowBox[{
-         RowBox[{"Message", "[", 
-          RowBox[{
-           RowBox[{"Interface", "::", "LinkBroken"}], ",", 
-           "\"\<Halofit\>\""}], "]"}], ";", 
-         RowBox[{"Return", "[", "$Failed", "]"}], ";", 
-         RowBox[{"Abort", "[", "]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"Global`HFGetKappa", "[", "10.", "]"}], ",", 
+        "\"\<halofit\>\""}], "]"}], ";", "\[IndentingNewLine]", 
       RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
       "\[IndentingNewLine]", 
       RowBox[{
@@ -1478,16 +1490,16 @@ Cell[BoxData[
           "redshifts"}], ",", " ", 
         RowBox[{"everything", " ", "else", " ", "is", " ", "interpolated"}]}],
         "*)"}], "\[IndentingNewLine]", 
-      RowBox[{"If", "[", 
+      RowBox[{"validateresult", "[", 
        RowBox[{
-        RowBox[{"result", "\[Equal]", "$Failed"}], ",", 
         RowBox[{
-         RowBox[{"Message", "[", 
-          RowBox[{
-           RowBox[{"Interface", "::", "LinkBroken"}], ",", 
-           "\"\<CosmicEmu\>\""}], "]"}], ";", 
-         RowBox[{"Return", "[", "$Failed", "]"}], ";", 
-         RowBox[{"Abort", "[", "]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+         RowBox[{"(", 
+          RowBox[{"result", "[", 
+           RowBox[{"[", 
+            RowBox[{"All", ",", "2"}], "]"}], "]"}], ")"}], "[", 
+         RowBox[{"[", 
+          RowBox[{"1", ",", "4"}], "]"}], "]"}], ",", "\"\<CosmicEmu\>\""}], 
+       "]"}], ";", "\[IndentingNewLine]", 
       RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
       "\[IndentingNewLine]", 
       RowBox[{"(*", 
@@ -6704,7 +6716,7 @@ Cell[BoxData[{
     RowBox[{".2", ",", ".05", ",", ".75", ",", ".6817", ",", 
      RowBox[{"-", "1."}], ",", 
      RowBox[{"WantTransfer", "\[Rule]", "True"}], ",", 
-     RowBox[{"DoLensing", "\[Rule]", "False"}], ",", 
+     RowBox[{"DoLensing", "\[Rule]", "True"}], ",", 
      RowBox[{"NonLinear", "\[Rule]", "\"\<none\>\""}], ",", 
      RowBox[{"WantZstar", "\[Rule]", "False"}], ",", 
      RowBox[{"TransferRedshifts", "\[Rule]", 
@@ -6740,6 +6752,24 @@ Cell[BoxData[
    RowBox[{"CAMB", "[", "\<\"Transfer2\"\>", "]"}], ",", 
    RowBox[{"CAMB", "[", "\<\"ints\"\>", "]"}], ",", 
    RowBox[{"CAMB", "[", "\<\"floats\"\>", "]"}]}], "}"}]], "Output"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"CAMB", "[", "\"\<floats\>\"", "]"}], "/.", "cambdata"}], ")"}], 
+  "[", 
+  RowBox[{"[", 
+   RowBox[{"-", "1"}], "]"}], "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", "0.5472082285855231`", "}"}], ",", 
+   RowBox[{"{", "0.6936370642964409`", "}"}]}], "}"}]], "Output"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -11282,84 +11312,90 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[CellGroupData[{
-Cell[579, 22, 54, 1, 78, "Section",
- InitializationCell->True],
-Cell[636, 25, 125, 3, 42, "Input",
- InitializationCell->True],
-Cell[764, 30, 3021, 54, 485, "Input",
- InitializationCell->True],
-Cell[3788, 86, 5644, 185, 1033, "Input",
- InitializationCell->True],
-Cell[9435, 273, 1134, 31, 153, "Input",
- InitializationCell->True]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[10606, 309, 50, 1, 48, "Section",
- InitializationCell->True],
-Cell[10659, 312, 101, 2, 42, "Input",
- InitializationCell->True],
-Cell[10763, 316, 156, 4, 42, "Input",
- InitializationCell->True],
-Cell[10922, 322, 1913, 58, 109, "Input",
+Cell[557, 20, 410, 11, 42, "Input",
  InitializationCell->True],
 Cell[CellGroupData[{
-Cell[12860, 384, 26, 0, 39, "Subsection"],
-Cell[12889, 386, 24397, 564, 2111, "Input",
+Cell[992, 35, 54, 1, 78, "Section",
+ InitializationCell->True],
+Cell[1049, 38, 125, 3, 42, "Input",
+ InitializationCell->True],
+Cell[1177, 43, 3021, 54, 485, "Input",
+ InitializationCell->True],
+Cell[4201, 99, 5644, 185, 1033, "Input",
+ InitializationCell->True],
+Cell[9848, 286, 1304, 36, 175, "Input",
  InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[37323, 955, 30, 0, 39, "Subsection"],
-Cell[37356, 957, 5211, 126, 637, "Input",
- InitializationCell->True]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[42604, 1088, 29, 0, 31, "Subsection"],
-Cell[42636, 1090, 9458, 237, 797, "Input",
- InitializationCell->True]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[52131, 1332, 31, 0, 31, "Subsection"],
-Cell[52165, 1334, 8437, 219, 571, "Input",
+Cell[11189, 327, 50, 1, 78, "Section",
  InitializationCell->True],
-Cell[60605, 1555, 149, 3, 65, "Input",
+Cell[11242, 330, 101, 2, 42, "Input",
+ InitializationCell->True],
+Cell[11346, 334, 156, 4, 42, "Input",
+ InitializationCell->True],
+Cell[11505, 340, 2623, 79, 153, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[14153, 423, 26, 0, 39, "Subsection"],
+Cell[14182, 425, 24182, 559, 2111, "Input",
+ InitializationCell->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[38401, 989, 30, 0, 39, "Subsection"],
+Cell[38434, 991, 4641, 110, 615, "Input",
+ InitializationCell->True]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[43112, 1106, 29, 0, 31, "Subsection"],
+Cell[43144, 1108, 9231, 231, 797, "Input",
+ InitializationCell->True]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[52412, 1344, 31, 0, 31, "Subsection"],
+Cell[52446, 1346, 8390, 219, 571, "Input",
+ InitializationCell->True],
+Cell[60839, 1567, 149, 3, 65, "Input",
  InitializationCell->True]
 }, Closed]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[60803, 1564, 23, 0, 78, "Section"],
-Cell[60829, 1566, 156, 5, 42, "Input"],
+Cell[61037, 1576, 23, 0, 78, "Section"],
+Cell[61063, 1578, 156, 5, 42, "Input"],
 Cell[CellGroupData[{
-Cell[61010, 1575, 357, 10, 65, "Input"],
-Cell[61370, 1587, 589, 11, 42, "Output"]
+Cell[61244, 1587, 357, 10, 65, "Input"],
+Cell[61604, 1599, 589, 11, 42, "Output"]
 }, Open  ]],
-Cell[61974, 1601, 607, 19, 42, "Input"],
+Cell[62208, 1613, 607, 19, 42, "Input"],
 Cell[CellGroupData[{
-Cell[62606, 1624, 344, 9, 65, "Input"],
-Cell[62953, 1635, 415, 8, 42, "Output"]
+Cell[62840, 1636, 344, 9, 65, "Input"],
+Cell[63187, 1647, 415, 8, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[63405, 1648, 205, 5, 42, "Input"],
-Cell[63613, 1655, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
+Cell[63639, 1660, 205, 5, 42, "Input"],
+Cell[63847, 1667, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[361787, 6661, 315, 9, 65, "Input"],
-Cell[362105, 6672, 533, 10, 42, "Output"]
+Cell[362021, 6673, 315, 9, 65, "Input"],
+Cell[362339, 6684, 533, 10, 42, "Output"]
 }, Open  ]],
-Cell[362653, 6685, 360, 10, 42, "Input"],
+Cell[362887, 6697, 360, 10, 42, "Input"],
 Cell[CellGroupData[{
-Cell[363038, 6699, 668, 16, 65, "Input"],
-Cell[363709, 6717, 1290, 24, 65, "Output"]
+Cell[363272, 6711, 667, 16, 65, "Input"],
+Cell[363942, 6729, 1290, 24, 65, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[365036, 6746, 513, 14, 42, "Input"],
-Cell[365552, 6762, 251338, 4191, 364, 231003, 3856, "CachedBoxData", \
+Cell[365269, 6758, 200, 7, 42, "Input"],
+Cell[365472, 6767, 157, 4, 42, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[365666, 6776, 513, 14, 42, "Input"],
+Cell[366182, 6792, 251338, 4191, 364, 231003, 3856, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[616927, 10958, 324, 9, 42, "Input"],
-Cell[617254, 10969, 15314, 290, 257, "Output"]
+Cell[617557, 10988, 324, 9, 42, "Input"],
+Cell[617884, 10999, 15314, 290, 257, "Output"]
 }, Open  ]]
 }, Open  ]]
 }

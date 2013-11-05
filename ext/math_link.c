@@ -27,8 +27,8 @@ void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
-real P_NL(real, real){return 0.;}
-real Pkappa(real){return 0.;}
+real P_NL(real a, real k){return 0.;}
+real Pkappa(real ell){return 0.;}
 
 #endif
 

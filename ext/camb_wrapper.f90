@@ -256,7 +256,6 @@ contains
 #define add2d(array) call add2darray(array, floats_out, float_offset, ints_out, int_offset)
 #define add1d(array) call add1darray(array, floats_out, float_offset, ints_out, int_offset)
 
-    write(*,*) "*1"
         ! Derived parameters first
         float_offset = 0
         call add1darray( (/ ThermoDerivedParams( derived_Age ),&
@@ -271,13 +270,11 @@ contains
             ThermoDerivedParams( derived_thetaEQ ) /),&
         floats_out, float_offset, ints_out, int_offset)
 
-    write(*,*) "*2"
 
         if(P%WantScalars) add3d(Cl_scalar)
         if(P%WantVectors) add3d(Cl_vector)
         if(P%WantTensors) add3d(Cl_tensor)
 
-    write(*,*) "*3"
         if (P%WantTransfer) then
             do i=1,P%InitPower%nn     
                 call Transfer_GetMatterPowerData(MT, PK_data, i)
@@ -288,12 +285,9 @@ contains
             end do
             add3d(dble(MT%TransferData))
             call Transfer_Get_sigma8(MT, 8d0)
-            write(*,*) size(MT%sigma_8,1)
-            write(*,*) size(MT%sigma_8,2)
             add2d(MT%sigma_8)
         endif
 
-    write(*,*) "*4"
 
         ! Background: TODO: CAMB never fills these arrays. But the functions
         ! exist, so we have to do it by hand.
@@ -304,7 +298,6 @@ contains
             add1d(BackgroundOutputs%rs_by_D_v)
         endif
 
-    write(*,*) "*5"
         ints_out_len = int_offset
         floats_out_len = float_offset
         

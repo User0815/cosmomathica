@@ -19,19 +19,18 @@ inevitably introduce new bugs given the complexity of these algorithms.
 For further details on how MathLink works, see
 http://arxiv.org/abs/1107.4379.
 
-For a detailed documentation of cosmomathica, see XXXX
 
 
 Requirements
 ============
 
-  * Wolfram Mathematica version ??
+  * Wolfram Mathematica version >=9 (8 sufficient unless you need CAMB)
 
   * For CosmicEmulator: GSL (GNU Scientific Library)
 
   * For CAMB: Possibly cfitsio, healpix
 
-  * The GNU Compiler Compilation (gcc) version ??
+  * The GNU Compiler Compilation (gcc) version >=4.6
 
 
 External programs
@@ -52,8 +51,8 @@ the files in question are given here.
     http://www.roe.ac.uk/~jap/haloes/
     Robert Smith et al, Martin Kilbinger
 
-  * CAMB (July 2013):
-    CAMB.tar.gz             [a538bb607cca96c4b2f8b1fece898411]  
+  * CAMB (Nov 2013):
+    CAMB.tar.gz             [473b1a87c9aa4972aedb0b5ba8ec037b]
     http://camb.info/
     Antony Lewis and Anthony Challinor
 
@@ -97,11 +96,20 @@ How to use Cosmomathica
 
 In general, each one of the functions `CAMB`, `Transfer`, `Halofit`, and
 `CosmicEmu` returns a list of replacement rules containing the raw data as
-computed by the respective program. See the notebook "demo.nb" for
+computed by the respective program. See the notebook `demo.nb` for
 a demonstration. 
+
+
+Version
+=======
+
+This is version 0.1. Since this is an alpha status, backwards compatibility
+may be broken in future releases.
 
 
 Copyright and licensing
 =======================
 
-Cosmomathica is released under the GPL2. Contributions are welcome.
+Cosmomathica is released under the GPL2. Contributions are welcome. Note
+that the copyright of the external software packages belong to their
+respective owners. Read their copyright remarks before using them.
