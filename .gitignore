@@ -5,6 +5,7 @@ ext/camb/*
 ext/CosmicEmulator/*
 ext/halofit/*
 ext/tf/*
+ext/math_link_tm.c
 ext/tags
 doc/*log
 doc/*aux

@@ -101,10 +101,13 @@ bool2int[b_]:=If[b,1,0];
 validatestring[val_,name_,poss_]:=If[!MemberQ[poss,val],Message[CAMB::InvalidOption,name,val,StringJoin@@Riffle[poss,", "]];Abort[]];
 validatelimits[val_,name_,lower_,upper_,module_]:=If[!(lower<=val<=upper),Message[Interface::OutsideBounds,name,val,lower,upper,module];Abort[]];
 validatelists[list_]:=If[1!=Length@Union[Length/@list],Message[CAMB::Lists,list];Abort[]];
-validateresult[x_,name_]:=Switch[x,$Failed,Message[Interface::LinkBroken,name];Return[$Failed];Abort[],Null,Message[Interface::NotInstalled,name];Return[$Failed];Abort[]];
+validateresult[x_,name_]:=Switch[x,$Failed,Message[Interface::LinkBroken,name];False,Null,Message[Interface::NotInstalled,name]False,_,True];
 
 
-CAMB[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{j,link,result,resultfloat,resultint,floats,ints,initialcond,nonlinear,massivenu,limits,check,getDimensions,dimensions,array},
+reshape[list_,dimensions_]:=First[Fold[Partition[#1,#2]&,Flatten[list],Reverse[dimensions]]]
+
+
+CAMB[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{j,link,result,resultfloat,resultint,floats,ints,initialcond,nonlinear,massivenu,limits,check,getDimensions,dimensions,array,redshifts},
 
 getDimensions[list_]:=Module[{i,r},
 i=1;r={};
@@ -130,7 +133,7 @@ validatelists[OptionValue@{NuMassDegeneracies,NuMassFractions}];
 validatelimits[Sequence@@If[NumericQ[#[[1]]],#,{OptionValue[#[[1]]],ToString[#[[1]]]}~Join~Rest@#],"CAMB"]&/@limits;
 
 initialcond={"vector","adiabatic","iso_CDM","iso_baryon","iso_neutrino","iso_neutrino_vel"};
-nonlinear={"none","pk","lens"};
+nonlinear={"none","pk","lens","both"};
 massivenu={"int","trunc","approx","best"};
 
 validatestring[OptionValue[ScalarInitialCondition],"ScalarInitialCondition",initialcond];
@@ -146,7 +149,7 @@ SetDirectory[$location<>"ext/camb"];
 link=Install[$location<>"ext/math_link"];
 result=Global`CAMBrun[N/@floats,ints];
 ResetDirectory[];
-validateresult[result,"CAMB"];
+If[!validateresult[result,"CAMB"],Return[$Failed];Abort[]];
 Uninstall[link];
 
 {resultfloat,resultint}=result;
@@ -156,7 +159,7 @@ dimensions=getDimensions@resultint;
 
 Do[array=Take[resultfloat,Times@@d];
 resultfloat=Drop[resultfloat,Times@@d];
-AppendTo[resultfloat,ArrayReshape[array,d]],{d,dimensions}];
+AppendTo[resultfloat,reshape[array,d]],{d,dimensions}];
 
 j=2;
 DeleteCases[{
@@ -174,10 +177,11 @@ CAMB["sigma8"]->resultfloat[[-1]],
 If[OptionValue[WantScalars],CAMB["CLscalar"]->Transpose@First@Transpose[resultfloat[[j++]]]],
 If[OptionValue[WantVectors],CAMB["CLvector"]->Transpose@First@Transpose[resultfloat[[j++]]]],
 If[OptionValue[WantTensors],CAMB["CLtensor"]->Transpose@First@Transpose[resultfloat[[j++]]]],
-If[OptionValue[WantTransfer],Sequence@@Flatten@Table[{
-CAMB["PSlinear"<>ToString@k]->Transpose@{Exp@resultfloat[[j]],Transpose[resultfloat[[j+1]]][[k]]},
-CAMB["PSnonlinear"<>ToString@k]->Transpose@{Exp@resultfloat[[j]],Transpose[resultfloat[[j+2]]][[k]]}},{k,Length@OptionValue@TransferRedshifts}
-]~Join~Table[CAMB["Transfer"<>ToString@k]->Transpose[resultfloat[[-2,All,All,k]]],{k,Length@OptionValue@TransferRedshifts}]
+If[OptionValue[WantTransfer],CAMB["redshifts"]->(redshifts=resultfloat[[-2]])],
+If[OptionValue[WantTransfer],Sequence@@Flatten@{
+CAMB["PSlinear"]->Table[Exp@Transpose@{resultfloat[[j]],resultfloat[[j+1,All,k]]},{k,Length@redshifts}],
+CAMB["PSnonlinear"]->Table[Exp@Transpose@{resultfloat[[j]],resultfloat[[j+2,All,k]]},{k,Length@redshifts}
+]}~Join~{CAMB["Transfer"]->Table[Transpose[resultfloat[[j+3,All,All,k]]],{k,Length@redshifts}]}
 ](*,CAMB["ints"]->resultint,CAMB["floats"]->resultfloat*)
 },Null]
 ];

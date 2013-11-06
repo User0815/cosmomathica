@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     20030,        591]
-NotebookOptionsPosition[     17280,        505]
-NotebookOutlinePosition[     17716,        522]
-CellTagsIndexPosition[     17673,        519]
+NotebookDataLength[     21661,        631]
+NotebookOptionsPosition[     18832,        543]
+NotebookOutlinePosition[     19268,        560]
+CellTagsIndexPosition[     19225,        557]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -457,29 +457,64 @@ Cell[BoxData[
    3.592567487836361*^9, 3.592567501069331*^9}}],
 
 Cell["\<\
-Plot the linear and nonlinear matter power spectrum for the both redshifts\
+In version Nov13, CAMB computes the power spectrum at more than just the \
+requested redshifts :\
 \>", "Text",
- CellChangeTimes->{{3.592208044645322*^9, 3.592208080910407*^9}, {
-  3.5922167980807457`*^9, 3.592216798226589*^9}, {3.5922195371139793`*^9, 
-  3.592219539034918*^9}}],
+ CellChangeTimes->{{3.5927237591432047`*^9, 3.592723784489291*^9}}],
 
 Cell[BoxData[
- RowBox[{"ListLogLinearPlot", "[", 
+ RowBox[{
+  RowBox[{"CAMB", "[", "\"\<redshifts\>\"", "]"}], "/.", 
+  "cambdata"}]], "Input",
+ CellChangeTimes->{{3.5927237864890947`*^9, 3.592723794399246*^9}}],
+
+Cell[TextData[{
+ "The results for the linear/nonlinear power spectrum as well as the transfer \
+function contain a list for each redshift. Each one of those is a list of \
+number pairs ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"{", 
+    RowBox[{
+     SubscriptBox["k", "i"], ",", 
+     RowBox[{"P", "(", 
+      SubscriptBox["k", "i"], ")"}]}], "}"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ " in the case of the power spectrum, and a list of seven numbers ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"{", 
+    RowBox[{
+     SubscriptBox["k", "i"], ",", 
+     RowBox[{
+      SubscriptBox["T", "1"], "(", 
+      SubscriptBox["k", "i"], ")"}], ",", "...", ",", " ", 
+     RowBox[{
+      SubscriptBox["T", "6"], "(", 
+      SubscriptBox["k", "i"], ")"}]}], "}"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ " in case of the transfer function, each of which correspond to CDM, baryon, \
+photon, massless neutrino, massive neutrinos, and total (massive).\n\nPlot \
+the nonlinear matter power spectrum for all redshifts"
+}], "Text",
+ CellChangeTimes->{{3.592208044645322*^9, 3.592208080910407*^9}, {
+  3.5922167980807457`*^9, 3.592216798226589*^9}, {3.5922195371139793`*^9, 
+  3.592219539034918*^9}, {3.592723817443098*^9, 3.5927238184932737`*^9}, {
+  3.5927238764833508`*^9, 3.5927238791313877`*^9}, {3.592724013210215*^9, 
+  3.592724166293298*^9}, {3.592724205325595*^9, 3.592724205605421*^9}, {
+  3.592724238565312*^9, 3.5927242555755777`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"ListLogLogPlot", "[", 
   RowBox[{
    RowBox[{
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"CAMB", "[", "\"\<PSlinear1\>\"", "]"}], ",", 
-      RowBox[{"CAMB", "[", "\"\<PSnonlinear1\>\"", "]"}], ",", 
-      RowBox[{"CAMB", "[", "\"\<PSlinear2\>\"", "]"}], ",", 
-      RowBox[{"CAMB", "[", "\"\<PSnonlinear2\>\"", "]"}]}], "}"}], "/.", 
-    "cambdata"}], ",", 
+    RowBox[{"CAMB", "[", "\"\<PSnonlinear\>\"", "]"}], "/.", "cambdata"}], 
+   ",", 
    RowBox[{"Joined", "\[Rule]", "True"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.5922195293386507`*^9, 3.592219533316444*^9}}],
+ CellChangeTimes->{{3.5922195293386507`*^9, 3.592219533316444*^9}, {
+  3.592723825596789*^9, 3.592723870363166*^9}}],
 
-Cell["\<\
-Plot the CDM transfer function at the first redshift\
-\>", "Text",
+Cell["Plot the CDM transfer function at the first redshift", "Text",
  CellChangeTimes->{{3.592216770216694*^9, 3.5922167931052094`*^9}, {
   3.5922196105243177`*^9, 3.592219615622189*^9}}],
 
@@ -489,22 +524,25 @@ Cell[BoxData[
    RowBox[{
     RowBox[{"(", 
      RowBox[{
-      RowBox[{"CAMB", "[", "\"\<Transfer1\>\"", "]"}], "/.", "cambdata"}], 
+      RowBox[{"CAMB", "[", "\"\<Transfer\>\"", "]"}], "/.", "cambdata"}], 
      ")"}], "[", 
     RowBox[{"[", 
-     RowBox[{"All", ",", 
+     RowBox[{
+      RowBox[{"-", "1"}], ",", "All", ",", 
       RowBox[{"{", 
        RowBox[{"1", ",", "2"}], "}"}]}], "]"}], "]"}], ",", 
    RowBox[{"Joined", "\[Rule]", "True"}]}], "]"}]], "Input",
  CellChangeTimes->{{3.592215570597596*^9, 3.592215607449472*^9}, {
-  3.592216730696947*^9, 3.592216760904664*^9}, {3.5922195164356527`*^9, 
-  3.592219519516655*^9}}]
+   3.592216730696947*^9, 3.592216760904664*^9}, {3.5922195164356527`*^9, 
+   3.592219519516655*^9}, 3.592723891405195*^9, {3.592723990490267*^9, 
+   3.592723990706545*^9}, {3.5927241443848467`*^9, 3.5927241592017803`*^9}, 
+   3.5927242789484777`*^9}]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{740, 865},
-WindowMargins->{{442, Automatic}, {38, Automatic}},
+WindowMargins->{{297, Automatic}, {Automatic, 48}},
 PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
 ShowSelection->True,
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
@@ -524,7 +562,7 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[579, 22, 96, 1, 92, "Title"],
 Cell[678, 25, 190, 4, 30, "Subsubtitle"],
-Cell[871, 31, 165, 3, 31, "Text"],
+Cell[871, 31, 165, 3, 30, "Text"],
 Cell[CellGroupData[{
 Cell[1061, 38, 112, 1, 80, "Section"],
 Cell[CellGroupData[{
@@ -586,10 +624,12 @@ Cell[14225, 416, 272, 8, 32, "Text"],
 Cell[14500, 426, 169, 3, 32, "Input"],
 Cell[14672, 431, 177, 4, 30, "Text"],
 Cell[14852, 437, 851, 19, 99, "Input"],
-Cell[15706, 458, 266, 5, 30, "Text"],
-Cell[15975, 465, 517, 12, 77, "Input"],
-Cell[16495, 479, 195, 4, 30, "Text"],
-Cell[16693, 485, 547, 15, 55, "Input"]
+Cell[15706, 458, 188, 4, 49, "Text"],
+Cell[15897, 464, 175, 4, 32, "Input"],
+Cell[16075, 470, 1459, 34, 152, "Text"],
+Cell[17537, 506, 332, 8, 32, "Input"],
+Cell[17872, 516, 187, 2, 30, "Text"],
+Cell[18062, 520, 730, 18, 55, "Input"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]

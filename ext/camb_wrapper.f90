@@ -163,7 +163,7 @@ contains
         ! call SetDefPowerParams(P%InitPower)
         ! Compare with SetDefPowerParams
         ! These are arrays with length nn
-         P%InitPower%nn     = ints(ii); ii=ii+1 !number of initial power spectra
+         P%InitPower%nn     = nextint !number of initial power spectra
          fitemp = ints(ii-1)
          P%InitPower%an(1:fitemp)     = floats(fi:fi+fitemp); fi=fi+fitemp !scalar spectral index
          P%InitPower%n_run(1:fitemp)  = floats(fi:fi+fitemp); fi=fi+fitemp !running of scalar spectral index
@@ -192,7 +192,8 @@ contains
         P%Transfer%high_precision = nextbool
 
         P%Want_CMB     = nextbool
-        P%WantTransfer = nextbool
+        P%PK_WantTransfer = nextbool
+        P%WantTransfer = P%PK_WantTransfer 
         P%WantCls      = nextbool
         P%WantScalars = nextbool
         P%WantVectors = nextbool
@@ -284,6 +285,7 @@ contains
                 add2d(PK_data%matpower)
             end do
             add3d(dble(MT%TransferData))
+            add1d(PK_data%redshifts)
             call Transfer_Get_sigma8(MT, 8d0)
             add2d(MT%sigma_8)
         endif
