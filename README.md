@@ -24,7 +24,7 @@ http://arxiv.org/abs/1107.4379.
 Requirements
 ============
 
-  * Wolfram Mathematica version >=9 (8 sufficient unless you need CAMB)
+  * Wolfram Mathematica version >=8
 
   * For CosmicEmulator: GSL (GNU Scientific Library)
 
