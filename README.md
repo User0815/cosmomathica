@@ -61,9 +61,14 @@ the files in question are given here.
     http://www.lanl.gov/projects/cosmology/CosmicEmu/emu.html
     Heitman et al
 
+  * Copter (v0.8.7):
+    copter-0.8.7.tar.gz     [397afcad4a0ace992fe23828b2071a32]
+    http://mwhite.berkeley.edu/Copter/
+    Jordan Carlson et al
+
 The (extracted) files need to placed in directories with names `tf`,
-`halofit`, `camb`, and `CosmicEmulator`, respectively, inside the `ext`
-directory.
+`halofit`, `camb`, `CosmicEmulator`, and `copter-0.8.7`,  respectively,
+inside the `ext` directory.
 
 If you wish to use a different version of CAMB, for instance, cosmomathica
 may still work, but it has not been tested for it. If you use a modified
@@ -103,7 +108,7 @@ a demonstration.
 Version
 =======
 
-This is version 0.1. Since this is an alpha status, backwards compatibility
+This is version 0.2. Since this is an alpha status, backwards compatibility
 may be broken in future releases.
 
 

@@ -5,7 +5,7 @@ ext/camb/*
 ext/CosmicEmulator/*
 ext/halofit/*
 ext/tf/*
-ext/copter-0.8.7.*
+ext/copter-0.8.7/*
 ext/math_link_tm.c
 ext/tags
 doc/*log

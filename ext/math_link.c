@@ -163,12 +163,22 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
 /* Copter */
 
 #ifdef COPTER
-extern void copter(int argc, char* argv[]);
+extern void copter_rpt(int PT, real h, real ns, real OmegaM, real OmegaB,
+        int Nk, real kmin, real kmax);
+extern void copter_spt(int PT, real h, real ns, real OmegaM, real OmegaB,
+        int Nk, real kmin, real kmax);
+extern void copter_fwt(int PT, real h, real ns, real OmegaM, real OmegaB,
+        int Nk, real kmin, real kmax);
 
 
 #else
 
-void copter(int argc, char* argv[]){}
+void copter_rpt(int PT, real h, real ns, real OmegaM, real OmegaB,
+        int Nk, real kmin, real kmax){}
+void copter_spt(int PT, real h, real ns, real OmegaM, real OmegaB,
+        int Nk, real kmin, real kmax){}
+void copter_fwt(int PT, real h, real ns, real OmegaM, real OmegaB,
+        int Nk, real kmin, real kmax){}
 
 #endif
 

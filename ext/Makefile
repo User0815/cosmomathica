@@ -2,7 +2,7 @@
 CC = gcc -O2 -Wall -lgfortran -fopenmp
 
 # C++ compiler for copter
-CPP = g++ -O2 -fopenmp
+CPP = g++ -O2 -fopenmp -Wall -pedantic
 
 # Define your Fortran compiler (if you want to use CAMB) Must match CAMB
 # compiler
