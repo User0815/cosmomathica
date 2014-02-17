@@ -1,6 +1,9 @@
 # Define your C compiler
 CC = gcc -O2 -Wall -lgfortran -fopenmp
 
+# C++ compiler for copter
+CPP = g++ -O2 -fopenmp
+
 # Define your Fortran compiler (if you want to use CAMB) Must match CAMB
 # compiler
 F90C = gfortran -O2 -fopenmp -Wall -Wextra -Wconversion-extra -cpp
@@ -62,10 +65,19 @@ else
   CC += -DCAMB
 endif
 
+ifeq ($(wildcard copter-0.8.7/Makefile.am),)
+  COPTER = 
+else
+  COPTER = copter-0.8.7
+  OFILES += copter_wrapper.o
+  CC += -DCOPTER 
+  CPP += -I$(COPTER)/include 
+  EXTRALIBS += $(COPTER)/lib/libcopter.a  
+endif
 
 all: math_link
 
-math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(OFILES) Makefile
+math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(COPTER) $(OFILES) Makefile
 	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) $(CAMBOFILES) -o $@ ${EXTRALIBS}  
 
 math_link_tm.c: math_link.tm
@@ -78,6 +90,9 @@ math_link_tm.c: math_link.tm
 camb_wrapper.o: camb_wrapper.f90 Makefile
 	$(F90C) -c $< -o $@ -I$(CAMB) 
 
+copter_wrapper.o: copter_wrapper.cpp Makefile
+	$(CPP) -c $< -o $@
+
 $(HALOFIT):
 	+$(MAKE) -C $@
 
@@ -88,12 +103,21 @@ $(CAMB):
 	./patchmakefile.sh
 	+$(MAKE) -C $@
 
+$(COPTER): $(COPTER)/lib/libcopter.a
+
+$(COPTER)/lib/libcopter.a: $(COPTER)/Makefile
+	$(MAKE) -C $(COPTER) 
+	$(MAKE) -C $(COPTER) install 
+
+$(COPTER)/Makefile:
+	cd $(COPTER) && ./configure --prefix=`pwd`
+
 
 download:
 	./download.sh
 
 cleanall:
-	rm -rf  $(HALOFIT) $(COSMICEMU) $(TRANSFER)
+	rm -rf  $(HALOFIT) $(COSMICEMU) $(TRANSFER) $(COPTER) $(CAMB)
 
 clean:
 	rm -f *o *tm.c math_link testwrapper
@@ -101,5 +125,6 @@ clean:
 	if [ ! -z $(COSMICEMU) ]; then rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o ; fi
 	if [ ! -z $(HALOFIT) ]; then $(MAKE) -C $(HALOFIT) clean ; fi
 	if [ ! -z $(CAMB) ]; then $(MAKE) -C $(CAMB) clean ; fi
+	if [ ! -z $(COPTER) ]; then $(MAKE) -C $(COPTER) uninstall clean distclean ; fi
 
-.PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB) download cleanall
+.PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB) $(COPTER) download cleanall

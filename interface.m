@@ -191,20 +191,19 @@ Options[validatestring]=Options[CAMB];
 
 (*Transfer function*)
 Transfer[omegaM_?NumericQ,fBaryon_?NumericQ,Tcmb_?NumericQ,h_?NumericQ]:=Module[{result,link,krange,fitonek,horizon,peak},
-
+validatelimits[fBaryon,"fBaryon",.0001,1,"Transfer"];
 link=Install[$location<>"ext/math_link"];
 
 Global`TFSetParameters[N@omegaM,N@fBaryon,N@Tcmb];
+horizon=Global`TFSoundHorizon[N@omegaM,N@fBaryon,N@h];
+peak=Global`TFkPeak[N@omegaM,N@fBaryon,N@h];
+If[!validateresult[horizon,"transfer"],Return[$Failed];Abort[]];
 
 fitonek[k_]:={Sequence@@Global`TFFitOneK[k],
 Global`TFNoWiggles[N@omegaM,N@fBaryon,N@h,N@Tcmb,k],
 Global`TFZeroBaryon[N@omegaM,N@h,N@Tcmb,k]}; 
-
 krange=10^Range[-6.,4.,.01];
 result=Transpose[fitonek/@krange];
-horizon=Global`TFSoundHorizon[N@omegaM,N@fBaryon,N@h];
-peak=Global`TFkPeak[N@omegaM,N@fBaryon,N@h];
-validateresult[Global`TFFitOneK[.1],"transfer"];
 Uninstall[link];
 
 {Transfer["soundhorizon"]->horizon,

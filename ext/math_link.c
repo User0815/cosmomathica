@@ -159,6 +159,21 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
 
 #endif
 
+
+/* Copter */
+
+#ifdef COPTER
+extern void copter(int argc, char* argv[]);
+
+
+#else
+
+void copter(int argc, char* argv[]){}
+
+#endif
+
+
+
 int main(int argc, char* argv[]) {
     return MLMain(argc, argv);
 }

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    489725,       9088]
-NotebookOptionsPosition[    486503,       8978]
-NotebookOutlinePosition[    487015,       8998]
-CellTagsIndexPosition[    486972,       8995]
+NotebookDataLength[    490019,       9095]
+NotebookOptionsPosition[    486797,       8985]
+NotebookOutlinePosition[    487309,       9005]
+CellTagsIndexPosition[    487266,       9002]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1008,7 +1008,7 @@ Cell[BoxData[{
    RowBox[{"Options", "[", "validatestring", "]"}], "=", 
    RowBox[{"Options", "[", "CAMB", "]"}]}], ";"}]}], "Input",
  InitializationCell->True]
-}, Open  ]],
+}, Closed]],
 
 Cell[CellGroupData[{
 
@@ -1032,8 +1032,11 @@ Cell[BoxData[
        RowBox[{
        "result", ",", "link", ",", "krange", ",", "fitonek", ",", "horizon", 
         ",", "peak"}], "}"}], ",", "\[IndentingNewLine]", 
-      "\[IndentingNewLine]", 
       RowBox[{
+       RowBox[{"validatelimits", "[", 
+        RowBox[{
+        "fBaryon", ",", "\"\<fBaryon\>\"", ",", ".0001", ",", "1", ",", 
+         "\"\<Transfer\>\""}], "]"}], ";", "\[IndentingNewLine]", 
        RowBox[{"link", "=", 
         RowBox[{"Install", "[", 
          RowBox[{"$location", "<>", "\"\<ext/math_link\>\""}], "]"}]}], ";", 
@@ -1043,6 +1046,26 @@ Cell[BoxData[
          RowBox[{"N", "@", "omegaM"}], ",", 
          RowBox[{"N", "@", "fBaryon"}], ",", 
          RowBox[{"N", "@", "Tcmb"}]}], "]"}], ";", "\[IndentingNewLine]", 
+       RowBox[{"horizon", "=", 
+        RowBox[{"Global`TFSoundHorizon", "[", 
+         RowBox[{
+          RowBox[{"N", "@", "omegaM"}], ",", 
+          RowBox[{"N", "@", "fBaryon"}], ",", 
+          RowBox[{"N", "@", "h"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"peak", "=", 
+        RowBox[{"Global`TFkPeak", "[", 
+         RowBox[{
+          RowBox[{"N", "@", "omegaM"}], ",", 
+          RowBox[{"N", "@", "fBaryon"}], ",", 
+          RowBox[{"N", "@", "h"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"!", 
+          RowBox[{"validateresult", "[", 
+           RowBox[{"horizon", ",", "\"\<transfer\>\""}], "]"}]}], ",", 
+         RowBox[{
+          RowBox[{"Return", "[", "$Failed", "]"}], ";", 
+          RowBox[{"Abort", "[", "]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
        "\[IndentingNewLine]", 
        RowBox[{
         RowBox[{"fitonek", "[", "k_", "]"}], ":=", 
@@ -1063,7 +1086,7 @@ Cell[BoxData[
             RowBox[{"N", "@", "omegaM"}], ",", 
             RowBox[{"N", "@", "h"}], ",", 
             RowBox[{"N", "@", "Tcmb"}], ",", "k"}], "]"}]}], "}"}]}], ";", 
-       " ", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       " ", "\[IndentingNewLine]", 
        RowBox[{"krange", "=", 
         RowBox[{"10", "^", 
          RowBox[{"Range", "[", 
@@ -1074,22 +1097,6 @@ Cell[BoxData[
         RowBox[{"Transpose", "[", 
          RowBox[{"fitonek", "/@", "krange"}], "]"}]}], ";", 
        "\[IndentingNewLine]", 
-       RowBox[{"horizon", "=", 
-        RowBox[{"Global`TFSoundHorizon", "[", 
-         RowBox[{
-          RowBox[{"N", "@", "omegaM"}], ",", 
-          RowBox[{"N", "@", "fBaryon"}], ",", 
-          RowBox[{"N", "@", "h"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
-       RowBox[{"peak", "=", 
-        RowBox[{"Global`TFkPeak", "[", 
-         RowBox[{
-          RowBox[{"N", "@", "omegaM"}], ",", 
-          RowBox[{"N", "@", "fBaryon"}], ",", 
-          RowBox[{"N", "@", "h"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
-       RowBox[{"validateresult", "[", 
-        RowBox[{
-         RowBox[{"Global`TFFitOneK", "[", ".1", "]"}], ",", 
-         "\"\<transfer\>\""}], "]"}], ";", "\[IndentingNewLine]", 
        RowBox[{"Uninstall", "[", "link", "]"}], ";", "\[IndentingNewLine]", 
        "\[IndentingNewLine]", 
        RowBox[{"{", 
@@ -1125,7 +1132,7 @@ Cell[BoxData[
            RowBox[{"[", "5", "]"}], "]"}]}]}], "}"}]}]}], 
      "\[IndentingNewLine]", "]"}]}], ";"}]}]], "Input",
  InitializationCell->True]
-}, Closed]],
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -9026,67 +9033,67 @@ Cell[CellGroupData[{
 Cell[14439, 433, 26, 0, 39, "Subsection"],
 Cell[14468, 435, 24684, 574, 2133, "Input",
  InitializationCell->True]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[39189, 1014, 30, 0, 31, "Subsection"],
+Cell[39222, 1016, 4935, 117, 593, "Input",
+ InitializationCell->True]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[39189, 1014, 30, 0, 39, "Subsection"],
-Cell[39222, 1016, 4641, 110, 615, "Input",
+Cell[44194, 1138, 29, 0, 39, "Subsection"],
+Cell[44226, 1140, 9231, 231, 797, "Input",
  InitializationCell->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[43900, 1131, 29, 0, 31, "Subsection"],
-Cell[43932, 1133, 9231, 231, 797, "Input",
- InitializationCell->True]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[53200, 1369, 31, 0, 31, "Subsection"],
-Cell[53234, 1371, 8390, 219, 571, "Input",
+Cell[53494, 1376, 31, 0, 31, "Subsection"],
+Cell[53528, 1378, 8390, 219, 571, "Input",
  InitializationCell->True],
-Cell[61627, 1592, 149, 3, 65, "Input",
+Cell[61921, 1599, 149, 3, 65, "Input",
  InitializationCell->True]
 }, Closed]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[61825, 1601, 23, 0, 78, "Section"],
-Cell[61851, 1603, 156, 5, 42, "Input"],
+Cell[62119, 1608, 23, 0, 78, "Section"],
+Cell[62145, 1610, 156, 5, 42, "Input"],
 Cell[CellGroupData[{
-Cell[62032, 1612, 357, 10, 65, "Input"],
-Cell[62392, 1624, 589, 11, 42, "Output"]
+Cell[62326, 1619, 357, 10, 65, "Input"],
+Cell[62686, 1631, 589, 11, 42, "Output"]
 }, Open  ]],
-Cell[62996, 1638, 607, 19, 42, "Input"],
+Cell[63290, 1645, 607, 19, 42, "Input"],
 Cell[CellGroupData[{
-Cell[63628, 1661, 344, 9, 65, "Input"],
-Cell[63975, 1672, 415, 8, 42, "Output"]
+Cell[63922, 1668, 344, 9, 65, "Input"],
+Cell[64269, 1679, 415, 8, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[64427, 1685, 205, 5, 42, "Input"],
-Cell[64635, 1692, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
+Cell[64721, 1692, 205, 5, 42, "Input"],
+Cell[64929, 1699, 298137, 5001, 248, 275675, 4631, "CachedBoxData", \
 "BoxData", "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[362809, 6698, 315, 9, 65, "Input"],
-Cell[363127, 6709, 533, 10, 42, "Output"]
+Cell[363103, 6705, 315, 9, 65, "Input"],
+Cell[363421, 6716, 533, 10, 42, "Output"]
 }, Open  ]],
-Cell[363675, 6722, 360, 10, 42, "Input"],
+Cell[363969, 6729, 360, 10, 42, "Input"],
 Cell[CellGroupData[{
-Cell[364060, 6736, 639, 15, 65, "Input"],
-Cell[364702, 6753, 1168, 22, 65, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[365907, 6780, 126, 4, 42, "Input"],
-Cell[366036, 6786, 403, 7, 42, "Output"]
+Cell[364354, 6743, 639, 15, 65, "Input"],
+Cell[364996, 6760, 1168, 22, 65, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[366476, 6798, 181, 6, 42, "Input"],
-Cell[366660, 6806, 4861, 104, 175, "Output"]
+Cell[366201, 6787, 126, 4, 42, "Input"],
+Cell[366330, 6793, 403, 7, 42, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[371558, 6915, 513, 14, 42, "Input"],
-Cell[372074, 6931, 85861, 1437, 144, 76571, 1283, "CachedBoxData", "BoxData", \
+Cell[366770, 6805, 181, 6, 42, "Input"],
+Cell[366954, 6813, 4861, 104, 175, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[371852, 6922, 513, 14, 42, "Input"],
+Cell[372368, 6938, 85861, 1437, 144, 76571, 1283, "CachedBoxData", "BoxData", \
 "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[457972, 8373, 349, 10, 42, "Input"],
-Cell[458324, 8385, 28151, 589, 252, 27527, 577, "CachedBoxData", "BoxData", \
+Cell[458266, 8380, 349, 10, 42, "Input"],
+Cell[458618, 8392, 28151, 589, 252, 27527, 577, "CachedBoxData", "BoxData", \
 "Output"]
 }, Open  ]]
 }, Closed]]
