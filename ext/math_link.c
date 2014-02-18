@@ -163,22 +163,212 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
 /* Copter */
 
 #ifdef COPTER
-extern void copter_rpt(int PT, real h, real ns, real OmegaM, real OmegaB,
-        int Nk, real kmin, real kmax);
-extern void copter_spt(int PT, real h, real ns, real OmegaM, real OmegaB,
-        int Nk, real kmin, real kmax);
-extern void copter_fwt(int PT, real h, real ns, real OmegaM, real OmegaB,
-        int Nk, real kmin, real kmax);
+extern void copter_rpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z_ini, real z_fin, int Neta, real kcut,
+           int Nk, const real* k, const real* Ti, real* result);
+
+void MLcopterRpt(real OmegaM, real OmegaB, real h, real ns, real sigma8,
+           real zini, real zfin, int Neta, real kcut,
+           double *k, long k_len, double *Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * 3*k_len);
+    copter_rpt(h, ns, OmegaM, OmegaB,  sigma8,
+           zini, zfin, Neta, kcut, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, 3*k_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+extern void copter_spt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z, real epsrel /*=1e-4*/, 
+           int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterSpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z, real epsrel /*=1e-4*/, 
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * 4*k_len);
+    copter_spt(h, ns, OmegaM, OmegaB,  sigma8,
+           z, epsrel /*=1e-4*/, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, 4*k_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
+extern void copter_fwt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z_ini, int Nz, const real* z_fin,
+           int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterFWT(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real zini, real *zfin, long zfin_len,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * 3*k_len*zfin_len);
+    copter_fwt(h, ns, OmegaM, OmegaB,  sigma8,
+           zini, zfin_len, zfin, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, 3*k_len*zfin_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
+extern void copter_lpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, real epsrel,
+        int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterLpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z, real epsrel,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * 4*k_len);
+    copter_lpt(h, ns, OmegaM, OmegaB,  sigma8,
+           z, epsrel, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, 4*k_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
+extern void copter_largen(real h, real ns, real OmegaM, real OmegaB, real sigma8,
+        real z_ini, real z_fin, int Neta, real epsrel,
+        int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterLargeN(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z_ini, real z_fin, int Neta, real epsrel,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * 6*k_len);
+    copter_largen(h, ns, OmegaM, OmegaB,  sigma8,
+           z_ini, z_fin, Neta, epsrel, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, 6*k_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
+extern void copter_hspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, real qmin, real qmax, int order,
+        int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterHspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, real qmin, real qmax, int order,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * 4*k_len);
+    copter_hspt(h, ns, OmegaM, OmegaB,  sigma8,
+           z, qmin, qmax, order, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, 4*k_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
 
 
 #else
 
-void copter_rpt(int PT, real h, real ns, real OmegaM, real OmegaB,
-        int Nk, real kmin, real kmax){}
-void copter_spt(int PT, real h, real ns, real OmegaM, real OmegaB,
-        int Nk, real kmin, real kmax){}
-void copter_fwt(int PT, real h, real ns, real OmegaM, real OmegaB,
-        int Nk, real kmin, real kmax){}
+void copter_rpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+    real z_ini, real z_fin, int Neta, real kcut,
+    int Nk, const real* k, const real* Ti, real* result){}
+
+void MLcopterRpt(real OmegaM, real OmegaB, real h, real ns, real sigma8,
+           real zini, real zfin, int Neta, real kcut,
+           double *k, long k_len, double *Ti, long Ti_len){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+void copter_spt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+    real z, real epsrel /*=1e-4*/, 
+    int Nk, const real* karray, const real* Ti, real* result){}
+
+void MLcopterSpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z, real epsrel /*=1e-4*/, 
+           real* k, long k_len, real* Ti, long Ti_len){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+
+void copter_fwt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z_ini, int Nz, const real* z_fin,
+           int Nk, const real* karray, const real* Ti, real* result){}
+
+void MLcopterFWt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real zini, real *zfin, long zfin_len,
+           real* k, long k_len, real* Ti, long Ti_len){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+extern void copter_lpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, real epsrel,
+        int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterLpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z, real epsrel,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
+extern void copter_largen(real h, real ns, real OmegaM, real OmegaB, real sigma8,
+        real z_ini, real z_fin, int Neta, real epsrel,
+        int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterLargeN(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z_ini, real z_fin, int Neta, real epsrel,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
+extern void copter_hspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, real qmin, real qmax, int order,
+        int Nk, const real* karray, const real* Ti, real* result);
+
+void MLcopterHspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, real qmin, real qmax, int order,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
 
 #endif
 

@@ -87,3 +87,51 @@
 :ReturnType:    Manual
 :End:
 
+:Begin:
+:Function:      MLcopterRpt
+:Pattern:       CopterRpt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, zini_Real, zfin_Real, Neta_Integer, kcut_Real, k_List, Ti_List]
+:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, zini, zfin, Neta, kcut, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Integer, Real64, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+
+:Begin:
+:Function:      MLcopterSpt
+:Pattern:       CopterSpt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, z_Real, epsrel_Real, k_List, Ti_List]
+:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, z, epsrel, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+
+:Begin:
+:Function:      MLcopterFWT
+:Pattern:       CopterFWT[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, zini_Real, zfin_List, k_List, Ti_List]
+:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, zini, zfin, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64List, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+
+:Begin:
+:Function:      MLcopterLpt
+:Pattern:       CopterLpt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, z_Real, epsreal_Real, k_List, Ti_List]
+:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, z, epsreal, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+
+:Begin:
+:Function:      MLcopterLargeN
+:Pattern:       CopterLargeN[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, zini_Real, zfin_Real, Neta_Integer, epsreal_Real,  k_List, Ti_List]
+:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, zini, zfin, Neta, epsreal, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Integer, Real64, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+
+:Begin:
+:Function:      MLcopterHspt
+:Pattern:       CopterHspt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, z_Real, qmin_Real, qmax_Real, order_Integer,  k_List, Ti_List]
+:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, z, qmin, qmax, order, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Real64, Integer, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+
