@@ -2,7 +2,7 @@
 CC = gcc -O2 -Wall -lgfortran -fopenmp
 
 # C++ compiler for copter
-CPP = g++ -O2 -fopenmp -Wall -pedantic
+CXX = g++ -O2 -fopenmp -Wall -pedantic
 
 # Define your Fortran compiler (if you want to use CAMB) Must match CAMB
 # compiler
@@ -71,7 +71,7 @@ else
   COPTER = copter-0.8.7
   OFILES += copter_wrapper.o
   CC += -DCOPTER 
-  CPP += -I$(COPTER)/include 
+  CXX += -I$(COPTER)/include 
   EXTRALIBS += $(COPTER)/lib/libcopter.a  
 endif
 
@@ -91,7 +91,7 @@ camb_wrapper.o: camb_wrapper.f90 Makefile
 	$(F90C) -c $< -o $@ -I$(CAMB) 
 
 copter_wrapper.o: copter_wrapper.cpp Makefile
-	$(CPP) -c $< -o $@
+	$(CXX) -c $< -o $@
 
 $(HALOFIT):
 	+$(MAKE) -C $@

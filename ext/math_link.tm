@@ -89,48 +89,48 @@
 
 :Begin:
 :Function:      MLcopterRpt
-:Pattern:       CopterRpt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, zini_Real, zfin_Real, Neta_Integer, kcut_Real, k_List, Ti_List]
-:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, zini, zfin, Neta, kcut, k, Ti}
+:Pattern:       CopterRpt[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, zini_Real, zfin_Real, Neta_Integer, kcut_Real, k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, zini, zfin, Neta, kcut, k, Ti}
 :ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Integer, Real64, Real64List, Real64List}
 :ReturnType:    Manual
 :End:
 
 :Begin:
 :Function:      MLcopterSpt
-:Pattern:       CopterSpt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, z_Real, epsrel_Real, k_List, Ti_List]
-:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, z, epsrel, k, Ti}
+:Pattern:       CopterSpt[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, z_Real, epsrel_Real, k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, z, epsrel, k, Ti}
 :ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Real64List, Real64List}
 :ReturnType:    Manual
 :End:
 
 :Begin:
 :Function:      MLcopterFWT
-:Pattern:       CopterFWT[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, zini_Real, zfin_List, k_List, Ti_List]
-:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, zini, zfin, k, Ti}
+:Pattern:       CopterFWT[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, zini_Real, zfin_List, k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, zini, zfin, k, Ti}
 :ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64List, Real64List, Real64List}
 :ReturnType:    Manual
 :End:
 
 :Begin:
 :Function:      MLcopterLpt
-:Pattern:       CopterLpt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, z_Real, epsreal_Real, k_List, Ti_List]
-:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, z, epsreal, k, Ti}
+:Pattern:       CopterLpt[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, z_Real, epsreal_Real, k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, z, epsreal, k, Ti}
 :ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Real64List, Real64List}
 :ReturnType:    Manual
 :End:
 
 :Begin:
 :Function:      MLcopterLargeN
-:Pattern:       CopterLargeN[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, zini_Real, zfin_Real, Neta_Integer, epsreal_Real,  k_List, Ti_List]
-:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, zini, zfin, Neta, epsreal, k, Ti}
+:Pattern:       CopterLargeN[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, zini_Real, zfin_Real, Neta_Integer, epsreal_Real,  k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, zini, zfin, Neta, epsreal, k, Ti}
 :ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Integer, Real64, Real64List, Real64List}
 :ReturnType:    Manual
 :End:
 
 :Begin:
 :Function:      MLcopterHspt
-:Pattern:       CopterHspt[OmegaM_Real, OmegaB_Real, h_Real, ns_Real, sigma8_Real, z_Real, qmin_Real, qmax_Real, order_Integer,  k_List, Ti_List]
-:Arguments:     {OmegaM, OmegaB, h, ns, sigma8, z, qmin, qmax, order, k, Ti}
+:Pattern:       CopterHspt[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, z_Real, qmin_Real, qmax_Real, order_Integer,  k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, z, qmin, qmax, order, k, Ti}
 :ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64, Real64, Integer, Real64List, Real64List}
 :ReturnType:    Manual
 :End:

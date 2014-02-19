@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <Copter/Cosmology.h>
 #include <Copter/LinearPS.h>
 #include <Copter/RPT.h>
@@ -7,17 +8,12 @@
 #include <Copter/LargeN.h>
 #include <Copter/HigherSPT.h>
 
-// extern "C" void copter_rpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-//         real z_ini, real z_fin, int Neta, real kcut,
-//         int Nk, const real* k, const real* Ti, real* result);
-
-
 extern "C" void copter_rpt(real h, real ns, real OmegaM, real OmegaB, real sigma8,
         real z_ini, real z_fin, int Neta, real kcut,
         int Nk, const real* karray, const real* Ti, real* result) {
 
-    std::vector<real> v_k(karray, karray + sizeof karray / sizeof karray[0]);
-    std::vector<real> v_Ti(Ti, Ti + sizeof Ti / sizeof Ti[0]);
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
 
     Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
     LinearPS P_i(C, z_ini);
@@ -32,24 +28,19 @@ extern "C" void copter_rpt(real h, real ns, real OmegaM, real OmegaB, real sigma
 }
 
 
-// extern "C" void copter_spt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-//         real z, real epsrel /*=1e-4*/, 
-//         int Nk, const real* karray, const real* Ti, real* result);
-
-
 extern "C" void copter_spt(real h, real ns, real OmegaM, real OmegaB, real sigma8,
         real z, real epsrel /*=1e-4*/, 
         int Nk, const real* karray, const real* Ti, real* result) {
 
-    std::vector<real> v_k(karray, karray + sizeof karray / sizeof karray[0]);
-    std::vector<real> v_Ti(Ti, Ti + sizeof Ti / sizeof Ti[0]);
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
 
     Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
     LinearPS P_L(C, z);
     SPT spt(C, P_L, epsrel);
 
     for(int i = 0; i < Nk; i++) {
-        real k = karray[i];
+        real k = v_k[i];
         result[4*i] = spt.P(k, 1,1);    // density-density power spectrum
         result[4*i+1] = spt.P(k, 1,2);    // density-velocity cross spectrum
         result[4*i+2] = spt.P(k, 2,2);    // velocity-velocity power spectrum
@@ -58,17 +49,12 @@ extern "C" void copter_spt(real h, real ns, real OmegaM, real OmegaB, real sigma
 }
 
 
-// extern "C" void copter_fwt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-//         real z_ini, int Nz, const real* z_fin,
-//         int Nk, const real* karray, const real* Ti, real* result);
-
-
 extern "C" void copter_fwt(real h, real ns, real OmegaM, real OmegaB, real sigma8,
         real z_ini, int Nz, const real* z_fin,
         int Nk, const real* karray, const real* Ti, real* result) {
 
-    std::vector<real> v_k(karray, karray + sizeof karray / sizeof karray[0]);
-    std::vector<real> v_Ti(Ti, Ti + sizeof Ti / sizeof Ti[0]);
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
 
     Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
     LinearPS P_i(C, z_ini);
@@ -96,8 +82,8 @@ extern "C" void copter_lpt(real h, real ns, real OmegaM, real OmegaB,  real sigm
         real z, real epsrel,
         int Nk, const real* karray, const real* Ti, real* result){
 
-    std::vector<real> v_k(karray, karray + sizeof karray / sizeof karray[0]);
-    std::vector<real> v_Ti(Ti, Ti + sizeof Ti / sizeof Ti[0]);
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
 
     Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
     LagrangianResummation lpt(C, z, epsrel);
@@ -116,8 +102,8 @@ extern "C" void copter_largen(real h, real ns, real OmegaM, real OmegaB, real si
         real z_ini, real z_fin, int Neta, real epsrel,
         int Nk, const real* karray, const real* Ti, real* result) {
 
-    std::vector<real> v_k(karray, karray + sizeof karray / sizeof karray[0]);
-    std::vector<real> v_Ti(Ti, Ti + sizeof Ti / sizeof Ti[0]);
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
 
     Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
     LinearPS P_L(C, z_fin);
@@ -140,8 +126,8 @@ extern "C" void copter_hspt(real h, real ns, real OmegaM, real OmegaB,  real sig
         real z, real qmin, real qmax, int order,
         int Nk, const real* karray, const real* Ti, real* result){
 
-    std::vector<real> v_k(karray, karray + sizeof karray / sizeof karray[0]);
-    std::vector<real> v_Ti(Ti, Ti + sizeof Ti / sizeof Ti[0]);
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
 
     Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
     LinearPS P_L(C, z);
