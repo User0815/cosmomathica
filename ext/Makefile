@@ -120,7 +120,7 @@ cleanall:
 	rm -rf  $(HALOFIT) $(COSMICEMU) $(TRANSFER) $(COPTER) $(CAMB)
 
 clean:
-	rm -f *o *tm.c math_link testwrapper
+	rm -f *mod *o *tm.c math_link
 	if [ ! -z $(TRANSFER) ]; then rm -f $(TRANSFER)/*o; fi
 	if [ ! -z $(COSMICEMU) ]; then rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o ; fi
 	if [ ! -z $(HALOFIT) ]; then $(MAKE) -C $(HALOFIT) clean ; fi

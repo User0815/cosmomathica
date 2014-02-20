@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <Copter/Cosmology.h>
 #include <Copter/LinearPS.h>
 #include <Copter/RPT.h>
@@ -44,7 +43,7 @@ extern "C" void copter_spt(real h, real ns, real OmegaM, real OmegaB, real sigma
         result[4*i] = spt.P(k, 1,1);    // density-density power spectrum
         result[4*i+1] = spt.P(k, 1,2);    // density-velocity cross spectrum
         result[4*i+2] = spt.P(k, 2,2);    // velocity-velocity power spectrum
-        result[4*i+3] = spt.G(k);    // velocity-velocity power spectrum
+        result[4*i+3] = spt.G(k);  
     }
 }
 
@@ -71,11 +70,6 @@ extern "C" void copter_fwt(real h, real ns, real OmegaM, real OmegaB, real sigma
         }
     }
 }
-
-
-// extern "C" void copter_lpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-//         real z_ini, int Nz, const real* z_fin,
-//         int Nk, const real* karray, const real* Ti, real* result);
 
 
 extern "C" void copter_lpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
@@ -111,13 +105,13 @@ extern "C" void copter_largen(real h, real ns, real OmegaM, real OmegaB, real si
 
     for(int i = 0; i < Nk; i++) {
         real k = karray[i];
-        result[6*i] = largen.Pi_11(k);    // density-density power spectrum
-        result[6*i+1] = largen.Pi_12(k);    // density-velocity cross spectrum
-        result[6*i+2] = largen.Pi_22(k);    // velocity-velocity power spectrum
-        result[6*i+3] = largen.Sigma_11(k);
-        result[6*i+4] = largen.Sigma_12(k);
-        result[6*i+5] = largen.Sigma_21(k);
-        result[6*i+6] = largen.Sigma_22(k);
+        result[7*i] = largen.Pi_11(k);    // density-density power spectrum
+        result[7*i+1] = largen.Pi_12(k);    // density-velocity cross spectrum
+        result[7*i+2] = largen.Pi_22(k);    // velocity-velocity power spectrum
+        result[7*i+3] = largen.Sigma_11(k);
+        result[7*i+4] = largen.Sigma_12(k);
+        result[7*i+5] = largen.Sigma_21(k);
+        result[7*i+6] = largen.Sigma_22(k);
     }
 }
 

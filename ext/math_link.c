@@ -250,11 +250,11 @@ void MLcopterLargeN(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z_ini, real z_fin, int Neta, real epsrel,
            real* k, long k_len, real* Ti, long Ti_len){
 
-    double *result = malloc(sizeof *k * 6*k_len);
+    double *result = malloc(sizeof *k * 7*k_len);
     copter_largen(h, ns, OmegaM, OmegaB,  sigma8,
            z_ini, z_fin, Neta, epsrel, k_len, k, Ti, result);
 
-    MLPutReal64List(stdlink, (double *)result, 6*k_len);
+    MLPutReal64List(stdlink, (double *)result, 7*k_len);
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 
