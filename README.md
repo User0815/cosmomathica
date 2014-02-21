@@ -59,7 +59,12 @@ the files in question are given here.
   * CosmicEmulator "Coyote" (v1.1):
     CosmicEmu_v1.1.tar.gz   [a3c7da2b41152b7d30ba458e56f7e4ab]  
     http://www.lanl.gov/projects/cosmology/CosmicEmu/emu.html
-    Heitman et al
+    Earl Lawrence
+
+  * FrankenEmu
+    CosmicEmu_v2.tar.gz     [1018867d84d9e6820a9ae8ee2f213b06]
+    http://www.hep.anl.gov/cosmology/CosmicEmu/CosmicEmu_v2.tar.gz
+    Earl Lawrence
 
   * Copter (v0.8.7):
     copter-0.8.7.tar.gz     [397afcad4a0ace992fe23828b2071a32]
@@ -67,8 +72,8 @@ the files in question are given here.
     Jordan Carlson et al
 
 The (extracted) files need to placed in directories with names `tf`,
-`halofit`, `camb`, `CosmicEmulator`, and `copter-0.8.7`,  respectively,
-inside the `ext` directory.
+`halofit`, `camb`, `CosmicEmulator`, `FrankenEmu`, and `copter-0.8.7`,
+respectively, inside the `ext` directory.
 
 If you wish to use a different version of CAMB, for instance, cosmomathica
 may still work, but it has not been tested for it. If you use a modified

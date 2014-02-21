@@ -290,7 +290,34 @@ CosmicEmu["hubblecmb"]->(result[[All,2]])[[1,4]]}
 ];
 
 
-Copter[OmegaM_,OmegaB_,h_,ns_,sigma8_,transfer_,z_,type_,opts:OptionsPattern[{zini->35, Neta->50,kcut->10,epsrel->1*^-4,qmin->1*^-4,qmax->100,order->3}]]:=Module[{link,result,return},
+FrankenEmu[omegaM_?NumericQ,omegaB_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=Module[{link,result,labels,limits,parameters,check},
+
+labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","w"};
+limits={{.12,.155},{.0214,.0235},{.85,1.05},{.61,.9},{-1.3,-.7}};
+(*these are hard limits as given by the authors of the cosmic emulator - the program will crash if any parameter is outside its bounds*)
+parameters={omegaM,omegaB,sigma8,ns,w};
+
+check=(#[[2,1]]<=#[[1]]<=#[[2,2]])&/@Transpose[{parameters,limits}];
+Do[If[!check[[i]],Message[Interface::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]],"CosmicEmu"]],{i,Length@check}];
+If[!And@@check,Abort[]];
+
+link=Install[$location<>"ext/math_link2"];
+result=Table[{Transpose@Partition[#[[1]],Length@#[[1]]/2],#[[2]]}&@Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1],{a,.5,1.,.1}];
+ (*CosmicEmu only does these five redshifts, everything else is interpolated*)
+validateresult[(result[[All,2]])[[1,4]],"CosmicEmu"];
+Uninstall[link];
+
+(*Just return the raw numbers*)
+{FrankenEmu["zvalues"]->Table[1/a-1,{a,.5,1.,.1}],
+FrankenEmu["pk"]->result[[All,1]],
+FrankenEmu["soundhorizon"]->(result[[All,2]])[[1,1]],
+FrankenEmu["zlss"]->(result[[All,2]])[[1,2]],
+FrankenEmu["dlss"]->(result[[All,2]])[[1,3]],
+FrankenEmu["hubblecmb"]->(result[[All,2]])[[1,4]]}
+];
+
+
+Copter[OmegaM_,OmegaB_,h_,ns_,sigma8_,transfer_,z_,type_,opts:OptionsPattern[{zini->35, Neta->50,kcut->10,epsrel->1*^-4,qmin->1*^-4,qmax->100,order->3,formula->1}]]:=Module[{link,result,return},
 
 link=Install[$location<>"ext/math_link"];
 return=Switch[type,
@@ -317,6 +344,9 @@ result=Transpose@Partition[result,4];
 "FWT",result=Global`CopterFWT[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zini,N@{z}(*multiple technically z's possible*),N@transfer[[All,1]],N@transfer[[All,2]]];
 result=Transpose@Partition[result,3];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]]},
+
+"NW",result=Global`CopterNW[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@z,OptionValue@formula,N@transfer[[All,1]],N@transfer[[All,2]]];
+{Copter["P"]->result},
 _,Message[Copter::InvalidType,type,"\"SPT\", \"RPT\", \"LPT\", \"LargeN\", \"HSPT\", \"FWT\""];Return[$Failed];Abort[]
 ];
 

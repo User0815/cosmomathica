@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "mathlink.h"
 
+
 /* Halofit+ */
 /* `real` was defined as double in smith2.h */
 
@@ -27,10 +28,10 @@ void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
-real P_NL(real a, real k){return 0.;}
-real Pkappa(real ell){return 0.;}
+extern real P_NL(real a, real k);
+extern real Pkappa(real ell);
 
-#endif
+#endif /*HALOFIT*/
 
 
 #ifdef TRANSFER
@@ -77,11 +78,12 @@ void TFset_parameters_wrap(float omega0hh, float f_baryon, float Tcmb){
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
-float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb, float k_hmpc){return 0.;}
-float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc){return 0.;}
-float TFsound_horizon_fit(float omega0, float f_baryon, float hubble){return 0.;}
-float TFk_peak(float omega0, float f_baryon, float hubble){return 0.;}
-#endif
+extern float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb, float k_hmpc);
+extern float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc);
+extern float TFsound_horizon_fit(float omega0, float f_baryon, float hubble);
+extern float TFk_peak(float omega0, float f_baryon, float hubble);
+
+#endif /*TRANSFER*/
 
 
 /* CosmicEmulator version 1.1 */
@@ -114,14 +116,62 @@ void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w
 }
 
 #else
-void emu(double *xstar, double *ystar, int *outtype){}
-void getH0fromCMB(double *xstar, double *stuff){}
 void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w, double z ){
     MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
-#endif
+#endif /*COSMICEMU*/
+
+
+/* FrankenEmu */
+
+#ifdef FRANKENEMU
+
+extern void emu(double *xstar, double *ystar, int *outtype);
+extern void getH0fromCMB(double *xstar, double *stuff);
+
+void franken_CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w, double z ){
+    const int output_length = 2*1995;
+    double input[6], output[output_length], more_output[4];
+    int type=2; // Output: P(k)
+
+    input[0] = omegaM;
+    input[1] = omegaB;
+    input[2] = ns;
+    input[3] = sigma8;
+    input[4] = w;
+    input[5] = z;
+
+    getH0fromCMB(input, more_output);
+    emu(input, output, &type);
+
+
+    MLPutFunction(stdlink, "List", 2);
+    MLPutReal64List(stdlink, (double*)output, output_length);
+    MLPutReal64List(stdlink, (double*)more_output, 4);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+/* Dummy functions need to be defined, but will never be called anywway */
+double P_NL(double a, double k);//{return 0;}
+double Pkappa(double ell){return 0;}
+float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb, float k_hmpc){return 0.;}
+float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc){return 0.;}
+float TFsound_horizon_fit(float omega0, float f_baryon, float hubble){return 0.;}
+float TFk_peak(float omega0, float f_baryon, float hubble){return 0.;}
+
+#else
+
+void franken_CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w, double z ){
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+#endif /*FrankenEmu*/
+
 
 
 /* CAMB */
@@ -150,14 +200,14 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
 
 #else
 
-void runcamb(){}
+// void runcamb(){}
 void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
     MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
 
-#endif
+#endif /*CAMB*/
 
 
 /* Copter */
@@ -282,11 +332,27 @@ void MLcopterHspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
 }
 
 
-#else
+extern void copter_nw(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, int formula,
+        int Nk, const real* karray, const real* Ti, real* result);
 
-void copter_rpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-    real z_ini, real z_fin, int Neta, real kcut,
-    int Nk, const real* k, const real* Ti, real* result){}
+void MLcopterNW(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, int formula,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * k_len);
+    copter_nw(h, ns, OmegaM, OmegaB,  sigma8,
+           z, formula, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, k_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+
+#else
 
 void MLcopterRpt(real OmegaM, real OmegaB, real h, real ns, real sigma8,
            real zini, real zfin, int Neta, real kcut,
@@ -295,10 +361,6 @@ void MLcopterRpt(real OmegaM, real OmegaB, real h, real ns, real sigma8,
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
-
-void copter_spt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-    real z, real epsrel /*=1e-4*/, 
-    int Nk, const real* karray, const real* Ti, real* result){}
 
 void MLcopterSpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
            real z, real epsrel /*=1e-4*/, 
@@ -309,21 +371,13 @@ void MLcopterSpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
 }
 
 
-void copter_fwt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-           real z_ini, int Nz, const real* z_fin,
-           int Nk, const real* karray, const real* Ti, real* result){}
-
-void MLcopterFWt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+void MLcopterFWT(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
            real zini, real *zfin, long zfin_len,
            real* k, long k_len, real* Ti, long Ti_len){
     MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
-
-extern void copter_lpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-        real z, real epsrel,
-        int Nk, const real* karray, const real* Ti, real* result);
 
 void MLcopterLpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
            real z, real epsrel,
@@ -332,14 +386,8 @@ void MLcopterLpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
     MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);
-
-    free(result);
 }
 
-
-extern void copter_largen(real h, real ns, real OmegaM, real OmegaB, real sigma8,
-        real z_ini, real z_fin, int Neta, real epsrel,
-        int Nk, const real* karray, const real* Ti, real* result);
 
 void MLcopterLargeN(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z_ini, real z_fin, int Neta, real epsrel,
@@ -348,14 +396,8 @@ void MLcopterLargeN(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
     MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);
-
-    free(result);
 }
 
-
-extern void copter_hspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-        real z, real qmin, real qmax, int order,
-        int Nk, const real* karray, const real* Ti, real* result);
 
 void MLcopterHspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z, real qmin, real qmax, int order,
@@ -364,13 +406,17 @@ void MLcopterHspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
     MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);
-
-    free(result);
 }
 
+void MLcopterNW(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, int formula,
+           real* k, long k_len, real* Ti, long Ti_len){
 
-
-#endif
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+#endif /*Copter*/
 
 
 

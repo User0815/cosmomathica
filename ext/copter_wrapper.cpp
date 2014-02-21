@@ -6,6 +6,7 @@
 #include <Copter/LagrangianResummation.h>
 #include <Copter/LargeN.h>
 #include <Copter/HigherSPT.h>
+#include <Copter/NoWigglePS.h>
 
 extern "C" void copter_rpt(real h, real ns, real OmegaM, real OmegaB, real sigma8,
         real z_ini, real z_fin, int Neta, real kcut,
@@ -133,5 +134,21 @@ extern "C" void copter_hspt(real h, real ns, real OmegaM, real OmegaB,  real sig
         result[4*i+1] = hspt.P1(k);
         result[4*i+2] = hspt.P2(k);
         result[4*i+3] = hspt.P3(k);
+    }
+}
+
+extern "C" void copter_nw(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, int formula,
+        int Nk, const real* karray, const real* Ti, real* result){
+
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
+
+    Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
+    LinearPS P_L(C, z);
+    NoWigglePS nw(C, z, formula);
+
+    for(int i = 0; i < Nk; i++) {
+        result[i] = nw.Evaluate(karray[i]);
     }
 }

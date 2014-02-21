@@ -135,3 +135,11 @@
 :ReturnType:    Manual
 :End:
 
+:Begin:
+:Function:      MLcopterNW
+:Pattern:       CopterNW[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, z_Real, formula_Integer,  k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, z, formula, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Integer, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+

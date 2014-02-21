@@ -36,7 +36,7 @@ ifeq ($(wildcard tf/tf_fit.c),)
 else
   TRANSFER = tf
   OFILES += $(TRANSFER)/tf_fit.o 
-  CC += -DTRANSFER
+  DFLAGS += -DTRANSFER
 endif 
 
 ifeq ($(wildcard halofit/smith2.c),)
@@ -44,7 +44,7 @@ ifeq ($(wildcard halofit/smith2.c),)
 else
   HALOFIT = halofit
   OFILES += $(HALOFIT)/smith2.o 
-  CC += -DHALOFIT
+  DFLAGS += -DHALOFIT
 endif
 
 ifeq ($(wildcard CosmicEmulator/emu.c),)
@@ -52,8 +52,16 @@ ifeq ($(wildcard CosmicEmulator/emu.c),)
 else
   COSMICEMU = CosmicEmulator
   OFILES += $(COSMICEMU)/hubble.o $(COSMICEMU)/emu.o 
-  EXTRALIBS += -lgsl -lgslcblas 
-  CC += -DCOSMICEMU
+  EMULIBS = -lgsl -lgslcblas 
+  DFLAGS += -DCOSMICEMU
+endif
+
+ifeq ($(wildcard FrankenEmu/emu.c),)
+  FRANKENEMU = 
+else
+  FRANKENEMU = FrankenEmu
+  FRANKENOFILES += math_link2.o math_link_tm.o $(FRANKENEMU)/hubble.o $(FRANKENEMU)/emu.o
+  EMULIBS = -lgsl -lgslcblas 
 endif
 
 ifeq ($(wildcard camb/camb.f90),)
@@ -62,7 +70,7 @@ else
   CAMB = camb
   OFILES += camb_wrapper.o 
   CAMBOFILES = $(CAMB)/*.o
-  CC += -DCAMB
+  DFLAGS += -DCAMB
 endif
 
 ifeq ($(wildcard copter-0.8.7/Makefile.am),)
@@ -70,22 +78,32 @@ ifeq ($(wildcard copter-0.8.7/Makefile.am),)
 else
   COPTER = copter-0.8.7
   OFILES += copter_wrapper.o
-  CC += -DCOPTER 
+  DFLAGS += -DCOPTER 
   CXX += -I$(COPTER)/include 
-  EXTRALIBS += $(COPTER)/lib/libcopter.a  
+  COPLIBS += $(COPTER)/lib/libcopter.a  
 endif
 
-all: math_link
+all: math_link math_link2
 
 math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(COPTER) $(OFILES) Makefile
-	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) $(CAMBOFILES) -o $@ ${EXTRALIBS}  
+	${CC} ${DFLAGS} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) $(CAMBOFILES) -o $@ $(EXTRALIBS)  $(EMULIBS) $(COPLIBS)
+
+# The second math_link is for FrankenEmu only, since it contains symbols
+# with the same name as symbols from CosmicEmu
+math_link2: math_link2.o $(FRANKENEMU) $(FRANKENOFILES) Makefile
+	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(FRANKENOFILES) -DFRANKENEMU -o $@ $(EXTRALIBS) $(EMULIBS)
+
+math_link2.o: math_link.c
+	${CC} -DFRANKENEMU -c -I$(INCDIR) $< -o $@
+
+
 
 math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@
 
 
 %.o: %.c
-	$(CC)  -c -I$(INCDIR) $< -o $@
+	$(CC) $(DFLAGS)  -c -I$(INCDIR) $< -o $@
 
 camb_wrapper.o: camb_wrapper.f90 Makefile
 	$(F90C) -c $< -o $@ -I$(CAMB) 
@@ -122,7 +140,8 @@ cleanall:
 clean:
 	rm -f *mod *o *tm.c math_link
 	if [ ! -z $(TRANSFER) ]; then rm -f $(TRANSFER)/*o; fi
-	if [ ! -z $(COSMICEMU) ]; then rm -f $(COSMICEMU)/*exe $(COSMICEMU)/*o ; fi
+	if [ ! -z $(COSMICEMU) ]; then $(MAKE) -C $(COSMICEMU) clean ; fi
+	if [ ! -z $(FRANKENEMU) ]; then $(MAKE) -C $(FRANKENEMU) clean ; fi
 	if [ ! -z $(HALOFIT) ]; then $(MAKE) -C $(HALOFIT) clean ; fi
 	if [ ! -z $(CAMB) ]; then $(MAKE) -C $(CAMB) clean ; fi
 	if [ ! -z $(COPTER) ]; then $(MAKE) -C $(COPTER) uninstall clean distclean ; fi
