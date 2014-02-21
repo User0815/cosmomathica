@@ -34,6 +34,7 @@ CosmicEmu::usage="CosmicEmu[omegaM, omegaB, sigma8, ns, w] provides an interface
 CAMB::usage="CAMB[OmegaC, OmegaB, OmegaL, h, w] provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes a few parameters as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. To see the default options, type `Options[CAMB]`.";
 
 Copter::usage="";
+FrankenEmu::usage="";
 
 
 Tcmb::usage="An option for CAMB";
@@ -275,7 +276,7 @@ Do[If[!check[[i]],Message[Interface::OutsideBounds,labels[[i]],parameters[[i]],l
 If[!And@@check,Abort[]];
 
 link=Install[$location<>"ext/math_link"];
-result=Table[{Transpose@Partition[#[[1]],Length@#[[1]]/2],#[[2]]}&@Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1],{a,.5,1.,.1}];
+result=Table[{Transpose@Partition[#[[1]],Length@#[[1]]/2],#[[2]]}&@Global`CEGetPkNL[N@omegaM,N@omegaB,N@ns,N@sigma8,N@w,1/a-1],{a,.5,1.,.1}];
  (*CosmicEmu only does these five redshifts, everything else is interpolated*)
 validateresult[(result[[All,2]])[[1,4]],"CosmicEmu"];
 Uninstall[link];
@@ -290,30 +291,30 @@ CosmicEmu["hubblecmb"]->(result[[All,2]])[[1,4]]}
 ];
 
 
-FrankenEmu[omegaM_?NumericQ,omegaB_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=Module[{link,result,labels,limits,parameters,check},
+FrankenEmu[omegaM_?NumericQ,omegaB_?NumericQ,h_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=Module[{link,result,labels,limits,parameters,check},
 
-labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","w"};
-limits={{.12,.155},{.0214,.0235},{.85,1.05},{.61,.9},{-1.3,-.7}};
+labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","w","h"};
+limits={{.12,.155},{.0215,.0235},{.85,1.05},{.61,.9},{-1.3,-.7},{.55,.85}};
 (*these are hard limits as given by the authors of the cosmic emulator - the program will crash if any parameter is outside its bounds*)
-parameters={omegaM,omegaB,sigma8,ns,w};
+parameters={omegaM,omegaB,sigma8,ns,w,h};
 
 check=(#[[2,1]]<=#[[1]]<=#[[2,2]])&/@Transpose[{parameters,limits}];
-Do[If[!check[[i]],Message[Interface::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]],"CosmicEmu"]],{i,Length@check}];
+Do[If[!check[[i]],Message[Interface::OutsideBounds,labels[[i]],parameters[[i]],limits[[i,1]],limits[[i,2]],"FrankenEmu"]],{i,Length@check}];
 If[!And@@check,Abort[]];
 
 link=Install[$location<>"ext/math_link2"];
-result=Table[{Transpose@Partition[#[[1]],Length@#[[1]]/2],#[[2]]}&@Global`CEGetPkNL[N@omegaM,N@omegaB,N@sigma8,N@ns,N@w,1/a-1],{a,.5,1.,.1}];
+result=Table[Transpose@Partition[#,Length@#/2]&@Global`FrankenCEGetPkNL[N@omegaM,N@omegaB,N@h,N@ns,N@sigma8,N@w,1/a-1],{a,.5,1.,.1}];
  (*CosmicEmu only does these five redshifts, everything else is interpolated*)
-validateresult[(result[[All,2]])[[1,4]],"CosmicEmu"];
+validateresult[(result[[1,1]]),"FrankenEmu"];
 Uninstall[link];
 
 (*Just return the raw numbers*)
 {FrankenEmu["zvalues"]->Table[1/a-1,{a,.5,1.,.1}],
-FrankenEmu["pk"]->result[[All,1]],
-FrankenEmu["soundhorizon"]->(result[[All,2]])[[1,1]],
-FrankenEmu["zlss"]->(result[[All,2]])[[1,2]],
-FrankenEmu["dlss"]->(result[[All,2]])[[1,3]],
-FrankenEmu["hubblecmb"]->(result[[All,2]])[[1,4]]}
+FrankenEmu["pk"]->result(*,
+FrankenEmu["soundhorizon"]\[Rule](result[[All,2]])[[1,1]],
+FrankenEmu["zlss"]\[Rule](result[[All,2]])[[1,2]],
+FrankenEmu["dlss"]\[Rule](result[[All,2]])[[1,3]],
+FrankenEmu["hubblecmb"]\[Rule](result[[All,2]])[[1,4]]*)}
 ];
 
 

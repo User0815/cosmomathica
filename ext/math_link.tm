@@ -80,6 +80,15 @@
 :End:
 
 :Begin:
+:Function:      franken_CEget_PkNL
+:Pattern:       FrankenCEGetPkNL[omegaM_Real, omegaB_Real, h_Real, ns_Real, sigma8_Real, w_Real, z_Real]
+:Arguments:     {omegaM, omegaB, h, ns, sigma8, w, z}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64}     
+:ReturnType:    Manual
+:End:
+
+
+:Begin:
 :Function:      CAMBrun
 :Pattern:       CAMBrun[floats_List, ints_List]
 :Arguments:     {floats, ints}
