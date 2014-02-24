@@ -26,11 +26,14 @@ Requirements
 
   * Wolfram Mathematica version >=8
 
-  * For CosmicEmulator: GSL (GNU Scientific Library)
+  * For CosmicEmulator and FrankenEmu: GSL (GNU Scientific Library)
 
   * For CAMB: Possibly cfitsio, healpix
 
+  * For Copter: The Boost C++ library headers
+
   * The GNU Compiler Compilation (gcc) version >=4.6
+
 
 
 External programs
