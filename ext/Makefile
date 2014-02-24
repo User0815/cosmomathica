@@ -60,7 +60,7 @@ ifeq ($(wildcard FrankenEmu/emu.c),)
   FRANKENEMU = 
 else
   FRANKENEMU = FrankenEmu
-  FRANKENOFILES += math_link2.o math_link_tm.o $(FRANKENEMU)/hubble.o $(FRANKENEMU)/emu.o
+  FRANKENOFILES += math_link2.o math_link_tm.o $(addprefix $(FRANKENEMU)/, hubble.o emu.o emu_noh.o)
   EMULIBS = -lgsl -lgslcblas 
 endif
 

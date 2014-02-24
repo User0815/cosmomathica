@@ -129,6 +129,7 @@ void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w
 #ifdef FRANKENEMU
 
 extern void emu(double *xstar, double *ystar, int *outtype);
+extern void emu_noh(double *xstar, double *ystar, int *outtype);
 extern void getH0fromCMB(double *xstar, double *stuff);
 
 void franken_CEget_PkNL(double omegaM, double omegaB, double h, double ns, double sigma8, double w, double z ){
@@ -136,26 +137,37 @@ void franken_CEget_PkNL(double omegaM, double omegaB, double h, double ns, doubl
     double input[7], output[output_length], more_output[4];
     int type=2; // Output: P(k)
 
-    input[0] = omegaB;
-    input[1] = omegaM;
-    input[2] = ns;
-    input[3] = h*100;
-    input[4] = w;
-    input[5] = sigma8;
-    input[6] = z;
 
-    // getH0fromCMB(input, more_output);
-    emu(input, output, &type);
+    if (h>0) {
+        input[0] = omegaB;
+        input[1] = omegaM;
+        input[2] = ns;
+        input[3] = h*100;
+        input[4] = w;
+        input[5] = sigma8;
+        input[6] = z;
+        emu(input, output, &type);
+    } else {
+        input[0] = omegaB;
+        input[1] = omegaM;
+        input[2] = ns;
+        input[3] = w;
+        input[4] = sigma8;
+        input[5] = z;
+        emu_noh(input, output, &type);
+        getH0fromCMB(input, more_output);
+    }
 
 
-    // MLPutFunction(stdlink, "List", 2);
+    MLPutFunction(stdlink, "List", 2);
     MLPutReal64List(stdlink, (double*)output, output_length);
-    // MLPutReal64List(stdlink, (double*)more_output, 4);
+    MLPutReal64List(stdlink, (double*)more_output, 4);
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 }
 
-/* Dummy functions need to be defined, but will never be called anywway */
+/* Dummy functions need to be defined, but will never be called anyway
+ * because FrankenEmu is alone in this module */
 double P_NL(double a, double k){return 0;}
 double Pkappa(double ell){return 0;}
 float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb, float k_hmpc){return 0.;}
