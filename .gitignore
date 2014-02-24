@@ -4,6 +4,7 @@ ext/testwrapper
 ext/HighLExtrapTemplate_lenspotentialCls.dat
 ext/camb/*
 ext/CosmicEmulator/*
+ext/FrankenEmu/*
 ext/halofit/*
 ext/tf/*
 ext/copter-0.8.7/*
