@@ -152,3 +152,18 @@
 :ReturnType:    Manual
 :End:
 
+:Begin:
+:Function:      MLcopterLinear
+:Pattern:       CopterLinear[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, sigma8_Real, z_Real, k_List, Ti_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, sigma8, z, k, Ti}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64, Real64, Real64List, Real64List}
+:ReturnType:    Manual
+:End:
+
+:Begin:
+:Function:      MLcopterGrowth
+:Pattern:       CopterGr[h_Real, ns_Real, OmegaM_Real, OmegaB_Real, z_List]
+:Arguments:     {h, ns, OmegaM, OmegaB, z}
+:ArgumentTypes: {Real64, Real64, Real64, Real64, Real64List}
+:ReturnType:    Manual
+:End:

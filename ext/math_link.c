@@ -270,7 +270,7 @@ extern void copter_fwt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
            int Nk, const real* karray, const real* Ti, real* result);
 
 void MLcopterFWT(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
-           real zini, real *zfin, long zfin_len,
+           real zini, real* zfin, long zfin_len,
            real* k, long k_len, real* Ti, long Ti_len){
 
     double *result = malloc(sizeof *k * 3*k_len*zfin_len);
@@ -364,7 +364,39 @@ void MLcopterNW(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
     free(result);
 }
 
+extern void copter_lin(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z,
+        int Nk, const real* karray, const real* Ti, real* result);
 
+void MLcopterLinear(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+           real z,
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    double *result = malloc(sizeof *k * k_len);
+    copter_lin(h, ns, OmegaM, OmegaB,  sigma8, z, k_len, k, Ti, result);
+
+    MLPutReal64List(stdlink, (double *)result, k_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
+
+extern void copter_growth(real h, real ns, real OmegaM, real OmegaB,
+        int Nz, const real *zarray, real* result);
+
+void MLcopterGrowth(real h, real ns, real OmegaM, real OmegaB,
+       real *z, long z_len){
+
+    double *result = malloc(sizeof *z * z_len);
+    copter_growth(h, ns, OmegaM, OmegaB, z_len, z, result);
+
+    MLPutReal64List(stdlink, (double *)result, z_len);
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+
+    free(result);
+}
 #else
 
 void MLcopterRpt(real OmegaM, real OmegaB, real h, real ns, real sigma8,
@@ -425,6 +457,22 @@ void MLcopterNW(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z, int formula,
            real* k, long k_len, real* Ti, long Ti_len){
 
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+void MLcopterLinear(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
+        real z, 
+           real* k, long k_len, real* Ti, long Ti_len){
+
+    MLPutSymbol(stdlink, "Null");
+    MLEndPacket(stdlink);
+    MLFlush(stdlink);
+}
+
+void MLcopterGrowth(real h, real ns, real OmegaM, real OmegaB,
+        int Nz, const real *zarray, real* result){
     MLPutSymbol(stdlink, "Null");
     MLEndPacket(stdlink);
     MLFlush(stdlink);

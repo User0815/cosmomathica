@@ -7,6 +7,7 @@
 #include <Copter/LargeN.h>
 #include <Copter/HigherSPT.h>
 #include <Copter/NoWigglePS.h>
+#include <Copter/GrowthFunction.h>
 
 extern "C" void copter_rpt(real h, real ns, real OmegaM, real OmegaB, real sigma8,
         real z_ini, real z_fin, int Neta, real kcut,
@@ -48,15 +49,34 @@ extern "C" void copter_spt(real h, real ns, real OmegaM, real OmegaB, real sigma
     }
 }
 
+int fwt_test() {
+    const char* cstr = "example";       // cosmology
+    const real z_i = 100;               // starting redshift
+    const int Nk = 100;                 // number of points in interpolated power spectrum
+    const real kmin = 1e-3;
+    const real kmax = 10;
+    const int Nz = 2;                   // number of redshift outputs
+    const real z[Nz] = { 0, 1 };
+    Cosmology C(cstr);
+    LinearPS P_i(C, z_i);
+    array k(Nk);
+    for(int i = 0; i < Nk; i++)
+        k[i] = kmin*exp(i*log(kmax/kmin)/(Nk-1));
+    FlowingWithTime fwt(C, z_i, P_i, k);
+    vector<InterpolatedP_ab> P = fwt.CalculateP_ab(Nz, z);
+    return 0;
+}
 
-extern "C" void copter_fwt(real h, real ns, real OmegaM, real OmegaB, real sigma8,
+extern "C" void copter_fwt(real _h, real _ns, real _OmegaM, real _OmegaB, real _sigma8,
         real z_ini, int Nz, const real* z_fin,
         int Nk, const real* karray, const real* Ti, real* result) {
+
+    // fwt_test();
 
     std::vector<real> v_k(karray, karray + Nk);
     std::vector<real> v_Ti(Ti, Ti + Nk);
 
-    Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
+    Cosmology C(_h, _ns, _OmegaM, _OmegaB, _sigma8, v_k, v_Ti);
     LinearPS P_i(C, z_ini);
     FlowingWithTime fwt(C, z_ini, P_i, v_k);
 
@@ -150,5 +170,32 @@ extern "C" void copter_nw(real h, real ns, real OmegaM, real OmegaB,  real sigma
 
     for(int i = 0; i < Nk; i++) {
         result[i] = nw.Evaluate(karray[i]);
+    }
+}
+
+
+extern "C" void copter_lin(real h, real ns, real OmegaM, real OmegaB,  real sigma8, 
+        real z,
+        int Nk, const real* karray, const real* Ti, real* result){
+
+    std::vector<real> v_k(karray, karray + Nk);
+    std::vector<real> v_Ti(Ti, Ti + Nk);
+
+    Cosmology C(h, ns, OmegaM, OmegaB, sigma8, v_k, v_Ti);
+    LinearPS P_L(C, z);
+
+    for(int i = 0; i < Nk; i++) {
+        result[i] = P_L.Evaluate(karray[i]);
+    }
+}
+
+extern "C" void copter_growth(real h, real ns, real OmegaM, real OmegaB,
+        int Nz, const real *z, real* result){
+
+    Cosmology C(h, ns, OmegaM, OmegaB);
+    GrowthFunction D(C);
+
+    for (int i=0; i < Nz;  i++){
+        result[i] = D(z[i]);
     }
 }

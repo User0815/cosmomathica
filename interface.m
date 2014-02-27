@@ -35,8 +35,9 @@ FrankenEmu::usage="FrankenEmu[omegaM, omegaB, h, sigma8, ns, w] provides an inte
 
 CAMB::usage="CAMB[OmegaC, OmegaB, OmegaL, h, w] provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes a few parameters as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. To see the default options, type `Options[CAMB]`.";
 
-Copter::usage="Copter[OmegaM, OmegaB, h, ns, sigma8, transfer, z, type] provides an interface to Copter by Jordan Carlson. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\), h, \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), the transfer function in shape of a list of value pairs and returns the power spectrum and other quantities. The 'type' variable specifies which pertubration theory is used and must take one of the following values (as a string): 'SPT' (Standard PT), 'RPT' (Renormalized PT), 'LPT' (Lagrangian PT), 'FWT' (Flowing with time, TRG), 'LargeN', 'HSPT' (Higher order PT), 'NW' (no wiggles, Eisenstein&Hu algorithm). Several options can be specified.";
+Copter::usage="Copter[OmegaM, OmegaB, h, ns, sigma8, transfer, z, type] provides an interface to Copter by Jordan Carlson. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\), h, \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), the transfer function in shape of a list of value pairs and returns the power spectrum and other quantities. The 'type' variable specifies which pertubration theory is used and must take one of the following values (as a string): 'SPT' (Standard PT), 'RPT' (Renormalized PT), 'LPT' (Lagrangian PT), 'FWT' (Flowing with time, TRG), 'LargeN', 'HSPT' (Higher order PT), 'NW' (no wiggles, Eisenstein&Hu algorithm), 'Linear'. Several options can be specified.";
 
+CopterGrowth::usage="CopterGrowth[OmegaM, OmegaB, h, ns, z] returns the growth function computed by Copter evaluated at each redshift contained in the list z.";
 
 
 Tcmb::usage="An option for CAMB";
@@ -102,6 +103,7 @@ CAMB::Error="CAMB exited with the following error code: `1`";
 Interface::LinkBroken="`1` crashed. See if there is anything useful on stdout.";
 Interface::OutsideBounds="Parameter out of bounds. `5` requires `3` <= `1` <= `4`, but you have `1`=`2`.";
 Interface::NotInstalled="`1` appears to be unavailable on your system.";
+Interface::MathLinkFail="The MathLink failed. Check if there is anything useful on stdout.";
 Copter::InvalidType="Type is '`1`', but must be one of the following: `2`";
 
 
@@ -330,38 +332,59 @@ Copter[OmegaM_,OmegaB_,h_,ns_,sigma8_,transfer_,z_,type_,opts:OptionsPattern[]]:
 link=Install[$location<>"ext/math_link"];
 return=Switch[type,
 "RPT",result=Global`CopterRpt[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zini,N@z,OptionValue@Neta,N@OptionValue@kcut,N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,3];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]]},
 
 "SPT",result=Global`CopterSpt[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@z,N@OptionValue@epsrel,N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,4];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]],Copter["1L-Propagator"]->result[[4]]},
 
 "LPT",result=Global`CopterLpt[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@z,N@OptionValue@epsrel,N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,4];
 {Copter["P"]->result[[1]],Copter["P22"]->result[[2]],Copter["P13"]->result[[3]],Copter["1L-Propagator"]->result[[4]]},
 
 "LargeN",result=Global`CopterLargeN[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zini,N@z,20,N@OptionValue@epsrel,N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,7];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]],Copter["Sigma11"]->result[[4]],Copter["Sigma12"]->result[[5]],Copter["Sigma21"]->result[[6]],Copter["Sigma22"]->result[[7]]},
 
 "HSPT",result=Global`CopterHspt[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@z,N@OptionValue@qmin,N@OptionValue@qmax,OptionValue@order,N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,4];
 {Copter["P"]->result[[1]],Copter["P1"]->result[[2]],Copter["P2"]->result[[3]],Copter["P3"]->result[[4]]},
 
 "FWT",result=Global`CopterFWT[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zini,N@{z}(*multiple technically z's possible*),N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,3];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]]},
 
 "NW",result=Global`CopterNW[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@z,OptionValue@formula,N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 {Copter["P"]->result},
-_,Message[Copter::InvalidType,type,"\"SPT\", \"RPT\", \"LPT\", \"LargeN\", \"HSPT\", \"FWT\""];Return[$Failed];Abort[]
+
+"Linear",result=Global`CopterLinear[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@z,N@transfer[[All,1]],N@transfer[[All,2]]];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
+{Copter["P"]->result},
+
+_,Message[Copter::InvalidType,type,"\"SPT\", \"RPT\", \"LPT\", \"LargeN\", \"HSPT\", \"FWT\", \"Linear\""];Return[$Failed];Abort[]
 ];
 
 Uninstall[link];
 {Copter["kvalues"]->transfer[[All,1]]}~Join~return
 ];
 Options[Copter]={zini->35, Neta->50,kcut->10,epsrel->1*^-4,qmin->1*^-4,qmax->100,order->3,formula->1};
+
+
+CopterGrowth[OmegaM_,OmegaB_,h_,ns_,z_,opts:OptionsPattern[]]:=Module[{link,result},
+link=Install[$location<>"ext/math_link"];
+result = Global`CopterGr[N@h,N@ns,N@OmegaM,N@OmegaB,N@z];
+If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
+Uninstall[link];
+result
+];
 
 
 End[ ]

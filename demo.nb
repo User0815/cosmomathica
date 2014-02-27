@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     27241,        790]
-NotebookOptionsPosition[     23715,        682]
-NotebookOutlinePosition[     24151,        699]
-CellTagsIndexPosition[     24108,        696]
+NotebookDataLength[     28094,        814]
+NotebookOptionsPosition[     24491,        704]
+NotebookOutlinePosition[     24926,        721]
+CellTagsIndexPosition[     24883,        718]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -675,13 +675,35 @@ Cell[BoxData[
    RowBox[{"Joined", "\[Rule]", "True"}]}], "]"}]], "Input",
  CellChangeTimes->{{3.5921341807028027`*^9, 3.592134212231141*^9}, {
    3.60223030439251*^9, 3.6022303329267178`*^9}, 3.6022311377811413`*^9, {
-   3.602231254063781*^9, 3.602231320919127*^9}}]
+   3.602231254063781*^9, 3.602231320919127*^9}}],
+
+Cell["The growth function can be computed with a separate function", "Text",
+ CellChangeTimes->{{3.6025055267559357`*^9, 3.602505544334248*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"zrange", "=", 
+   RowBox[{"Range", "[", 
+    RowBox[{"0", ",", "50", ",", ".1"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"copgrowth", "=", 
+   RowBox[{"CopterGrowth", "[", 
+    RowBox[{".25", ",", ".05", ",", ".7", ",", ".9", ",", "zrange"}], "]"}]}],
+   ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListLogPlot", "[", 
+  RowBox[{
+   RowBox[{"Transpose", "[", 
+    RowBox[{"{", 
+     RowBox[{"zrange", ",", "copgrowth"}], "}"}], "]"}], ",", 
+   RowBox[{"Joined", "\[Rule]", "True"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.6025055529071007`*^9, 3.60250559635602*^9}}]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{740, 865},
-WindowMargins->{{406, Automatic}, {25, Automatic}},
+WindowMargins->{{406, Automatic}, {0, Automatic}},
 PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
 ShowSelection->True,
 FrontEndVersion->"9.0 for Linux x86 (64-bit) (February 7, 2013)",
@@ -758,7 +780,7 @@ Cell[11344, 347, 152, 2, 30, "Text"],
 Cell[11499, 351, 352, 8, 32, "Input"],
 Cell[11854, 361, 99, 1, 30, "Text"],
 Cell[11956, 364, 215, 5, 32, "Input"],
-Cell[12174, 371, 490, 13, 77, "Input"]
+Cell[12174, 371, 490, 13, 55, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[12701, 389, 92, 1, 44, "Subsection"],
@@ -788,7 +810,9 @@ Cell[21143, 611, 324, 6, 30, "Text"],
 Cell[21470, 619, 705, 16, 77, "Input"],
 Cell[22178, 637, 99, 1, 30, "Text"],
 Cell[22280, 640, 240, 6, 32, "Input"],
-Cell[22523, 648, 1152, 29, 121, "Input"]
+Cell[22523, 648, 1152, 29, 121, "Input"],
+Cell[23678, 679, 144, 1, 30, "Text"],
+Cell[23825, 682, 626, 17, 77, "Input"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]

@@ -1,5 +1,5 @@
 # Define your C compiler
-CC = gcc -O2 -Wall -lgfortran -fopenmp
+CC = gcc -O2 -Wall -lgfortran -fopenmp 
 
 # C++ compiler for copter
 CXX = g++ -O2 -fopenmp -Wall -pedantic
@@ -102,6 +102,7 @@ math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@
 
 
+# TRANSFER is built here
 %.o: %.c
 	$(CC) $(DFLAGS)  -c -I$(INCDIR) $< -o $@
 
@@ -123,7 +124,7 @@ $(CAMB):
 
 $(COPTER): $(COPTER)/lib/libcopter.a
 
-$(COPTER)/lib/libcopter.a: $(COPTER)/Makefile
+$(COPTER)/lib/libcopter.a: $(COPTER)/Makefile $(COPTER)/src/*cpp
 	$(MAKE) -C $(COPTER) 
 	$(MAKE) -C $(COPTER) install 
 
