@@ -167,3 +167,14 @@
 :ArgumentTypes: {Real64, Real64, Real64, Real64, Real64List}
 :ReturnType:    Manual
 :End:
+
+
+:Begin:
+:Function:      MLClass
+:Pattern:       Class[inifile_String]
+:Arguments:     {inifile}
+:ArgumentTypes: {String}
+:ReturnType:    Manual
+:End:
+
+

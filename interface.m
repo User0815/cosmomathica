@@ -25,7 +25,7 @@
 BeginPackage["cosmomathica`interface`"]
 
 
-Transfer::usage="Transfer[omegaM, fBaryon, Tcmb, h] provides an interface to Eisenstein & Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the wavenumber \!\(\*SubscriptBox[\(k\), \(peak\)]\) where the spectrum has a maximum, the transfer function for CDM, baryons, both, or with no baryons or no wiggles.";
+Transfer::usage="Transfer[OmegaM, fBaryon, Tcmb, h] provides an interface to Eisenstein & Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the wavenumber \!\(\*SubscriptBox[\(k\), \(peak\)]\) where the spectrum has a maximum, the transfer function for CDM, baryons, both, or with no baryons or no wiggles.";
 
 Halofit::usage="Halofit[OmegaM, OmegaL, gammaShape, sigma8, ns, betaP, z0] provides an interface to the halofit algorithm by Robert E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: linearly with the BBKS alogorithm, nonlinear with the algorithm by Peacock and Dobbs, or nonlinearly with the Halofit algorithm) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
 
@@ -34,6 +34,8 @@ CosmicEmu::usage="CosmicEmu[omegaM, omegaB, sigma8, ns, w] provides an interface
 FrankenEmu::usage="FrankenEmu[omegaM, omegaB, h, sigma8, ns, w] provides an interface to FrankenEmu by Earl Lawrence. It takes \!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\), h, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), and the equation of state w, and returns the nonlinear matter power spectrum at five different redshifts as well as z, H, d (all at last scattering), and the sound horizon. The Hubble parameter h can also be omitted, in which case it will be determined from the CMB just as in CosmicEmu. Additional cosmological parameters are only returned if h is missing.";
 
 CAMB::usage="CAMB[OmegaC, OmegaB, OmegaL, h, w] provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes a few parameters as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. To see the default options, type `Options[CAMB]`.";
+
+CLASS::usage="CLASS[\"parameter1\" -> \"value1\",...] runs Class"; 
 
 Copter::usage="Copter[OmegaM, OmegaB, h, ns, sigma8, transfer, z, type] provides an interface to Copter by Jordan Carlson. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\), h, \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), the transfer function in shape of a list of value pairs and returns the power spectrum and other quantities. The 'type' variable specifies which pertubration theory is used and must take one of the following values (as a string): 'SPT' (Standard PT), 'RPT' (Renormalized PT), 'LPT' (Lagrangian PT), 'FWT' (Flowing with time, TRG), 'LargeN', 'HSPT' (Higher order PT), 'NW' (no wiggles, Eisenstein&Hu algorithm), 'Linear'. Several options can be specified.";
 
@@ -86,7 +88,7 @@ DoLensing::usage="An option for CAMB";
 OnlyTransfers::usage="An option for CAMB";
 DerivedParameters::usage="An option for CAMB";
 MassiveNuMethod::usage="An option for CAMB";
-zini::usage="Initial redshift for Copter";
+zInitial::usage="Initial redshift for Copter";
 Neta::usage = "Number of time steps for Copter";
 kcut::usage="Cutoff wavenumber for Copter";
 epsrel::usage="Relative error for integration methods for Copter";
@@ -105,6 +107,7 @@ Interface::OutsideBounds="Parameter out of bounds. `5` requires `3` <= `1` <= `4
 Interface::NotInstalled="`1` appears to be unavailable on your system.";
 Interface::MathLinkFail="The MathLink failed. Check if there is anything useful on stdout.";
 Copter::InvalidType="Type is '`1`', but must be one of the following: `2`";
+CLASS::Error="`1` => `2`";
 
 
 Begin["`Private`"]
@@ -117,10 +120,32 @@ bool2int[b_]:=If[b,1,0];
 validatestring[val_,name_,poss_]:=If[!MemberQ[poss,val],Message[CAMB::InvalidOption,name,val,StringJoin@@Riffle[poss,", "]];Abort[]];
 validatelimits[val_,name_,lower_,upper_,module_]:=If[!(lower<=val<=upper),Message[Interface::OutsideBounds,name,val,lower,upper,module];Abort[]];
 validatelists[list_]:=If[1!=Length@Union[Length/@list],Message[CAMB::Lists,list];Abort[]];
-validateresult[x_,name_]:=Switch[x,$Failed,Message[Interface::LinkBroken,name];False,Null,Message[Interface::NotInstalled,name]False,_,True];
+validateresult[x_,name_]:=Switch[x,$Failed,Message[Interface::LinkBroken,name];Abort[];False,Null,Message[Interface::NotInstalled,name]False,_,True];
 
 
 reshape[list_,dimensions_]:=First[Fold[Partition[#1,#2]&,Flatten[list],Reverse[dimensions]]]
+
+
+CLASS[options:OptionsPattern[]]:=Module[{link,inifile,tempdir,result,s,limits},
+tempdir=CreateDirectory[];
+inifile=tempdir<>"/mathematica.ini";
+Export[inifile,Table[o[[1]]<>" = "<>o[[2]],{o,{options}}]~Join~{"root = "<>tempdir<>"/out_"},"Text"];
+
+link=Install[$location<>"ext/math_link"];
+result=Global`Class[inifile];
+validateresult[result,"CLASS"];
+Uninstall[link];
+DeleteDirectory[tempdir,DeleteContents->True];
+
+If[And@@StringQ/@result,Message[CLASS::Error,result[[1]],result[[2]]];Return[$Failed];Abort[]];
+limits=Select[First@result,#!=0&]/.{-1->"kvalues",-2->"tauvalues",-3->"sigma8",-4->"transfer",-5->"linearPk"};
+limits=Partition[limits,2];
+
+Table[
+With[{count=If[i==1,0,Total@limits[[;;i-1,2]]]},
+CLASS[limits[[i,1]]]->result[[2,count+1;;count+limits[[i,2]]]]],
+{i,Length@limits}]
+];
 
 
 CAMB[OmegaC_?NumericQ,OmegaB_?NumericQ,OmegaL_?NumericQ,h_?NumericQ,w_?NumericQ,opts:OptionsPattern[]]:=Module[{j,link,result,resultfloat,resultint,floats,ints,initialcond,nonlinear,massivenu,limits,check,getDimensions,dimensions,array,redshifts},
@@ -206,18 +231,20 @@ Options[validatestring]=Options[CAMB];
 
 
 (*Transfer function*)
-Transfer[omegaM_?NumericQ,fBaryon_?NumericQ,Tcmb_?NumericQ,h_?NumericQ]:=Module[{result,link,krange,fitonek,horizon,peak},
+Transfer[OmegaM_?NumericQ,fBaryon_?NumericQ,Tcmb_?NumericQ,h_?NumericQ]:=Module[{result,link,krange,fitonek,horizon,peak,OmegaC},
 validatelimits[fBaryon,"fBaryon",.0001,1,"Transfer"];
+OmegaC=OmegaM-fBaryon*OmegaM;
 link=Install[$location<>"ext/math_link"];
 
-Global`TFSetParameters[N@omegaM,N@fBaryon,N@Tcmb];
-horizon=Global`TFSoundHorizon[N@omegaM,N@fBaryon,N@h];
-peak=Global`TFkPeak[N@omegaM,N@fBaryon,N@h];
+(*These random factors of h are ridiculous. Read the comments in the source (tf.c) very carefully*)
+Global`TFSetParameters[N@OmegaM*h^2,N@fBaryon,N@Tcmb];
+horizon=Global`TFSoundHorizon[N@OmegaM,N@fBaryon,N@h];
+peak=Global`TFkPeak[N@OmegaM,N@fBaryon,N@h];
 If[!validateresult[horizon,"transfer"],Return[$Failed];Abort[]];
 
-fitonek[k_]:={Sequence@@Global`TFFitOneK[k],
-Global`TFNoWiggles[N@omegaM,N@fBaryon,N@h,N@Tcmb,k],
-Global`TFZeroBaryon[N@omegaM,N@h,N@Tcmb,k]}; 
+fitonek[k_]:=Join[Global`TFFitOneK[k*N@h],{
+Global`TFNoWiggles[N@OmegaM,N@fBaryon,N@h,N@Tcmb,k],
+Global`TFZeroBaryon[N@OmegaM,N@h,N@Tcmb,k]}]; 
 krange=10^Range[-6.,4.,.01];
 result=Transpose[fitonek/@krange];
 Uninstall[link];
@@ -272,7 +299,7 @@ Halofit["kappaHalofit"]->Kappa[[3]],Halofit["Halofit"]->Tf[[3]]}
 CosmicEmu[omegaM_?NumericQ,omegaB_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=Module[{link,result,labels,limits,parameters,check,arange},
 
 labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","w"};
-limits={{.12,.155},{.0214,.0235},{.85,1.05},{.61,.9},{-1.3,-.7}};
+limits={{.12,.155},{.0214,.0235},{.61,.9},{.85,1.05},{-1.3,-.7}};
 (*these are hard limits as given by the authors of the cosmic emulator - the program will crash if any parameter is outside its bounds*)
 parameters={omegaM,omegaB,sigma8,ns,w};
 arange=Range[.5,1.,.1];
@@ -302,7 +329,7 @@ FrankenEmu[omegaM_?NumericQ,omegaB_?NumericQ,h_?NumericQ,sigma8_?NumericQ,ns_?Nu
 
 arange=Range[.2,1.,.1];
 labels={"\!\(\*SubscriptBox[\(\[Omega]\), \(M\)]\)","\!\(\*SubscriptBox[\(\[Omega]\), \(b\)]\)","\!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\)","\!\(\*SubscriptBox[\(n\), \(s\)]\)","w","h"};
-limits={{.12,.155},{.0215,.0235},{.85,1.05},{.61,.9},{-1.3,-.7},{.55,.85}};
+limits={{.12,.155},{.0215,.0235},{.6,.9},{.85,1.05},{-1.3,-.7},{.55,.85}};
 (*these are hard limits as given by the authors of the cosmic emulator - the program will crash if any parameter is outside its bounds*)
 parameters={omegaM,omegaB,sigma8,ns,w,If[h<0,.7,h]};
 
@@ -327,11 +354,11 @@ FrankenEmu["hubblecmb"]->(result[[All,2]])[[1,4]]},{}]
 FrankenEmu[omegaM_?NumericQ,omegaB_?NumericQ,sigma8_?NumericQ,ns_?NumericQ,w_?NumericQ]:=FrankenEmu[omegaM,omegaB,-1.,sigma8,ns,w];
 
 
-Copter[OmegaM_,OmegaB_,h_,ns_,sigma8_,transfer_,z_,type_,opts:OptionsPattern[]]:=Module[{link,result,return},
-
+Copter[OmegaM_,OmegaB_,h_,ns_,sigma8_,transfer_,z_,type_,opts:OptionsPattern[]]:=Module[{link,result,return,kmax},
+kmax=1.5;
 link=Install[$location<>"ext/math_link"];
 return=Switch[type,
-"RPT",result=Global`CopterRpt[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zini,N@z,OptionValue@Neta,N@OptionValue@kcut,N@transfer[[All,1]],N@transfer[[All,2]]];
+"RPT",result=Global`CopterRpt[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zInitial,N@z,OptionValue@Neta,N@OptionValue@kcut,N@transfer[[All,1]],N@transfer[[All,2]]];
 If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,3];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]]},
@@ -346,7 +373,7 @@ If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,4];
 {Copter["P"]->result[[1]],Copter["P22"]->result[[2]],Copter["P13"]->result[[3]],Copter["1L-Propagator"]->result[[4]]},
 
-"LargeN",result=Global`CopterLargeN[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zini,N@z,20,N@OptionValue@epsrel,N@transfer[[All,1]],N@transfer[[All,2]]];
+"LargeN",result=Global`CopterLargeN[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zInitial,N@z,20,N@OptionValue@epsrel,N@transfer[[All,1]],N@transfer[[All,2]]];
 If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,7];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]],Copter["Sigma11"]->result[[4]],Copter["Sigma12"]->result[[5]],Copter["Sigma21"]->result[[6]],Copter["Sigma22"]->result[[7]]},
@@ -356,7 +383,7 @@ If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,4];
 {Copter["P"]->result[[1]],Copter["P1"]->result[[2]],Copter["P2"]->result[[3]],Copter["P3"]->result[[4]]},
 
-"FWT",result=Global`CopterFWT[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zini,N@{z}(*multiple technically z's possible*),N@transfer[[All,1]],N@transfer[[All,2]]];
+"FWT",result=Global`CopterFWT[N@h,N@ns,N@OmegaM,N@OmegaB,N@sigma8,N@OptionValue@zInitial,N@{z}(*multiple technically z's possible*),N@Select[transfer,#[[1]]<kmax&][[All,1]],N@Select[transfer,#[[1]]<kmax&][[All,2]]];
 If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 result=Transpose@Partition[result,3];
 {Copter["P11"]->result[[1]],Copter["P12"]->result[[2]],Copter["P22"]->result[[3]]},
@@ -372,10 +399,10 @@ If[result==$Failed,Message[Interface::MathLinkFail];Return[$Failed];Abort[]];
 _,Message[Copter::InvalidType,type,"\"SPT\", \"RPT\", \"LPT\", \"LargeN\", \"HSPT\", \"FWT\", \"Linear\""];Return[$Failed];Abort[]
 ];
 
-Uninstall[link];
-{Copter["kvalues"]->transfer[[All,1]]}~Join~return
+Uninstall[link];(*TODO truncate kvalues if FWT*)
+{Copter["kvalues"]->If[type=="FWT",Select[transfer,#[[1]]<kmax&][[All,1]],transfer[[All,1]]]}~Join~return
 ];
-Options[Copter]={zini->35, Neta->50,kcut->10,epsrel->1*^-4,qmin->1*^-4,qmax->100,order->3,formula->1};
+Options[Copter]={zInitial->100, Neta->50,kcut->10,epsrel->1*^-4,qmin->1*^-4,qmax->100,order->3,formula->1};
 
 
 CopterGrowth[OmegaM_,OmegaB_,h_,ns_,z_,opts:OptionsPattern[]]:=Module[{link,result},

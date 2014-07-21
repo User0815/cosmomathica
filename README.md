@@ -59,6 +59,11 @@ the files in question are given here.
     http://camb.info/
     Antony Lewis and Anthony Challinor
 
+  * CLASS (v2.3.2):
+    class_v2.3.2.tar.gz     [4ece1125f2cffc63ad2c4212441fea88]
+    http://class-code.net/
+    Julien Lesgourges
+
   * CosmicEmulator "Coyote" (v1.1):
     CosmicEmu_v1.1.tar.gz   [a3c7da2b41152b7d30ba458e56f7e4ab]  
     http://www.lanl.gov/projects/cosmology/CosmicEmu/emu.html

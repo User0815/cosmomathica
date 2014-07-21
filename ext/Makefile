@@ -83,20 +83,30 @@ else
   COPLIBS += $(COPTER)/lib/libcopter.a  
 endif
 
+ifeq ($(wildcard class_v2.3.2/Makefile),)
+  CLASS = 
+else
+  CLASS = class_v2.3.2
+  DFLAGS += -DCLASS
+  OFILES += class_wrapper.o 
+  EXTRALIBS += $(CLASS)/libclass.a
+endif
+
 all: math_link math_link2
 
-math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(COPTER) $(OFILES) Makefile
-	${CC} ${DFLAGS} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(OFILES) $(CAMBOFILES) -o $@ $(EXTRALIBS)  $(EMULIBS) $(COPLIBS)
+math_link: $(HALOFIT) $(COSMICEMU) $(CAMB) $(CLASS) $(COPTER) $(OFILES) Makefile
+	${CC} ${DFLAGS} -I${INCDIR} -L${LIBDIR} -l${MLLIB}			   \
+		$(OFILES) $(CAMBOFILES) -o $@ $(EXTRALIBS)  \
+		$(EMULIBS) $(COPLIBS)
 
 # The second math_link is for FrankenEmu only, since it contains symbols
 # with the same name as symbols from CosmicEmu
 math_link2: math_link2.o $(FRANKENEMU) $(FRANKENOFILES) Makefile
-	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(FRANKENOFILES) -DFRANKENEMU -o $@ $(EXTRALIBS) $(EMULIBS)
+	${CC} -I${INCDIR} -L${LIBDIR} -l${MLLIB} $(FRANKENOFILES) \
+			-DFRANKENEMU -o $@ $(EXTRALIBS) $(EMULIBS)
 
 math_link2.o: math_link.c
 	${CC} -DFRANKENEMU -c -I$(INCDIR) $< -o $@
-
-
 
 math_link_tm.c: math_link.tm
 	${MPREP} $? -o $@
@@ -112,6 +122,9 @@ camb_wrapper.o: camb_wrapper.f90 Makefile
 copter_wrapper.o: copter_wrapper.cpp Makefile
 	$(CXX) -c $< -o $@
 
+class_wrapper.o: class_wrapper.c Makefile
+	$(CC) -c -I$(CLASS)/include $< -o $@
+
 $(HALOFIT):
 	+$(MAKE) -C $@
 
@@ -120,6 +133,9 @@ $(COSMICEMU):
 
 $(CAMB):
 	./patchmakefile.sh
+	+$(MAKE) -C $@
+
+$(CLASS):
 	+$(MAKE) -C $@
 
 $(COPTER): $(COPTER)/lib/libcopter.a
@@ -136,15 +152,16 @@ download:
 	./download.sh
 
 cleanall:
-	rm -rf  $(HALOFIT) $(COSMICEMU) $(TRANSFER) $(COPTER) $(CAMB)
+	rm -rf  $(HALOFIT) $(COSMICEMU) $(TRANSFER) $(COPTER) $(CAMB) $(CLASS)
 
 clean:
 	rm -f *mod *o *tm.c math_link
 	if [ ! -z $(TRANSFER) ]; then rm -f $(TRANSFER)/*o; fi
-	if [ ! -z $(COSMICEMU) ]; then $(MAKE) -C $(COSMICEMU) clean ; fi
+	rm -f $(COSMICEMU)/*{o,exe}
 	if [ ! -z $(FRANKENEMU) ]; then $(MAKE) -C $(FRANKENEMU) clean ; fi
 	if [ ! -z $(HALOFIT) ]; then $(MAKE) -C $(HALOFIT) clean ; fi
 	if [ ! -z $(CAMB) ]; then $(MAKE) -C $(CAMB) clean ; fi
 	if [ ! -z $(COPTER) ]; then $(MAKE) -C $(COPTER) uninstall clean distclean ; fi
+	if [ ! -z $(CLASS) ]; then $(MAKE) -C $(CLASS) clean ; fi
 
-.PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB) $(COPTER) download cleanall
+.PHONY: clean $(HALOFIT) $(COSMICEMU) $(CAMB) $(COPTER) $(CLASS) download cleanall

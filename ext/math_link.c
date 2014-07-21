@@ -3,6 +3,13 @@
 #include "mathlink.h"
 
 
+#define return_null()  {\
+    MLPutSymbol(stdlink, "Null"); \
+    MLEndPacket(stdlink); \
+    MLFlush(stdlink); \
+    return;\
+}
+
 /* Halofit+ */
 /* `real` was defined as double in smith2.h */
 
@@ -13,10 +20,7 @@
 void HFset_parameters(real OMEGAM, real OMEGAV, real GAMMA, real SIGMA8,
 		   real NSPEC, real BETAP, real Z0, int NONLINEAR){
     setparameters_(&OMEGAM, &OMEGAV, &GAMMA, &SIGMA8, &NSPEC, &BETAP, &Z0, &NONLINEAR);
-     /* We need to return *something* */
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+     return_null();
 }
 
 #else
@@ -69,14 +73,10 @@ void TFset_parameters_wrap(float omega0hh, float f_baryon, float Tcmb){
 
 #else
 void TFfit_onek_wrap(float k){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 void TFset_parameters_wrap(float omega0hh, float f_baryon, float Tcmb){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 extern float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb, float k_hmpc);
 extern float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc);
@@ -117,9 +117,7 @@ void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w
 
 #else
 void CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w, double z ){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 #endif /*COSMICEMU*/
 
@@ -178,9 +176,7 @@ float TFk_peak(float omega0, float f_baryon, float hubble){return 0.;}
 #else
 
 void franken_CEget_PkNL(double omegaM, double omegaB, double ns, double sigma8, double w, double z ){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 #endif /*FrankenEmu*/
@@ -215,9 +211,7 @@ void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
 
 // void runcamb(){}
 void CAMBrun(double *floats, long floats_len, int *ints, long ints_len){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 #endif /*CAMB*/
@@ -402,35 +396,27 @@ void MLcopterGrowth(real h, real ns, real OmegaM, real OmegaB,
 void MLcopterRpt(real OmegaM, real OmegaB, real h, real ns, real sigma8,
            real zini, real zfin, int Neta, real kcut,
            double *k, long k_len, double *Ti, long Ti_len){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 void MLcopterSpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
            real z, real epsrel /*=1e-4*/, 
            real* k, long k_len, real* Ti, long Ti_len){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 
 void MLcopterFWT(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
            real zini, real *zfin, long zfin_len,
            real* k, long k_len, real* Ti, long Ti_len){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 void MLcopterLpt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
            real z, real epsrel,
            real* k, long k_len, real* Ti, long Ti_len){
 
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 
@@ -438,9 +424,7 @@ void MLcopterLargeN(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z_ini, real z_fin, int Neta, real epsrel,
            real* k, long k_len, real* Ti, long Ti_len){
 
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 
@@ -448,38 +432,84 @@ void MLcopterHspt(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z, real qmin, real qmax, int order,
            real* k, long k_len, real* Ti, long Ti_len){
 
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 void MLcopterNW(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z, int formula,
            real* k, long k_len, real* Ti, long Ti_len){
 
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 void MLcopterLinear(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
         real z, 
            real* k, long k_len, real* Ti, long Ti_len){
 
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 
 void MLcopterGrowth(real h, real ns, real OmegaM, real OmegaB,
         int Nz, const real *zarray, real* result){
-    MLPutSymbol(stdlink, "Null");
-    MLEndPacket(stdlink);
-    MLFlush(stdlink);
+    return_null();
 }
 #endif /*Copter*/
 
 
+#ifdef CLASS
+
+extern int class_init(int, char**, char*, char*);
+extern double* class_get(int **);
+extern int class_free(char*, char*);
+    
+void MLClass(char *inifile){
+    double *result;
+    int *limits;
+    int i, size = 0;
+    char e1[2048], e2[2048];
+    char (*argv[2])[1024];
+    int fail;
+    
+
+    fail = 0;
+    argv[0] = "class";
+    argv[1] = inifile;
+    // printf("%s\n", inifile);
+
+    
+    if (class_init(2, (char **)argv, e1, e2)==0){
+        result = class_get(&limits);
+        for (i=1; i<1024; i+=2) size += limits[i];
+        MLPutFunction(stdlink,"List", 2);
+        MLPutIntegerList(stdlink, limits, 1024);
+        MLPutReal64List(stdlink, result, size);
+        MLEndPacket(stdlink);
+        MLFlush(stdlink);
+        free(result);
+        free(limits);
+    }
+    else fail = 1;
+
+    if (fail==1 || class_free(e1, e2)!=0) fail = 1;
+
+    if (fail==1) {
+        printf("%s\n%s\n", e1, e2);
+        MLPutFunction(stdlink,"List", 2);
+        MLPutString(stdlink, e1);
+        MLPutString(stdlink, e2);
+        MLEndPacket(stdlink);
+        MLFlush(stdlink);
+    }
+
+}
+
+#else
+
+void MLClass(int argc, char *argv){
+    return_null();
+}
+
+#endif /*CLASS*/
 
 int main(int argc, char* argv[]) {
     return MLMain(argc, argv);
