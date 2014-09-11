@@ -35,7 +35,7 @@ FrankenEmu::usage="FrankenEmu[omegaM, omegaB, h, sigma8, ns, w] provides an inte
 
 CAMB::usage="CAMB[OmegaC, OmegaB, OmegaL, h, w] provides an interface to CAMB by Antony Lewis and Anthony Challinor. It takes a few parameters as well as a number of options as input, and returns various cosmological quantities. The distinction between parameters and options is in principle arbitrary. However, since some physical parameters are often assumed to take on a default value, they are being interpreted as an option here. To see the default options, type `Options[CAMB]`.";
 
-CLASS::usage="CLASS[\"parameter1\" -> \"value1\",...] runs Class"; 
+Class::usage="Class[\"parameter1\" -> \"value1\",...] runs Class. You need to specifiy all Class parameters in the form of options. Cosmomathica then writes all options into an ini-file, where each line contains \"parameter = value\". This file is fed to Class and the output is returned."; 
 
 Copter::usage="Copter[OmegaM, OmegaB, h, ns, sigma8, transfer, z, type] provides an interface to Copter by Jordan Carlson. It takes \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\), h, \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), the transfer function in shape of a list of value pairs and returns the power spectrum and other quantities. The 'type' variable specifies which pertubration theory is used and must take one of the following values (as a string): 'SPT' (Standard PT), 'RPT' (Renormalized PT), 'LPT' (Lagrangian PT), 'FWT' (Flowing with time, TRG), 'LargeN', 'HSPT' (Higher order PT), 'NW' (no wiggles, Eisenstein&Hu algorithm), 'Linear'. Several options can be specified.";
 
@@ -107,7 +107,7 @@ Interface::OutsideBounds="Parameter out of bounds. `5` requires `3` <= `1` <= `4
 Interface::NotInstalled="`1` appears to be unavailable on your system.";
 Interface::MathLinkFail="The MathLink failed. Check if there is anything useful on stdout.";
 Copter::InvalidType="Type is '`1`', but must be one of the following: `2`";
-CLASS::Error="`1` => `2`";
+Class::Error="`1` => `2`";
 
 
 Begin["`Private`"]
@@ -137,18 +137,18 @@ nonlinear_verbose = 1
 lensing_verbose = 1
 output_verbose = 1";
 
-CLASS[options:OptionsPattern[]]:=Module[{link,inifile,tempdir,h,result,limits,klen,taulen,unflatten},
+Class[options:OptionsPattern[]]:=Module[{link,inifile,tempdir,h,result,limits,klen,taulen,unflatten},
 tempdir=CreateDirectory[];
 inifile=tempdir<>"/mathematica.ini";
 Export[inifile,Table[o[[1]]<>" = "<>o[[2]],{o,{options}}]~Join~{"root = "<>tempdir<>"/out_",verbosestring},"Text"];
 
 link=Install[$location<>"ext/math_link"];
-result=Global`Class[inifile];
-validateresult[result,"CLASS"];
+result=Global`MlClass[inifile];
+validateresult[result,"Class"];
 Uninstall[link];
-(*DeleteDirectory[tempdir,DeleteContents\[Rule]True];*)
+DeleteDirectory[tempdir,DeleteContents->True];
 
-If[And@@StringQ/@result,Message[CLASS::Error,result[[1]],result[[2]]];Return[$Failed];Abort[]];
+If[And@@StringQ/@result,Message[Class::Error,result[[1]],result[[2]]];Return[$Failed];Abort[]];
 
 limits=Select[First@result,#!=0&]/.{-1->"kvalues",-2->"tauvalues",-3->"sigma8",-4->"transfer",-5->"PSlinear",-6->"PSnonlinear",-7->"background"};
 limits=Partition[limits,2];
@@ -156,12 +156,12 @@ limits=Partition[limits,2];
 (*reformat the numbers*)
 result=Table[
 With[{count=If[i==1,0,Total@limits[[;;i-1,2]]]},
-CLASS[limits[[i,1]]]->result[[2,count+1;;count+limits[[i,2]]]]],
+Class[limits[[i,1]]]->result[[2,count+1;;count+limits[[i,2]]]]],
 {i,Length@limits}];
 
-klen=Length[CLASS["kvalues"]/.result];
-taulen=Length[CLASS["tauvalues"]/.result];
-h=First[CLASS["background"]/.result];
+klen=Length[Class["kvalues"]/.result];
+taulen=Length[Class["tauvalues"]/.result];
+h=First[Class["background"]/.result];
 
 
 result=If[MemberQ[{"kvalues","tauvalues","PSlinear","PSnonlinear"},#[[1,1]]],#[[1]]->Exp@#[[2]],#]&/@result;

@@ -171,7 +171,7 @@
 
 :Begin:
 :Function:      MLClass
-:Pattern:       Class[inifile_String]
+:Pattern:       MlClass[inifile_String]
 :Arguments:     {inifile}
 :ArgumentTypes: {String}
 :ReturnType:    Manual
