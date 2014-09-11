@@ -88,7 +88,7 @@ ifeq ($(wildcard class_v2.3.2/Makefile),)
 else
   CLASS = class_v2.3.2
   DFLAGS += -DCLASS
-  OFILES += class_wrapper.o 
+  OFILES += class_wrapper.o  #$(CLASS)/build/output.o
   EXTRALIBS += $(CLASS)/libclass.a
 endif
 

@@ -351,7 +351,7 @@ void MLcopterNW(real h, real ns, real OmegaM, real OmegaB,  real sigma8,
     copter_nw(h, ns, OmegaM, OmegaB,  sigma8,
            z, formula, k_len, k, Ti, result);
 
-    MLPutReal64List(stdlink, (double *)result, k_len);
+    MLPutReal64List(stdlink, result, k_len);
     MLEndPacket(stdlink);
     MLFlush(stdlink);
 
@@ -474,7 +474,7 @@ void MLClass(char *inifile){
     fail = 0;
     argv[0] = "class";
     argv[1] = inifile;
-    // printf("%s\n", inifile);
+    printf("%s\n", inifile);
 
     
     if (class_init(2, (char **)argv, e1, e2)==0){

@@ -120,31 +120,55 @@ bool2int[b_]:=If[b,1,0];
 validatestring[val_,name_,poss_]:=If[!MemberQ[poss,val],Message[CAMB::InvalidOption,name,val,StringJoin@@Riffle[poss,", "]];Abort[]];
 validatelimits[val_,name_,lower_,upper_,module_]:=If[!(lower<=val<=upper),Message[Interface::OutsideBounds,name,val,lower,upper,module];Abort[]];
 validatelists[list_]:=If[1!=Length@Union[Length/@list],Message[CAMB::Lists,list];Abort[]];
-validateresult[x_,name_]:=Switch[x,$Failed,Message[Interface::LinkBroken,name];Abort[];False,Null,Message[Interface::NotInstalled,name]False,_,True];
+validateresult[x_,name_]:=Switch[x,$Failed,Message[Interface::LinkBroken,name];Abort[];False,Null,Message[Interface::NotInstalled,name];Abort[];False,_,True];
 
 
 reshape[list_,dimensions_]:=First[Fold[Partition[#1,#2]&,Flatten[list],Reverse[dimensions]]]
 
 
-CLASS[options:OptionsPattern[]]:=Module[{link,inifile,tempdir,result,s,limits},
+verbosestring="background_verbose = 1
+thermodynamics_verbose = 1
+perturbations_verbose = 1
+bessels_verbose = 1
+transfer_verbose = 1
+primordial_verbose = 1
+spectra_verbose = 1
+nonlinear_verbose = 1
+lensing_verbose = 1
+output_verbose = 1";
+
+CLASS[options:OptionsPattern[]]:=Module[{link,inifile,tempdir,h,result,limits,klen,taulen,unflatten},
 tempdir=CreateDirectory[];
 inifile=tempdir<>"/mathematica.ini";
-Export[inifile,Table[o[[1]]<>" = "<>o[[2]],{o,{options}}]~Join~{"root = "<>tempdir<>"/out_"},"Text"];
+Export[inifile,Table[o[[1]]<>" = "<>o[[2]],{o,{options}}]~Join~{"root = "<>tempdir<>"/out_",verbosestring},"Text"];
 
 link=Install[$location<>"ext/math_link"];
 result=Global`Class[inifile];
 validateresult[result,"CLASS"];
 Uninstall[link];
-DeleteDirectory[tempdir,DeleteContents->True];
+(*DeleteDirectory[tempdir,DeleteContents\[Rule]True];*)
 
 If[And@@StringQ/@result,Message[CLASS::Error,result[[1]],result[[2]]];Return[$Failed];Abort[]];
-limits=Select[First@result,#!=0&]/.{-1->"kvalues",-2->"tauvalues",-3->"sigma8",-4->"transfer",-5->"linearPk"};
+
+limits=Select[First@result,#!=0&]/.{-1->"kvalues",-2->"tauvalues",-3->"sigma8",-4->"transfer",-5->"PSlinear",-6->"PSnonlinear",-7->"background"};
 limits=Partition[limits,2];
 
-Table[
+(*reformat the numbers*)
+result=Table[
 With[{count=If[i==1,0,Total@limits[[;;i-1,2]]]},
 CLASS[limits[[i,1]]]->result[[2,count+1;;count+limits[[i,2]]]]],
-{i,Length@limits}]
+{i,Length@limits}];
+
+klen=Length[CLASS["kvalues"]/.result];
+taulen=Length[CLASS["tauvalues"]/.result];
+h=First[CLASS["background"]/.result];
+
+
+result=If[MemberQ[{"kvalues","tauvalues","PSlinear","PSnonlinear"},#[[1,1]]],#[[1]]->Exp@#[[2]],#]&/@result;
+result=If[#[[1,1]]=="transfer",#[[1]]->Partition[#[[2]],Length[#[[2]]]/klen],#]&/@result;
+result=If[#[[1,1]]=="kvalues",#[[1]]->#[[2]]/h,#]&/@result;
+result=If[MemberQ[{"PSlinear","PSnonlinear"},#[[1,1]]],#[[1]]->Partition[#[[2]],klen],#]&/@result;
+result
 ];
 
 
