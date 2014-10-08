@@ -1,5 +1,24 @@
 
 :Begin:
+:Function:      TFmdm_set_cosm
+:Pattern:       TFSetCosmology[OmegaM_Real, OmegaB_Real, OmegaH_Real, Degen_Integer, OmegaL_Real, Hubble_Real, Redshift_Real]
+:Arguments:     {OmegaM, OmegaB, OmegaH, Degen, OmegaL, Hubble, Redshift}
+:ArgumentTypes: {Real32, Real32, Real32, Integer, Real32, Real32, Real32}
+:ReturnType:    Integer
+:End:
+
+
+:Begin:
+:Function:      TFmdm_onek_mpc
+:Pattern:       TFOneK[kk_Real]
+:Arguments:     {kk}
+:ArgumentTypes: {Real32}
+:ReturnType:    Real32
+:End:
+
+
+
+:Begin:
 :Function:      TFset_parameters_wrap
 :Pattern:       TFSetParameters[OmegaMh2_Real, fBaryon_Real, TCMB_Real]
 :Arguments:     {OmegaMh2, fBaryon, TCMB}

@@ -19,13 +19,15 @@
 
 
 
-(*Cosmomathica version 0.2, February 2014. By Adrian Vollmer, Institute for theoretical physics, University Heidelberg.*)
+(*Cosmomathica version 0.3, October 2014. By Adrian Vollmer, Institute for theoretical physics, University Heidelberg.*)
 
 
 BeginPackage["cosmomathica`interface`"]
 
 
-Transfer::usage="Transfer[OmegaM, fBaryon, Tcmb, h] provides an interface to Eisenstein & Hu's fitting formula for the transfer function. It takes the reduced total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant as input, and returns the sound horizon, the wavenumber \!\(\*SubscriptBox[\(k\), \(peak\)]\) where the spectrum has a maximum, the transfer function for CDM, baryons, both, or with no baryons or no wiggles.";
+Transfer::usage="Transfer[OmegaM, fBaryon, Tcmb, h] provides an interface to Eisenstein & Hu's fitting formula for the transfer function (high baryon case). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the fraction of baryons \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\)/\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the CMB temperature and the dimensionless Hubble constant h as input, and returns the sound horizon, the wavenumber \!\(\*SubscriptBox[\(k\), \(peak\)]\) where the spectrum has a maximum, the transfer function for CDM, baryons, both, or with no baryons or no wiggles.";
+
+TFPower::usage="TFPower[OmegaM, OmegaB, OmegaMN, DegenNu, OmegaL, h, z] provides an interface to Eisenstein & Hu's fitting formula for the transfer function (mixed matter case). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the baryon density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(b\)]\), the massive neutrino density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Nu]\)]\), the integer number of degenerate massive neutrino species, the dark energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), the dimensionless Hubble constant h, and the redshift z as input, and return the transfer function at the given redshift.";
 
 Halofit::usage="Halofit[OmegaM, OmegaL, gammaShape, sigma8, ns, betaP, z0] provides an interface to the halofit algorithm by Robert E. Smith et al. (reimplemented in C by Martin Kilbinger). It takes the total matter density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(M\)]\), the vacuum energy density \!\(\*SubscriptBox[\(\[CapitalOmega]\), \(L\)]\), a shape factor, \!\(\*SubscriptBox[\(\[Sigma]\), \(8\)]\), \!\(\*SubscriptBox[\(n\), \(s\)]\), \!\(\*SubscriptBox[\(\[Beta]\), \(p\)]\), and a fixed redshift \!\(\*SubscriptBox[\(z\), \(0\)]\) as input, and returns the nonlinear matter power spectrum (computed in three ways: linearly with the BBKS alogorithm, nonlinear with the algorithm by Peacock and Dobbs, or nonlinearly with the Halofit algorithm) at 20 different values of the scale factor and the convergence power spectrum in tabulated form.";
 
@@ -281,6 +283,16 @@ Transfer["baryon"]->result[[2]],
 Transfer["cdm"]->result[[3]],
 Transfer["nowiggles"]->result[[4]],
 Transfer["zerobaryons"]->result[[5]]}
+];
+
+
+TFPower[OmegaM_,OmegaB_,OmegaH_,Degen_,OmegaL_,h_,z_]:=Module[{result,link,krange},
+krange=10^Range[-6.,4.,.01];
+link=Install[$location<>"ext/math_link"];
+Global`TFSetCosmology[N@OmegaM,N@OmegaB,N@OmegaH,Degen,N@OmegaL,N@h,N@z];
+result=Global`TFOneK/@krange;
+Uninstall[link];
+Transpose[{krange,result}]
 ];
 
 

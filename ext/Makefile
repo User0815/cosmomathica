@@ -35,7 +35,7 @@ ifeq ($(wildcard tf/tf_fit.c),)
   TRANSFER = 
 else
   TRANSFER = tf
-  OFILES += $(TRANSFER)/tf_fit.o 
+  OFILES += $(TRANSFER)/tf_fit.o $(TRANSFER)/power.o
   DFLAGS += -DTRANSFER
 endif 
 

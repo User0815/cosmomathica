@@ -42,6 +42,7 @@ extern real Pkappa(real ell);
 
 /* TF Transfer function from Eisenstein&hu */
 
+/* high baryon version */
 extern void TFset_parameters(float omega0hh, float f_baryon, float Tcmb);
 extern float TFfit_onek(float k, float *tf_baryon, float *tf_cdm); 
 extern float TFnowiggles(float omega0, float f_baryon, float hubble, 
@@ -49,6 +50,12 @@ extern float TFnowiggles(float omega0, float f_baryon, float hubble,
 extern float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc);
 extern float TFsound_horizon_fit(float omega0, float f_baryon, float hubble);
 extern float TFk_peak(float omega0, float f_baryon, float hubble);
+
+/* other version */
+extern int TFmdm_set_cosm(float omega_matter, float omega_baryon, float omega_hdm,
+	int degen_hdm, float omega_lambda, float hubble, float redshift);
+extern float TFmdm_onek_mpc(float kk);
+
 
 void TFfit_onek_wrap(float k){
     float tf_baryon, tf_cdm, tf_full;
@@ -82,6 +89,9 @@ extern float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb,
 extern float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc);
 extern float TFsound_horizon_fit(float omega0, float f_baryon, float hubble);
 extern float TFk_peak(float omega0, float f_baryon, float hubble);
+extern int TFmdm_set_cosm(float omega_matter, float omega_baryon, float omega_hdm,
+	int degen_hdm, float omega_lambda, float hubble, float redshift);
+extern float TFmdm_onek_mpc(float kk);
 
 #endif /*TRANSFER*/
 
@@ -172,6 +182,10 @@ float TFnowiggles(float omega0, float f_baryon, float hubble, float Tcmb, float 
 float TFzerobaryon(float omega0, float hubble, float Tcmb, float k_hmpc){return 0.;}
 float TFsound_horizon_fit(float omega0, float f_baryon, float hubble){return 0.;}
 float TFk_peak(float omega0, float f_baryon, float hubble){return 0.;}
+
+int TFmdm_set_cosm(float omega_matter, float omega_baryon, float omega_hdm,
+	int degen_hdm, float omega_lambda, float hubble, float redshift){return 0;}
+float TFmdm_onek_mpc(float kk){return 0.;}
 
 #else
 

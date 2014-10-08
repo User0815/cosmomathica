@@ -47,6 +47,8 @@ the files in question are given here.
   * Transfer function: 
     tf_fit.c
     38ef737fe3bab405bac17db78815559f
+    power.c
+    32c6a5912acd36f5522d0a81c8f8c5d7
     http://background.uchicago.edu/~whu/transfer/transferpage.html
     Daniel Eisenstein and Wayne Hu 
 
