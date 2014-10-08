@@ -130,7 +130,7 @@ a demonstration.
 Version
 =======
 
-This is version 0.2. Since this is an alpha status, backwards compatibility
+This is version 0.3. Since this is an alpha status, backwards compatibility
 may be broken in future releases.
 
 
