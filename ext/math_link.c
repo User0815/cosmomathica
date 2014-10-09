@@ -54,7 +54,7 @@ extern float TFk_peak(float omega0, float f_baryon, float hubble);
 /* other version */
 extern int TFmdm_set_cosm(float omega_matter, float omega_baryon, float omega_hdm,
 	int degen_hdm, float omega_lambda, float hubble, float redshift);
-extern float TFmdm_onek_mpc(float kk);
+extern float TFmdm_onek_hmpc(float kk);
 
 
 void TFfit_onek_wrap(float k){
@@ -91,7 +91,7 @@ extern float TFsound_horizon_fit(float omega0, float f_baryon, float hubble);
 extern float TFk_peak(float omega0, float f_baryon, float hubble);
 extern int TFmdm_set_cosm(float omega_matter, float omega_baryon, float omega_hdm,
 	int degen_hdm, float omega_lambda, float hubble, float redshift);
-extern float TFmdm_onek_mpc(float kk);
+extern float TFmdm_onek_hmpc(float kk);
 
 #endif /*TRANSFER*/
 
@@ -185,7 +185,7 @@ float TFk_peak(float omega0, float f_baryon, float hubble){return 0.;}
 
 int TFmdm_set_cosm(float omega_matter, float omega_baryon, float omega_hdm,
 	int degen_hdm, float omega_lambda, float hubble, float redshift){return 0;}
-float TFmdm_onek_mpc(float kk){return 0.;}
+float TFmdm_onek_hmpc(float kk){return 0.;}
 
 #else
 

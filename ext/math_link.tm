@@ -9,7 +9,7 @@
 
 
 :Begin:
-:Function:      TFmdm_onek_mpc
+:Function:      TFmdm_onek_hmpc
 :Pattern:       TFOneK[kk_Real]
 :Arguments:     {kk}
 :ArgumentTypes: {Real32}
